@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>Radian system of measuring angles</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Radian system of measuring angles</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	All of the built-in trigonometric functions in FreeBASIC express angles in radians.<br \>
+<br \>
+Let pi the constant equal to the ratio of the circumference of a circle to its diameter. It can be calculated programmatically by multiplying the arctangent of 1 by 4.<br \>
+A full circle is divided into 2 * pi radians or 360 degrees, which leads to the following conversions:<br \>
+<br \>
+<pre class="fb_pre">pi = atn(1) * 4
+radians = degrees * pi / 180
+degrees = radians * 180 / pi</pre><br \>
+These 3 formulas can be expressed by using macros:<br \>
+<br \>
+<pre class="fb_pre">#define   pi          ( atn(1) * 4 )
+#define   radian(x)   ( (x) * pi / 180 )
+#define   degree(x)   ( (x) * 180 / pi )</pre>The added parentheses compared to the raw formulas are mandatory to not undergo an unwanted precedence change of operators when the macros are used in any context of expressions.<br \>
+<br \>
+<br \>
+
+</div>
+</div> 
+</div> 
+</body>
+</html>

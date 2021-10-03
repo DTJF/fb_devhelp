@@ -1,0 +1,265 @@
+<html>
+<head>
+<title>Pointers to Procedures</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Pointers to Procedures</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Pointers that point to procedures<br \>
+<br \>
+Just as pointers can be made to point to an <tt><a href="KeyPgInteger.html">Integer</a></tt> or <tt><a href="KeyPgSingle.html">Single</a></tt> type, pointers can also point to procedures, that is, they can store the address of a procedure.<br \>
+<br \>
+<div class="fb_sect_title">Declaration</div><div class="fb_sect_cont"><br \>
+To declare a pointer to procedure, use the <tt><a href="KeyPgSub.html">Sub</a></tt> or <tt><a href="KeyPgFunction.html">Function</a></tt> keywords, followed by any parameters and return value type:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;declares&nbsp;a&nbsp;pointer&nbsp;to&nbsp;sub&nbsp;procedure&nbsp;that&nbsp;takes&nbsp;no&nbsp;arguments</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">pointerToProcedure</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<br \>
+</div>Procedure pointers store procedure addresses, which are retrieved using <tt><a href="KeyPgOpAt.html">Operator @</a></tt> (Address of) or the <tt><a href="KeyPgOpProcptr.html">Procptr Operator</a></tt>:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;pfunc.bi</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="key">Add</span>&nbsp;<span class="oth">(</span><span class="wrd">a</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">b</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">pFunc</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">(</span><span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="key">Add</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">Calling a procedure pointer</div><div class="fb_sect_cont"><br \>
+The interesting thing about procedure pointers is that they can be called just like a procedure:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;..&nbsp;Add&nbsp;and&nbsp;pFunc&nbsp;as&nbsp;before&nbsp;..</span><br />
+<span class="def">#include&nbsp;Once&nbsp;&quot;pfunc.bi&quot;<br />
+</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;3&nbsp;+&nbsp;4&nbsp;=&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">pFunc</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<br \>
+</div>For a calling example of subroutine pointer, see the <tt><a href="KeyPgOpAt.html">Operator @ (Address Of)</a></tt> page.<br \>
+<br \>
+<b>Note:</b> When calling a procedure through a procedure pointer, parentheses surrounding the argument list (even empty) are mandatory to resolve ambiguity with a simple access to the pointer value.<br \>
+<br \>
+</div><div class="fb_sect_title">Passing procedure pointers to procedures</div><div class="fb_sect_cont"><br \>
+Passing procedure pointers to other procedures is similar as well:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;..&nbsp;Add&nbsp;and&nbsp;pFunc&nbsp;as&nbsp;before&nbsp;..</span><br />
+<span class="def">#include&nbsp;Once&nbsp;&quot;pfunc.bi&quot;<br />
+</span><br />
+<span class="key">Function</span>&nbsp;<span class="wrd">DoOperation</span>&nbsp;<span class="oth">(</span><span class="wrd">a</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">operation</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">(</span><span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">operation</span><span class="oth">(</span><span class="wrd">a</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;3&nbsp;+&nbsp;4&nbsp;=&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">DoOperation</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">Add</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<br \>
+</div>Because procedure pointer declarations can be lengthy, it often helps to create a type alias for the procedure pointer, in an effort to make clearer code:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;..&nbsp;Add&nbsp;and&nbsp;pFunc&nbsp;as&nbsp;before&nbsp;..</span><br />
+<span class="def">#include&nbsp;Once&nbsp;&quot;pfunc.bi&quot;<br />
+</span><br />
+<span class="key">Type</span>&nbsp;<span class="wrd">operation</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">(</span><span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">DoOperation</span>&nbsp;<span class="oth">(</span><span class="wrd">a</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">op</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">operation</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">op</span><span class="oth">(</span><span class="wrd">a</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;3&nbsp;+&nbsp;4&nbsp;=&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">DoOperation</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">Add</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">Pointers to procedure pointers</div><div class="fb_sect_cont"><br \>
+Because the syntax of a procedure pointer does not allow declaration of a pointer to procedure pointer when the procedure is a function (because ptr applies on return type and not on procedure), a type alias is used. Notice how it is necessary to surround a dereferenced pointer to procedure pointer by parenthesis when calling the procedure. This is because the function-call operator '()' has higher precedence than <tt><a href="KeyPgOpValueOf.html">Operator *</a></tt> (Value of):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">Halve</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">Triple</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">3</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">operation</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<br />
+<span class="com">'&nbsp;an&nbsp;array&nbsp;of&nbsp;procedure&nbsp;pointers,&nbsp;NULL&nbsp;indicates&nbsp;the</span><br />
+<span class="com">'&nbsp;end&nbsp;of&nbsp;the&nbsp;array</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">operations</span><span class="oth">(</span><span class="num">20</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">operation</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_</span><br />
+<span class="oth">{</span>&nbsp;<span class="oth">@</span><span class="wrd">Halve</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">Triple</span><span class="oth">,</span>&nbsp;<span class="num">0</span>&nbsp;<span class="oth">}</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">280</span><br />
+<br />
+<span class="com">'&nbsp;apply&nbsp;all&nbsp;of&nbsp;the&nbsp;operations&nbsp;to&nbsp;a&nbsp;variable&nbsp;by&nbsp;iterating&nbsp;through&nbsp;the&nbsp;array</span><br />
+<span class="com">'&nbsp;with&nbsp;a&nbsp;pointer&nbsp;to&nbsp;procedure&nbsp;pointer</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">op</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">operation</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">operations</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span><br />
+<span class="key">While</span>&nbsp;<span class="oth">(*</span><span class="wrd">op</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;call&nbsp;the&nbsp;procedure&nbsp;that&nbsp;is&nbsp;pointed&nbsp;to,&nbsp;note&nbsp;the&nbsp;extra&nbsp;parenthesis</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(*</span><span class="wrd">op</span><span class="oth">)(</span><span class="wrd">i</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">op</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Wend</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Value&nbsp;of&nbsp;'i'&nbsp;after&nbsp;all&nbsp;operations&nbsp;performed:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">Pointers to member procedures</div><div class="fb_sect_cont"><br \>
+Method pointers are not implemented yet, but it is possible to work-around that by using a static wrapper:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">/''</span><br />
+<span class="com">&nbsp;'&nbsp;This&nbsp;example&nbsp;shows&nbsp;how&nbsp;you&nbsp;can&nbsp;simulate&nbsp;getting&nbsp;a&nbsp;class&nbsp;method&nbsp;pointer,&nbsp;</span><br />
+<span class="com">&nbsp;'&nbsp;until&nbsp;support&nbsp;is&nbsp;properly&nbsp;implemented&nbsp;in&nbsp;the&nbsp;compiler.</span><br />
+<span class="com">&nbsp;'</span><br />
+<span class="com">&nbsp;'&nbsp;When&nbsp;this&nbsp;is&nbsp;supported,&nbsp;you&nbsp;will&nbsp;only&nbsp;need&nbsp;to&nbsp;remove&nbsp;the&nbsp;static&nbsp;wrapper</span><br />
+<span class="com">&nbsp;'&nbsp;function&nbsp;presented&nbsp;here,&nbsp;to&nbsp;maintain&nbsp;compatibility.&nbsp;</span><br />
+<span class="com">&nbsp;'/</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">T</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">test</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">number</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">test</span><span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="key">This</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">T</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">number</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">420</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">T.test</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">number</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">number</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">T.test</span><span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="key">This</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">T</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">number</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">this.test</span><span class="oth">(</span><span class="wrd">number</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span><span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">T</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">T.test</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">T</span>&nbsp;<span class="wrd">obj</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">p</span><span class="oth">(</span><span class="wrd">obj</span><span class="oth">,</span>&nbsp;<span class="num">69</span><span class="oth">)</span>&nbsp;<span class="com">''&nbsp;prints&nbsp;489</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">Typing rule for procedure pointer declaration</div><div class="fb_sect_cont"><br \>
+The procedure pointer declaration allows to assign to the pointer:<br \>
+<ul><ul><li> not only a procedure with the same parameters types, and if any, the same result type,<br \>
+<li> but also a procedure with contravariant parameters (by reference or by pointer) or/and a covariant result (by reference or by pointer).<br \>
+<br \>
+</ul></ul>Assigning to a function pointer a fonction with a contravariant parameter and a covariant result, both by pointer:		<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'Example&nbsp;of&nbsp;assigning&nbsp;to&nbsp;a&nbsp;function&nbsp;pointer&nbsp;a&nbsp;function&nbsp;with:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;-&nbsp;a&nbsp;contravariant&nbsp;parameter&nbsp;by&nbsp;pointer,</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;-&nbsp;and&nbsp;a&nbsp;covariant&nbsp;result&nbsp;by&nbsp;pointer.</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;instance&nbsp;constructed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;instance&nbsp;destroyed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">a0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;instance&nbsp;constructed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">a0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">A</span><span class="oth">,</span>&nbsp;<span class="key">This</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">a0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;instance&nbsp;constructed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;instance&nbsp;destroyed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">pa0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">B</span><span class="oth">(*</span><span class="wrd">pa0</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pf</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">f</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Scope&nbsp;:&nbsp;Dim&nbsp;As&nbsp;B&nbsp;b0':&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="wrd">b0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Dim&nbsp;As&nbsp;A&nbsp;Ptr&nbsp;pab&nbsp;=&nbsp;pf(@b0)':&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pab</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pf</span><span class="oth">(@</span><span class="wrd">b0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Delete&nbsp;CPtr(B&nbsp;Ptr,&nbsp;pab)':&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="key">CPtr</span><span class="oth">(</span><span class="wrd">B</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">pab</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'End&nbsp;Scope':&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Assigning to a function pointer a function with a contravariant parameter and a covariant result, both by reference:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'Example&nbsp;of&nbsp;assigning&nbsp;to&nbsp;a&nbsp;function&nbsp;pointer&nbsp;a&nbsp;function&nbsp;with:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;-&nbsp;a&nbsp;contravariant&nbsp;parameter&nbsp;by&nbsp;reference,</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;-&nbsp;and&nbsp;a&nbsp;covariant&nbsp;result&nbsp;by&nbsp;reference.</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="key">Object</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;instance&nbsp;constructed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;instance&nbsp;destroyed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">a0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;instance&nbsp;constructed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">a0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">A</span><span class="oth">,</span>&nbsp;<span class="key">This</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">a0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;instance&nbsp;constructed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;instance&nbsp;destroyed&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">a0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span><span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">B</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">B</span><span class="oth">(</span><span class="wrd">a0</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">B</span><span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="wrd">pf</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">f</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Scope&nbsp;:&nbsp;Dim&nbsp;As&nbsp;B&nbsp;b0':&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">B</span>&nbsp;<span class="wrd">b0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Dim&nbsp;Byref&nbsp;As&nbsp;A&nbsp;rab&nbsp;=&nbsp;pf(b0)':&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">A</span>&nbsp;<span class="wrd">rab</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pf</span><span class="oth">(</span><span class="wrd">b0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Delete&nbsp;@rab':&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">rab</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'End&nbsp;Scope':&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgSub.html">Sub</a></tt><br \>
+<li> <tt><a href="KeyPgFunction.html">Function</a></tt><br \>
+<li> <tt><a href="KeyPgPtr.html">Pointer</a></tt><br \>
+<li> <tt><a href="KeyPgOpAt.html">Operator @ (Address Of)</a></tt><br \>
+<li> <tt><a href="KeyPgOpProcptr.html">Procptr Operator</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

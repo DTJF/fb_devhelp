@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>Strings (string, zstring, and wstring)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Strings (string, zstring, and wstring)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Of all built-in data-types, <b>Strings</b> types are those dedicated to the representation of character chains.<br \>
+<br \>
+FreeBASIC supplies several strings data types for handling characters chains in various representations.<br \>
+The fixed-length strings types (string, zstring and wstring) represent fixed-length chains of characters, while the variable-length string type represents a variable-length chain of characters.<br \>
+<br \>
+<div class="fb_sect_title">Fixed-length strings</div><div class="fb_sect_cont"><br \>
+There are 3 types of fixed-length strings:<br \>
+<ul><ul><li> Fixed-length string type for 8 bit character (QB-style fixed-length string):<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgString.html">String</a> * <i>size</i></tt><br \>
+<div class="fb_indent"><div class="fb_indent">total length of the string: '<i>size</i>+1' characters = '<i>size</i>+1' bytes <tt>('<i>size</i>' useful characters + '1' final null character)</tt><br \>
+</div></div></div></div></div><ul><ul><li> Fixed-length zstring type for 8 bit character:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgZstring.html">ZString</a> * <i>size</i></tt><br \>
+<div class="fb_indent"><div class="fb_indent">total length of the zstring: '<i>size</i>' characters = '<i>size</i>' bytes <tt>('<i>size-1</i>' useful characters + '1' final null character)</tt><br \>
+</div><tt>or</tt><br \>
+</div><b>-</b> <tt><a href="KeyPgZstring.html">ZString</a> <a href="KeyPgPtr.html">Ptr</a></tt><br \>
+<div class="fb_indent"><div class="fb_indent">total length of the pointed zstring: depends on the character chain referenced by the <tt>pointer</tt> (up to and including the final null character)<br \>
+</div></div></div></div></div><ul><ul><li> Fixed-length wstring type for  wide character:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgWstring.html">WString</a> * <i>size</i></tt><br \>
+<div class="fb_indent"><div class="fb_indent">total length of the wstring: '<i>size</i>' characters = '<i>size</i>' x k<tt>(*)</tt> bytes <tt>('<i>size-1</i>' useful characters + '1' final null character)</tt><br \>
+</div><tt>or</tt><br \>
+</div><b>-</b> <tt><a href="KeyPgWstring.html">WString</a> <a href="KeyPgPtr.html">Ptr</a></tt><br \>
+<div class="fb_indent"><div class="fb_indent">total length of the pointed wstring: depends on the character chain referenced by the <tt>pointer</tt> (up to and including the final null character)<br \>
+<br \>
+</div></div><tt>(*)</tt> The number of bytes 'k' used by a <tt>WSTRING</tt> character depends on the platform.<br \>
+<br \>
+</div></div></div></div><div class="fb_sect_title">Variable-length string</div><div class="fb_sect_cont"><br \>
+There is only one type of variable-length string:<br \>
+<ul><ul><li> Variable-length string type for 8 bit character:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgString.html">String</a></tt><br \>
+<div class="fb_indent"><div class="fb_indent">total length of the string: dynamic length depending on the assigned data characters<br \>
+<div class="fb_indent">(string referenced by an internal descriptor of 1 <tt>pointer</tt> + 2 <tt>uinteger</tt> length)<br \>
+<br \>
+</div></div></div></div></div></div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Size (in bytes) of different strings from all types above:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">20</span>&nbsp;<span class="wrd">s20</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&nbsp;manual&quot;</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">20</span>&nbsp;<span class="wrd">z20</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&nbsp;manual&quot;</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pz</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="quo">&quot;FreeBASIC&nbsp;manual&quot;</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">WString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">20</span>&nbsp;<span class="wrd">w20</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&nbsp;manual&quot;</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">WString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pw</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="key">WStr</span><span class="oth">(</span><span class="quo">&quot;FreeBASIC&nbsp;manual&quot;</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&nbsp;manual&quot;</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;'FIXED-LENGTH&nbsp;STRING&nbsp;*&nbsp;20':&nbsp;##&nbsp;bytes&nbsp;in&nbsp;total,&nbsp;##&nbsp;useful&nbsp;characters&nbsp;available&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">s20</span><span class="oth">);</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">s20</span><span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;containing&nbsp;##&nbsp;user&nbsp;characters&nbsp;of&nbsp;#&nbsp;byte(s)&nbsp;each&quot;</span><span class="oth">;</span>&nbsp;<span class="key">IIf</span><span class="oth">(</span><span class="key">InStr</span><span class="oth">(</span><span class="wrd">s20</span><span class="oth">,</span>&nbsp;<span class="key">Chr</span><span class="oth">(</span><span class="num">0</span><span class="oth">))</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="key">InStr</span><span class="oth">(</span><span class="wrd">s20</span><span class="oth">,</span>&nbsp;<span class="key">Chr</span><span class="oth">(</span><span class="num">0</span><span class="oth">))</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">s20</span><span class="oth">));</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">s20</span><span class="oth">[</span><span class="num">0</span><span class="oth">])</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;'FIXED-LENGTH&nbsp;ZSTRING&nbsp;*&nbsp;20':&nbsp;##&nbsp;bytes&nbsp;in&nbsp;total,&nbsp;##&nbsp;useful&nbsp;characters&nbsp;available&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">z20</span><span class="oth">);</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">z20</span><span class="oth">)</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">z20</span><span class="oth">[</span><span class="num">0</span><span class="oth">])</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;containing&nbsp;##&nbsp;user&nbsp;characters&nbsp;of&nbsp;#&nbsp;byte(s)&nbsp;each&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">z20</span><span class="oth">);</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">Z20</span><span class="oth">[</span><span class="num">0</span><span class="oth">])</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'ZSTRING&nbsp;PTR':&nbsp;dereferencing&nbsp;pointer&nbsp;-&gt;&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="quo">&quot;&quot;&quot;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="oth">*</span><span class="wrd">pz</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&quot;&quot;&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;containing&nbsp;##&nbsp;user&nbsp;characters&nbsp;of&nbsp;#&nbsp;byte(s)&nbsp;each&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(*</span><span class="wrd">pz</span><span class="oth">);</span>&nbsp;<span class="key">SizeOf</span><span class="oth">((*</span><span class="wrd">pz</span><span class="oth">)[</span><span class="num">0</span><span class="oth">])</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;'FIXED-LENGTH&nbsp;WSTRING&nbsp;*&nbsp;20':&nbsp;##&nbsp;bytes&nbsp;in&nbsp;total,&nbsp;##&nbsp;useful&nbsp;characters&nbsp;available&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">w20</span><span class="oth">);</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">w20</span><span class="oth">)</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">w20</span><span class="oth">[</span><span class="num">0</span><span class="oth">])</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;containing&nbsp;##&nbsp;user&nbsp;characters&nbsp;of&nbsp;#&nbsp;byte(s)&nbsp;each&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">w20</span><span class="oth">);</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">w20</span><span class="oth">[</span><span class="num">0</span><span class="oth">])</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'WSTRING&nbsp;PTR':&nbsp;dereferencing&nbsp;pointer&nbsp;-&gt;&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="quo">&quot;&quot;&quot;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="oth">*</span><span class="wrd">pw</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&quot;&quot;&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;containing&nbsp;##&nbsp;user&nbsp;characters&nbsp;of&nbsp;#&nbsp;byte(s)&nbsp;each&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(*</span><span class="wrd">pw</span><span class="oth">);</span>&nbsp;<span class="key">SizeOf</span><span class="oth">((*</span><span class="wrd">pw</span><span class="oth">)[</span><span class="num">0</span><span class="oth">])</span><br />
+<span class="key">Print</span><br />
+<span class="key">Type</span>&nbsp;<span class="wrd">descriptor</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">Addr</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">UC</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">AC</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;'STRING':&nbsp;##&nbsp;bytes&nbsp;in&nbsp;descriptor,&nbsp;memory&nbsp;allocated&nbsp;for&nbsp;##&nbsp;characters&nbsp;right&nbsp;now&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">);</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">descriptor</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">s</span><span class="oth">)-&gt;</span><span class="wrd">AC</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;containing&nbsp;##&nbsp;user&nbsp;characters&nbsp;of&nbsp;#&nbsp;byte(s)&nbsp;each&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">);</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">[</span><span class="num">0</span><span class="oth">])</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Note: For the fixed-length string type only (QB-style fixed-length string), the 'Len()' keyword always returns the declared constant number of characters, regardless of the number of characters assigned to it by user.<br \>
+(hence the formula: <tt>'user_characters_length = IIf(InStr(s, Chr(0)) > 0, InStr(s, Chr(0)) - 1, Len(s))'</tt>)<br \>
+<br \>
+Output example for win64 (a wstring character uses 2 bytes):<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'FIXED-LENGTH STRING * 20': 21 bytes in total, 20 useful characters available
+	containing 16 user characters of 1 byte(s) each
+
+'FIXED-LENGTH ZSTRING * 20': 20 bytes in total, 19 useful characters available
+	containing 16 user characters of 1 byte(s) each
+'ZSTRING PTR': dereferencing pointer -> "FreeBASIC manual"
+	containing 16 user characters of 1 byte(s) each
+
+'FIXED-LENGTH WSTRING * 20': 40 bytes in total, 19 useful characters available
+	containing 16 user characters of 2 byte(s) each
+'WSTRING PTR': dereferencing pointer -> "FreeBASIC manual"
+	containing 16 user characters of 2 byte(s) each
+
+'STRING': 24 bytes in descriptor, memory allocated for 32 characters right now
+	containing 16 user characters of 1 byte(s) each
+				</pre></div></div></div><div class="fb_sect_title">Implicit conversion from Zstring to Ubyte</div><div class="fb_sect_cont"><br \>
+When any operand of a binary operator (as assignment, equal, +, *, ...) consists in dereferencing a '<tt>Zstring Ptr</tt>' pointer ('<tt>pz</tt>'), this can give a '<tt>Zstring</tt>' string or a '<tt>Ubyte</tt>' variable, depending on the other operand:<br \>
+<div class="fb_indent"><b>-</b> If the other operand is numeric, so the dereferenced '<tt>Zstring Ptr</tt>' pointer ('<tt>*pz</tt>') will be treated as a '<tt>Ubyte</tt>' reference to the one character pointed.<br \>
+<b>-</b> If in this case a '<tt>Zstring</tt>' pointer indexing '<tt>[]</tt>' operator is used as dereferencing syntax ('<tt>pz[n]</tt>'), it is basically a short-cut version of the '<tt>String</tt>' indexing '<tt>[]</tt>' operator ('<tt>(*pz)[n]</tt>').<br \>
+<br \>
+</div>Since '<tt>(*pz)[i]</tt>' and '<tt>pz[i][k]</tt>' are always numeric (each an '<tt>Ubyte</tt>'), such equalities are true:<br \>
+<div class="fb_indent"><tt>pz[i] = (*pz)[i]</tt><br \>
+<tt>(*pz)[i] = pz[i]</tt><br \>
+and even:<br \>
+<tt>pz[i+k] = pz[i][k]</tt><br \>
+<tt>pz[i][k] = pz[i+k]</tt><br \>
+<br \>
+</div>Simple code example with a dereferenced '<tt>Zstring Ptr</tt>' converted to an '<tt>Ubyte</tt>' reference (as operand of an 'assignment' operator and a '+' operator):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="oth">(</span><span class="num">14</span><span class="oth">+</span><span class="num">1</span><span class="oth">)</span>&nbsp;<span class="wrd">z</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pz</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">z</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">z</span><br />
+<span class="wrd">z</span><span class="oth">[</span><span class="num">10</span><span class="oth">]</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Asc</span><span class="oth">(</span><span class="quo">&quot;2&quot;</span><span class="oth">)</span><br />
+<span class="oth">*(</span><span class="wrd">pz</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">11</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Asc</span><span class="oth">(</span><span class="quo">&quot;0&quot;</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;*(pz&nbsp;+&nbsp;11)&nbsp;is&nbsp;converted&nbsp;to&nbsp;an&nbsp;Ubyte&nbsp;reference</span><br />
+<span class="oth">(*</span><span class="wrd">pz</span><span class="oth">)[</span><span class="num">12</span><span class="oth">]</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Asc</span><span class="oth">(</span><span class="quo">&quot;1&quot;</span><span class="oth">)</span><br />
+<span class="wrd">pz</span><span class="oth">[</span><span class="num">13</span><span class="oth">]</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Asc</span><span class="oth">(</span><span class="quo">&quot;8&quot;</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;pz[13]&nbsp;is&nbsp;converted&nbsp;to&nbsp;an&nbsp;Ubyte&nbsp;reference</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">z</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">10</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">13</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">z</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">]</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="key">Asc</span><span class="oth">(</span><span class="quo">&quot;0&quot;</span><span class="oth">));</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">10</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">13</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Str</span><span class="oth">((*</span><span class="wrd">pz</span><span class="oth">)[</span><span class="wrd">I</span><span class="oth">]</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="key">Asc</span><span class="oth">(</span><span class="quo">&quot;0&quot;</span><span class="oth">));</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">10</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">13</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">pz</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">]</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="key">Asc</span><span class="oth">(</span><span class="quo">&quot;0&quot;</span><span class="oth">));</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;pz[I]&nbsp;is&nbsp;converted&nbsp;to&nbsp;an&nbsp;Ubyte&nbsp;reference</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+FreeBASIC
+FreeBASIC 2018
+2018
+2018
+2018
+			</pre></div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="CatPgString.html">String Functions</a></tt><br \>
+<li> <tt><a href="TblVarTypes.html">Standard Data Type Limits</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

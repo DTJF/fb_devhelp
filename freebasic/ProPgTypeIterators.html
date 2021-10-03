@@ -1,0 +1,332 @@
+<html>
+<head>
+<title>Iterators</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Iterators</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The overload Operators <b>For</b>, <b>Next</b>, and <b>Step</b>, allowing to construct User-Defined Types <b>Iterators</b> (instead of only intrinsic scalar types iterators) for a For...Next loop<br \>
+<br \>
+<div class="fb_sect_title">Syntax (declaration)</div><div class="fb_sect_cont"><br \>
+{ <a href="KeyPgType.html">Type</a> | <a href="KeyPgClass.html">Class</a> | <a href="KeyPgUnion.html">Union</a> } <i>typename</i><br \>
+<div class="fb_indent">' <tt><a href="KeyPgFornext.html">For...Next</a></tt>' statement with implicit step (1st version of operators)<br \>
+<div class="fb_indent"><a href="KeyPgDeclare.html">Declare</a> <b>Operator</b> <a href="KeyPgOpFor.html">For</a> ( )<br \>
+<a href="KeyPgDeclare.html">Declare</a> <b>Operator</b> <a href="KeyPgOpNext.html">Next</a> ( [ <a href="KeyPgByref.html">ByRef</a> | <a href="KeyPgByval.html">ByVal</a> ] <i>cond</i> <a href="KeyPgAs.html">As</a> <i>typename</i> ) <a href="KeyPgAs.html">As</a> <a href="KeyPgInteger.html">Integer</a><br \>
+<a href="KeyPgDeclare.html">Declare</a> <b>Operator</b> <a href="KeyPgOpStep.html">Step</a> ( )<br \>
+</div>' <tt><a href="KeyPgFornext.html">For...Next</a></tt>' statement with explicit step (2nd version of operators)<br \>
+<div class="fb_indent"><a href="KeyPgDeclare.html">Declare</a> <b>Operator</b> <a href="KeyPgOpFor.html">For</a> ( [ <a href="KeyPgByref.html">ByRef</a> | <a href="KeyPgByval.html">ByVal</a> ] <i>stp</i> <a href="KeyPgAs.html">As</a> <i>typename</i> )<br \>
+<a href="KeyPgDeclare.html">Declare</a> <b>Operator</b> <a href="KeyPgOpNext.html">Next</a> ( [ <a href="KeyPgByref.html">ByRef</a> | <a href="KeyPgByval.html">ByVal</a> ] <i>cond</i> <a href="KeyPgAs.html">As</a> <i>typename</i>, [ <a href="KeyPgByref.html">ByRef</a> | <a href="KeyPgByval.html">ByVal</a> ] <i>stp</i> <a href="KeyPgAs.html">As</a> <i>typename</i> ) <a href="KeyPgAs.html">As</a> <a href="KeyPgInteger.html">Integer</a><br \>
+<a href="KeyPgDeclare.html">Declare</a> <b>Operator</b> <a href="KeyPgOpStep.html">Step</a> ( [ <a href="KeyPgByref.html">ByRef</a> | <a href="KeyPgByval.html">ByVal</a> ] <i>stp</i> <a href="KeyPgAs.html">As</a> <i>typename</i> )<br \>
+</div></div>End { <a href="KeyPgType.html">Type</a> | <a href="KeyPgClass.html">Class</a> | <a href="KeyPgUnion.html">Union</a> }<br \>
+<br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><br \>
+<a href="KeyPgFornext.html">For</a> <i>iterator</i> [ As <i>typename</i> ] = <i>start_value</i> To <i>end_value</i> [ <a href="KeyPgFornext.html">Step</a> <i>step_value</i> ]<br \>
+<div class="fb_indent">[<i> ...statements... </i>]<br \>
+</div><a href="KeyPgFornext.html">Next</a><br \>
+<br \>
+The first version of operators is used if no <tt><i>step_value</i></tt> is given in the <tt><a href="KeyPgFornext.html">For...Next</a></tt> statement.<br \>
+If a <tt><i>step_value</i></tt> is given, the second version is used and a step object (initialized with <tt><i>step-value</i></tt>) is passed through the <tt><i>stp</i></tt> parameter:<br \>
+<div class="fb_indent"><b>-</b> to <tt><a href="KeyPgOpFor.html">Operator For</a></tt> because eventual additional initialization may use it,<br \>
+<b>-</b> to <tt><a href="KeyPgOpNext.html">Operator Next</a></tt> because testing for iterating end may depend on it,<br \>
+<b>-</b> to <tt><a href="KeyPgOpStep.html">Operator Step</a></tt> to increment the iterator object.<br \>
+</div>Both versions of the operators can coexist (thanks to member overloading) in the same user-defined type (to be able to both use and not use the explicit increment in <tt><a href="KeyPgFornext.html">For...Next</a></tt> statements of the user code).<br \>
+<br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<b><tt>(including arguments)</tt></b><br \>
+<tt><i>typename</i></tt><br \>
+<div class="fb_indent">name of the <tt><a href="KeyPgType.html">Type</a></tt>, <tt><a href="KeyPgClass.html">Class</a></tt>, or <tt><a href="KeyPgUnion.html">Union</a></tt><br \>
+</div><tt><i>stp</i></tt>, <tt><i>step_value</i></tt><br \>
+<div class="fb_indent">a <tt><i>typename</i></tt> object used as an incremental value<br \>
+</div><tt><i>iterator</i></tt><br \>
+<div class="fb_indent">a <tt><i>typename</i></tt> object used as an iterator<br \>
+</div><tt><i>cond</i></tt>, <tt><i>end_value</i></tt><br \>
+<div class="fb_indent">a <tt><i>typename</i></tt> object used as a loop-terminating value<br \>
+</div><tt><i>start_value</i></tt><br \>
+<div class="fb_indent">a <tt><i>typename</i></tt> object used to copy construct or assign to the iterator initially<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><a href="KeyPgOpFor.html">Operator For</a></tt>, <tt><a href="KeyPgOpNext.html">Operator Next</a></tt> and <tt><a href="KeyPgOpStep.html">Operator Step</a></tt> can be overloaded in user-defined type definitions to allow objects of that type to be used as iterators and step values in <tt><a href="KeyPgFornext.html">For...Next</a></tt> loops (instead of the pre-defined for intrinsic scalar types).<br \>
+<br \>
+As all non-static member procedures, the 3 operators have passed a hidden <tt><a href="KeyPgThis.html">This</a></tt> parameter that allows to access by reference to the iterator object (initialized to the <tt><i>start_value</i></tt> argument value from the <tt><a href="KeyPgFornext.html">For...Next</a></tt> statement).<br \>
+The <tt><i>cond</i></tt> parameter of the <tt><a href="KeyPgOpNext.html">Operator Next</a></tt> allows to access the <tt><i>end_value</i></tt> argument value from the <tt><a href="KeyPgFornext.html">For...Next</a></tt> statement.<br \>
+If a <tt><i>step_value</i></tt> is given (as argument) in the <tt><a href="KeyPgFornext.html">For...Next</a></tt> statement, the <tt><i>stp</i></tt> parameter allows to access this value in the 3 operators.<br \>
+<br \>
+<b>Note:</b> If no <tt><i>step_value</i></tt> is given in the <tt><a href="KeyPgFornext.html">For...Next</a></tt> statement (implicit step), the user-defined type must have a default constructor (implicit or explicit) or a conversion constructor. It is a bug at the moment because if the user defines a default constructor, the compiler does not even use it when initializing the <tt><a href="KeyPgFornext.html">For...Next</a></tt> loop!<br \>
+<br \>
+<u>Operator For</u><br \>
+<div class="fb_indent"><tt><a href="KeyPgOpFor.html">Operator For</a></tt> is called once immediately after copy constructing or assigning to the iterator object (with the <tt><i>start_value</i></tt>), constructing the end object (with the <tt><i>end_value</i></tt>), and constructing the step object (with <tt><i>step_value</i></tt> if defined in the <tt><a href="KeyPgFornext.html">For...Next</a></tt> statement).<br \>
+<tt><a href="KeyPgOpFor.html">Operator For</a></tt> allows to perform any additional initialization needed in preparation for the loop.<br \>
+<br \>
+</div><u>Operator Next</u><br \>
+<div class="fb_indent"><tt><a href="KeyPgOpNext.html">Operator Next</a></tt> is called every time the iterator object needs to be checked against the end value. This happens immediately after the call to the <tt><a href="KeyPgOpFor.html">Operator For</a></tt>, and then immediately after any calls to the <tt><a href="KeyPgOpStep.html">Operator Step</a></tt>.<br \>
+<tt><a href="KeyPgOpNext.html">Operator Next</a></tt> should return zero (0) if the loop should be terminated, or non-zero if the loop should continue iterating.<br \>
+The first time <tt><a href="KeyPgOpNext.html">Operator Next</a></tt> is called, no statements in the <tt><a href="KeyPgFornext.html">For...Next</a></tt> body have been executed yet.<br \>
+<tt><a href="KeyPgOpNext.html">Operator Next</a></tt> also allows to perform some processing before the execution of all statements in the <tt><a href="KeyPgFornext.html">For...Next</a></tt> body.<br \>
+<br \>
+</div><u>Operator Step</u><br \>
+<div class="fb_indent"><tt><a href="KeyPgOpStep.html">Operator Step</a></tt> is called to increment the iterator object immediately after all statements in the <tt><a href="KeyPgFornext.html">For...Next</a></tt> body are executed.<br \>
+<br \>
+</div><u>Advanced usage</u><br \>
+<div class="fb_indent">The above description seems to imply that the 3 arguments <tt><i>start_value</i></tt>, <tt><i>end_value</i></tt>, and <tt><i>step_value</i></tt> must be of the same type as the <tt><i>iterator</i></tt> (this is the more obvious use), but it is not quite true:<br \>
+<div class="fb_indent"><b>-</b> The <tt><i>start_value</i></tt>, <tt><i>end_value</i></tt>, and <tt><i>step_value</i></tt> arguments can be of any type (of different types among themselves and also of different types from the one of the <tt><i>iterator</i></tt>).<br \>
+<b>-</b> The only constraint is that the <tt><i>iterator</i></tt> could be constructed (in case of local <tt><i>iterator</i></tt>) or assigned (in case of global <tt><i>iterator</i></tt>) from the <tt><i>start_value</i></tt> argument (because the <tt><i>iterator</i></tt> is implicitly constructed or assigned under the hood).<br \>
+<b>-</b> Similarly the other arguments <tt><i>end_value</i></tt>, and <tt><i>step_value</i></tt> must be able to be converted into objects of the same type as the <tt><i>iterator</i></tt>.<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">Algorithm</div><div class="fb_sect_cont"><br \>
+<tt><a href="KeyPgFornext.html">For...Next</a></tt> loop algorithm around the 3 overload operators:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'                       FOR...NEXT loop
+'                              V
+'                              |
+'            constructing/assigning iterator object
+'       (This = start_value from For...Next statement)
+'                              |
+'                   constructing end object
+'       (cond = end_value from For...Next statement)
+'                              |
+'                   if step_value is defined >---------------------.
+'                            else                                  :
+'                              v                                   v
+'                              :                        constructing step object
+'                              :               (stp = step_value from For...Next statement)
+'                              :                                   :
+'                              :<----------------------------------'
+'                              |
+'                    calling Operator For
+'                              |
+'     .----------------------->|
+'     |                        |
+'     |              calling Operator Next
+'     |     (if end-condition verified: =0 returned) >-------------.
+'     |               (else: <>0 returned)                         |
+'     |                        v                                   |
+'     |                        |                                   |
+'     |            executing For...Next body                       |
+'     |                        |                                   |
+'     |              calling Operator Step                         |
+'     |                        |                                   |
+'     '------------------------'                                   |
+'                                                                  |
+'                                                                  V
+</pre></div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Type for iterating through screen resolutions, with implicit step-value:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">screenResolution</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;user&nbsp;interface</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">colorBit</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">colorDepth</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">screenWidth</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">screenHeigth</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;overload&nbsp;iteration&nbsp;operators&nbsp;when&nbsp;Step&nbsp;is&nbsp;not&nbsp;defined&nbsp;in&nbsp;For...Next&nbsp;statement</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">For</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Next</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">iterateCondition</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">screenResolution</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Step</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;internal&nbsp;variables</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span>&nbsp;<span class="wrd">colorBit</span><span class="oth">,</span>&nbsp;<span class="wrd">resolutionWH</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">screenResolution</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">colorBit</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.colorBit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">colorBit</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">screenResolution.colorDepth</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This.colorBit</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">screenResolution.screenWidth</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">HiWord</span><span class="oth">(</span><span class="wrd">This.resolutionWH</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">screenResolution.screenHeigth</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">LoWord</span><span class="oth">(</span><span class="wrd">This.resolutionWH</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">screenResolution.For</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.resolutionWH</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ScreenList</span><span class="oth">(</span><span class="wrd">This.colorBit</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">screenResolution.Next</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">iterateCondition</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">screenResolution</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">This.resolutionWH</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.colorBit</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="wrd">iterateCondition.colorBit</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.colorBit</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.resolutionWH</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ScreenList</span><span class="oth">(</span><span class="wrd">This.colorBit</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">While</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="oth">(</span><span class="wrd">This.resolutionWH</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="wrd">iterateCondition.resolutionWH</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">screenResolution.Step</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.resolutionWH</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ScreenList</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Screen&nbsp;resolutions&nbsp;supported&nbsp;within&nbsp;[1&nbsp;bpp&nbsp;,&nbsp;64&nbsp;bpp]:&quot;</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">iterator</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">screenResolution</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">screenResolution</span><span class="oth">(</span><span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">screenResolution</span><span class="oth">(</span><span class="num">64</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">iterator.colorDepth</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;bpp&nbsp;&quot;</span><span class="oth">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;:&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">iterator.screenWidth</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;x&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">iterator.screenHeigth</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">iterator</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;End&nbsp;of&nbsp;supported&nbsp;screen&nbsp;resolutions&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+Screen resolutions supported within [1 bpp , 64 bpp]:
+	24 bpp    :320x200
+	24 bpp    :320x240
+	24 bpp    :400x300
+	24 bpp    :512x384
+	24 bpp    :640x400
+	24 bpp    :640x480
+	24 bpp    :800x600
+	24 bpp    :1024x768
+	24 bpp    :1152x864
+	24 bpp    :1280x600
+	24 bpp    :1280x720
+	24 bpp    :1280x768
+	24 bpp    :1280x800
+	24 bpp    :1280x960
+	24 bpp    :1280x1024
+	24 bpp    :1360x768
+	24 bpp    :1366x768
+	24 bpp    :1400x1050
+	24 bpp    :1440x900
+	24 bpp    :1600x900
+	24 bpp    :1680x1050
+	24 bpp    :1920x1080
+	32 bpp    :320x200
+	32 bpp    :320x240
+	32 bpp    :400x300
+	32 bpp    :512x384
+	32 bpp    :640x400
+	32 bpp    :640x480
+	32 bpp    :800x600
+	32 bpp    :1024x768
+	32 bpp    :1152x864
+	32 bpp    :1280x600
+	32 bpp    :1280x720
+	32 bpp    :1280x768
+	32 bpp    :1280x800
+	32 bpp    :1280x960
+	32 bpp    :1280x1024
+	32 bpp    :1360x768
+	32 bpp    :1366x768
+	32 bpp    :1400x1050
+	32 bpp    :1440x900
+	32 bpp    :1600x900
+	32 bpp    :1680x1050
+	32 bpp    :1920x1080
+End of supported screen resolutions
+</pre></div></div>Type for iterating through fractions, with explicit step-value used in the 3 operators:<br \>
+(improved example compared to the one of <tt><a href="KeyPgOpStep.html">Operator Step</a></tt> page)<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">fraction</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;user&nbsp;interface</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">d</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;overload&nbsp;iteration&nbsp;operators&nbsp;when&nbsp;Step&nbsp;is&nbsp;defined&nbsp;in&nbsp;For...Next&nbsp;statement</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">For</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">iterateStep</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Next</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">iterateCondition</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">iterateStep</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Step</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">step_var</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;internal&nbsp;variables&nbsp;and&nbsp;cast&nbsp;operator</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">num</span><span class="oth">,</span>&nbsp;<span class="wrd">den</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">fraction</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">d</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">this.num</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">this.den</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">d</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">fraction.Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;search&nbsp;for&nbsp;the&nbsp;highest&nbsp;common&nbsp;factor&nbsp;(a)&nbsp;between&nbsp;numerator&nbsp;and&nbsp;denominator</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Abs</span><span class="oth">(</span><span class="wrd">This.num</span><span class="oth">),</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Abs</span><span class="oth">(</span><span class="wrd">This.den</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="wrd">b</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">-=</span>&nbsp;<span class="wrd">b</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">-=</span>&nbsp;<span class="wrd">a</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;reduce&nbsp;the&nbsp;fraction</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">num</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;/&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">den</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="wrd">a</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">fraction.Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This.num</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="wrd">This.den</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">fraction.For</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">iterateStep</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;search&nbsp;for&nbsp;the&nbsp;least&nbsp;common&nbsp;multiple&nbsp;(a)&nbsp;between&nbsp;the&nbsp;two&nbsp;denominators</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Abs</span><span class="oth">(</span><span class="wrd">This.den</span><span class="oth">),</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Abs</span><span class="oth">(</span><span class="wrd">iterateStep.den</span><span class="oth">),</span>&nbsp;<span class="wrd">c</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">a</span><span class="oth">,</span>&nbsp;<span class="wrd">d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">b</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="wrd">b</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="wrd">d</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="wrd">c</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;align&nbsp;at&nbsp;the&nbsp;same&nbsp;denominator&nbsp;the&nbsp;2&nbsp;fractions</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.num</span>&nbsp;<span class="oth">*=</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="wrd">This.den</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.den</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">a</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">iterateStep.num</span>&nbsp;<span class="oth">*=</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="wrd">iterateStep.den</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">iterateStep.den</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">a</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">fraction.Next</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">iterateCondition</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">iterateStep</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">iterateStep.num</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Or</span>&nbsp;<span class="wrd">iterateStep.den</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">This</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="wrd">iterateCondition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">This</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="wrd">iterateCondition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">fraction.Step</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">iterateStep</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.num</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="wrd">iterateStep.num</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span>&nbsp;<br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;iteration&nbsp;from&nbsp;1/8&nbsp;to&nbsp;1/2&nbsp;by&nbsp;step&nbsp;of&nbsp;1/12:&quot;</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">iterator</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">fraction</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">8</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">fraction</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;<span class="key">Step</span>&nbsp;<span class="wrd">fraction</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">12</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">iterator</span><span class="oth">;</span><br />
+<span class="key">Next</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;iteration&nbsp;from&nbsp;7/10&nbsp;to&nbsp;-8/5&nbsp;by&nbsp;step&nbsp;of&nbsp;-8/15:&quot;</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">iterator</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">fraction</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">fraction</span><span class="oth">(</span><span class="num">7</span><span class="oth">,</span>&nbsp;<span class="num">10</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">fraction</span><span class="oth">(-</span><span class="num">8</span><span class="oth">,</span>&nbsp;<span class="num">5</span><span class="oth">)</span>&nbsp;<span class="key">Step</span>&nbsp;<span class="wrd">fraction</span><span class="oth">(-</span><span class="num">8</span><span class="oth">,</span>&nbsp;<span class="num">15</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">iterator</span><span class="oth">;</span><br />
+<span class="key">Next</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+iteration from 1/8 to 1/2 by step of 1/12:
+	1/8    5/24    7/24    3/8    11/24
+	
+iteration from 7/10 to -8/5 by step of -8/15:
+	7/10    1/6    -11/30    -9/10    -43/30
+</pre></div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgFornext.html">For...Next</a></tt><br \>
+<li> <tt><a href="KeyPgOperator.html">Operator</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

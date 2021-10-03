@@ -1,0 +1,400 @@
+<html>
+<head>
+<title>Variadic Arguments</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Variadic Arguments</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Allows a procedure to accept a <b>variable</b> number of <b>arguments</b>.<br \>
+<a name="ProPgVariadicArgumentsTop"></a><br \>
+<b>Preamble:</b><br \>
+<br \>
+Normal procedures take a fixed number of arguments. When such a procedure is defined, the data-type of each argument is specified.<br \>
+Every call to this procedure should supply the expected number of arguments, with types that can be converted to the specified ones.<br \>
+<br \>
+Variadic arguments allow to define procedures which accept a variable number of arguments.<br \>
+Support for variadic procedures differs widely among programming languages.<br \>
+<br \>
+Variadic procedures can expose type-safety problems because the language support for variadic procedures is not type-safe:<br \>
+<div class="fb_indent">- it allows to extract any number of arguments from the stack or elsewhere,<br \>
+- and this while defining their types from entered user parameters.<br \>
+</div>If the variable arguments are all of same type or compatible with the same type, a dynamically sized array can be passed instead, but this requires slightly more work at the caller level.<br \>
+<br \>
+<u>Table of Contents</u><br \>
+<div class="fb_indent"><b><a href="#ProPgVariadicArguments1">1. Syntax for using variadic procedures</a></b><br \>
+<b><a href="#ProPgVariadicArguments2">2. ' FB's va_* ' support's keywords family</a></b> (<b>deprecated</b> <tt>va_*</tt> support but kept for backwards compatibility on some targets)<br \>
+<b><a href="#ProPgVariadicArguments3">3. ' C's va_* ' support's keywords family</a></b> (<b>recommended</b> <tt>va_*</tt> support for all new coding)<br \>
+<br \>
+</div><a name="ProPgVariadicArguments1"></a><br \>
+<div class="fb_sect_title">1. Syntax for using variadic procedures</div><div class="fb_sect_cont"><br \>
+The ellipsis <tt>"..."</tt> (three dots), as last parameter, is used in procedure declarations (and definitions) to indicate a variable length argument list:<br \>
+<div class="fb_indent"><b>-</b> A first fixed parameter (at least) must always be specified:<br \>
+<div class="fb_indent"><div class="fb_indent">The fixed parameters(s) can provide information about how many variadic arguments there are, by an unspecified mechanism.<br \>
+Otherwise a terminal argument can be added in the variable length argument list, but this reserves a special argument value forbidden to the useful variadic arguments.<br \>
+<div class="fb_indent">(if one choose to pass the variable arguments all by pointer, in this case an obvious terminal argument is the null pointer)<br \>
+</div></div></div><b>-</b> The procedure must be called with the C calling convention <tt><a href="KeyPgCdecl.html">cdecl</a></tt>.<br \>
+<b>-</b> Two <tt>va_*</tt> support's keywords families exist to retrieve the variable arguments in the variadic procedure body.<br \>
+<b>-</b> A variadic procedure can never be overloaded:<br \>
+<div class="fb_indent"><div class="fb_indent">so this also excludes its use in UDT for constructors and properties,<br \>
+but otherwise it can be declared abstract or virtual or even overriding.<br \>
+</div></div><b>-</b> For variadic procedure members, the implicit passed <a href="KeyPgThis.html">This</a> parameter is not taken into account as first fixed parameter (at least one explicit fixed parameter must always be specified).<br \>
+<br \>
+</div><u>Declaration syntax</u><br \>
+<div class="fb_indent"><a href="KeyPgDeclare.html">Declare</a> { <a href="KeyPgSub.html">Sub</a> | <a href="KeyPgFunction.html">Function</a> } <i>proc_name</i> <a href="KeyPgCdecl.html">cdecl</a> ( <i>param_list</i>, <b>...</b> )  { | [ <a href="KeyPgByrefFunction.html">ByRef</a> ] <a href="KeyPgAs.html">As</a> <i>return_type</i> }<br \>
+<div class="fb_indent"><tt><i>param_list</i></tt><br \>
+<div class="fb_indent">Parenthesized comma-separated list of fixed parameters.<br \>
+</div><tt><i>return_type</i></tt><br \>
+<div class="fb_indent">The return type of a <tt><a href="KeyPgFunction.html">Function</a></tt>.<br \>
+</div><tt><i>proc_name</i></tt><br \>
+<div class="fb_indent">The name or symbol of the procedure.<br \>
+<br \>
+</div></div></div><u>Calling syntax</u><br \>
+<div class="fb_indent">There is nothing special to do for calling a variadic procedure.<br \>
+The procedure is simply called by writing the arguments for the fixed parameters, followed by the additional variable arguments, as usual.<br \>
+<br \>
+Only numeric types and pointers are supported as variable arguments:<br \>
+<div class="fb_indent"><b>-</b> All bytes and shorts passed on variable arguments are implicitly converted to integers.<br \>
+<b>-</b> All singles passed on variable arguments are implicitly converted to doubles.<br \>
+<b>-</b> <tt><a href="KeyPgString.html">String</a></tt>s <tt>(or <a href="KeyPgWstring.html">WString</a></tt>s<tt>)</tt> can be directly passed by user, in which case a <tt><a href="KeyPgZstring.html">ZString</a> <a href="KeyPgPtr.html">Ptr</a></tt> <tt>(or a <a href="KeyPgWstring.html">WString</a> <a href="KeyPgPtr.html">Ptr</a>)</tt> to the string (or the wstring) data is taken into account as internal passed argument.<br \>
+<br \>
+</div></div><u>Retrieving variable arguments</u><br \>
+<div class="fb_indent">Variable arguments my use the stack, or registers, as per the normal conventions for the compiler:<br \>
+<div class="fb_indent"><b>-</b> For some compilers in the past, while registers were used for normal procedures, stack was (always) used for variadic procedures.<br \>
+<b>-</b> The gcc compiler family all seem to agree that the call signatures for variadic procedures are exactly the same as properly specified procedures. This means that some of the variable arguments may be in registers and some may be on the stack if there are too many.<br \>
+<br \>
+</div>The <tt>va_*</tt> support's keywords create an interface to retrieve these variable arguments in procedure body:<br \>
+<div class="fb_indent"><b>-</b> The first FreeBASIC <tt>va_*</tt> support's keywords family developed have been the FB's <tt>va_*</tt> support's keywords family:<br \>
+<div class="fb_indent"><div class="fb_indent">These FB's <tt>va_*</tt> support's keywords are very x86-specific and only work with the gas for x86 GAS assembly backend, because using a pointer to the argument stack.<br \>
+These FB's <tt>va_*</tt> support's keywords don't work on all targets (like 64-bit) because arguments can be passed to procedures in cpu registers.<br \>
+These FB's <tt>va_*</tt> support's keywords are now deprecated but kept for backwards compatibility on some targets.<br \>
+</div></div><b>-</b> More recently, a FreeBASIC update added a new support's keywords family for variadic procedure argument lists:<br \>
+<div class="fb_indent"><div class="fb_indent">This is the C's <tt>va_*</tt> support's keywords family compatible for all target platforms.<br \>
+These C's <tt>va_*</tt> support's keywords are now recommended for all new coding.<br \>
+<br \>
+</div></div></div></div><div style="text-align: center;"><a href="#ProPgVariadicArgumentsTop">Back to top</a></div><br \>
+<a name="ProPgVariadicArguments2"></a><br \>
+</div><div class="fb_sect_title">2. ' FB's va_* ' support's keywords family</div><div class="fb_sect_cont"><br \>
+<b>Deprecated</b> <tt>va_*</tt> support but kept for backwards compatibility on some targets.<br \>
+<br \>
+There are 3 FB's <tt>va_*</tt> support's keywords (<tt><b>va_first</b></tt>, <tt><b>va_arg</b></tt>, <tt><b>va_next</b></tt>):<br \>
+<div class="fb_indent"><tt><i>pointer_variable</i> = <b>va_first</b>( )</tt><br \>
+<div class="fb_indent"><tt><b>va_first</b></tt> provides an untyped <a href="ProPgPointers.html">pointer</a> value that points to the first variable argument passed to a procedure.<br \>
+<br \>
+</div><tt><i>variable</i> = <b>va_arg</b>( <i>argument_list</i>, <a href="DataType.html">datatype</a> )</tt><br \>
+<div class="fb_indent"><tt><b>va_arg</b></tt> returns the current argument in the list, <tt><i>argument_list</i></tt>, with an expected data type of <tt><i>datatype</i></tt>.<br \>
+(before first <tt><b>va_arg</b></tt> use, <tt><i>argument_list</i></tt> must be initialized with the command <tt><b>va_first</b></tt>)<br \>
+<br \>
+</div><tt><i>argument_pointer</i> = <b>va_next</b>( <i>argument_list</i>, <a href="DataType.html">datatype</a> )</tt><br \>
+<div class="fb_indent"><tt><b>va_next</b></tt> provides a <tt><i>datatype</i></tt> pointer value that points to the next argument within the list <tt><i>argument_list</i></tt>, <tt><i>datatype</i></tt> being the type of the current argument being stepped over.<br \>
+<br \>
+</div></div>Note:<br \>
+<div class="fb_indent"><tt><i>pointer_variable</i> = <b>va_first</b>( )</tt><br \>
+computes the address in the stack following the address of the last passed fixed parameter.<br \>
+<br \>
+<tt><i>variable</i> = <b>va_arg</b>( <i>argument_list</i>, <a href="DataType.html">datatype</a> )</tt><br \>
+is equivalent to:<br \>
+<tt><i>variable</i> = <a href="KeyPgOpValueOf.html">*</a><a href="KeyPgCptr.html">CPtr</a>( <a href="DataType.html">datatype</a> <a href="KeyPgPtr.html">Ptr</a>, <a href="KeyPgCptr.html">CPtr</a>( <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a>, <i>argument_list</i> ) )</tt><br \>
+<br \>
+<tt><i>argument_pointer</i> = <b>va_next</b>( <i>argument_list</i>, <a href="DataType.html">datatype</a> )</tt><br \>
+is equivalent to:<br \>
+<tt><i>argument_pointer</i> = <a href="KeyPgCptr.html">CPtr</a>( <a href="DataType.html">datatype</a> <a href="KeyPgPtr.html">Ptr</a>, <a href="KeyPgCptr.html">CPtr</a>( <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a>, <i>argument_list</i> ) ) + 1</tt><br \>
+<br \>
+</div>Examples:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;Variadic&nbsp;function:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;first(fixed)&nbsp;parameter&nbsp;provides&nbsp;the&nbsp;number&nbsp;of&nbsp;elements.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;variable&nbsp;arguments&nbsp;are&nbsp;all&nbsp;strings&nbsp;except&nbsp;the&nbsp;last&nbsp;one&nbsp;which&nbsp;must&nbsp;be&nbsp;a&nbsp;float.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;user's&nbsp;string&nbsp;arguments&nbsp;are&nbsp;in&nbsp;fact&nbsp;passed&nbsp;under&nbsp;the&nbsp;hood&nbsp;through&nbsp;zstring&nbsp;pointers.</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">concatenation</span>&nbsp;<span class="key">cdecl</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="oth">...)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">arg</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">va_first</span><span class="oth">()</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="oth">*</span><span class="key">va_arg</span><span class="oth">(</span><span class="wrd">arg</span><span class="oth">,</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">va_next</span><span class="oth">(</span><span class="wrd">arg</span><span class="oth">,</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="key">va_arg</span><span class="oth">(</span><span class="wrd">arg</span><span class="oth">,</span>&nbsp;<span class="key">Double</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">s</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">concatenation</span><span class="oth">(</span><span class="num">6</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Free&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;BASIC&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;version&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">,</span>&nbsp;<span class="num">0.13</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">'&nbsp;Output:&nbsp;FreeBASIC&nbsp;version&nbsp;0.13</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;Variadic&nbsp;sub:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;first(fixed)&nbsp;parameter&nbsp;provides&nbsp;the&nbsp;number&nbsp;of&nbsp;elements.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;variable&nbsp;arguments&nbsp;are&nbsp;all&nbsp;UDT&nbsp;Ptr.</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Single</span>&nbsp;<span class="wrd">d</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">printUDT</span>&nbsp;<span class="key">cdecl</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="oth">...)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">arg</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">pu</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">va_first</span><span class="oth">()</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pu</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">va_arg</span><span class="oth">(</span><span class="wrd">arg</span><span class="oth">,</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">d</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">va_next</span><span class="oth">(</span><span class="wrd">arg</span><span class="oth">,</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u1</span><span class="oth">,</span>&nbsp;<span class="wrd">u2</span><span class="oth">,</span>&nbsp;<span class="wrd">u3</span><br />
+<span class="wrd">u1.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;4*Atn(1)&quot;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">u1.d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">4</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">Atn</span><span class="oth">(</span><span class="num">1</span><span class="oth">)</span><br />
+<span class="wrd">u2.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;Sqr(2)&quot;</span>&nbsp;&nbsp;&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">u2.d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Sqr</span><span class="oth">(</span><span class="num">2</span><span class="oth">)</span><br />
+<span class="wrd">u3.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;Log(10)&quot;</span>&nbsp;&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">u3.d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Log</span><span class="oth">(</span><span class="num">10</span><span class="oth">)</span><br />
+<br />
+<span class="wrd">printUDT</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">u1</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">u2</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">u3</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">'&nbsp;Output:</span><br />
+<span class="com">'&nbsp;4*Atn(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.141593</span><br />
+<span class="com">'&nbsp;Sqr(2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.414214</span><br />
+<span class="com">'&nbsp;Log(10)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.302585</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;Variadic&nbsp;sub:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;first&nbsp;(fixed)&nbsp;parameter&nbsp;is&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;variable&nbsp;arguments&nbsp;(Integer&nbsp;Ptr&nbsp;or&nbsp;Double&nbsp;Ptr).</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;One&nbsp;terminal&nbsp;argument&nbsp;(added&nbsp;after&nbsp;the&nbsp;useful&nbsp;arguments)&nbsp;must&nbsp;be&nbsp;the&nbsp;null&nbsp;pointer.</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">printNumericList</span>&nbsp;<span class="key">cdecl</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">argtype</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="oth">...)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">datatype</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">UCase</span><span class="oth">(</span><span class="wrd">argtype</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;INTEGER&nbsp;PTR&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">datatype</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;List&nbsp;of&nbsp;integers&nbsp;:&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ElseIf</span>&nbsp;<span class="key">UCase</span><span class="oth">(</span><span class="wrd">argtype</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;DOUBLE&nbsp;PTR&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">datatype</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;List&nbsp;of&nbsp;doubles&nbsp;:&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Invalid&nbsp;argument&nbsp;type&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">arg</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">pn</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">va_first</span><span class="oth">()</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pn</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">va_arg</span><span class="oth">(</span><span class="wrd">arg</span><span class="oth">,</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">pn</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Select</span>&nbsp;<span class="key">Case</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="wrd">datatype</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="key">CPtr</span><span class="oth">(</span><span class="key">Integer</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">pn</span><span class="oth">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="key">CPtr</span><span class="oth">(</span><span class="key">Double</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">pn</span><span class="oth">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Select</span>&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">va_next</span><span class="oth">(</span><span class="wrd">arg</span><span class="oth">,</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="wrd">printNumericList</span><span class="oth">(</span><span class="quo">&quot;Integer&nbsp;Ptr&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Integer</span><span class="oth">&gt;(</span><span class="num">123</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Integer</span><span class="oth">&gt;(</span><span class="num">456</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Integer</span><span class="oth">&gt;(</span><span class="num">789</span><span class="oth">),</span>&nbsp;<span class="key">CPtr</span><span class="oth">(</span><span class="key">Integer</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">))</span><br />
+<span class="wrd">printNumericList</span><span class="oth">(</span><span class="quo">&quot;Double&nbsp;Ptr&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Double</span><span class="oth">&gt;(</span><span class="num">1.2</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Double</span><span class="oth">&gt;(</span><span class="num">3.4</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Double</span><span class="oth">&gt;(</span><span class="num">5.6</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Double</span><span class="oth">&gt;(</span><span class="num">7.8</span><span class="oth">),</span>&nbsp;<span class="key">CPtr</span><span class="oth">(</span><span class="key">Double</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">))</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">'&nbsp;Output:</span><br />
+<span class="com">'&nbsp;List&nbsp;of&nbsp;integers&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;123&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;789</span><br />
+<span class="com">'&nbsp;List&nbsp;of&nbsp;doubles&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.8</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div style="text-align: center;"><a href="#ProPgVariadicArgumentsTop">Back to top</a></div><br \>
+<a name="ProPgVariadicArguments3"></a><br \>
+</div><div class="fb_sect_title">3. ' C's va_* ' support's keywords family</div><div class="fb_sect_cont"><br \>
+<b>Recommended</b> <tt>va_*</tt> support for all new coding.<br \>
+<br \>
+There are 5 C's <tt>va_*</tt> support's keywords (<tt><b>Cva_List</b></tt>, <tt><b>Cva_Start</b></tt>, <tt><b>Cva_Copy</b></tt>, <tt><b>Cva_Arg</b></tt>, <tt><b>Cva_End</b></tt>):<br \>
+<div class="fb_indent"><tt><a href="KeyPgDim.html">Dim</a> <i>variable</i> <a href="KeyPgAs.html">As</a> <b>Cva_List</b></tt><br \>
+<div class="fb_indent"><tt><b>Cva_List</b></tt> is a built in data type for working with the variable length argument list in a variadic procedure.<br \>
+<br \>
+</div><tt><b>Cva_Start</b>( <i>argument_list</i>, <i>last_param</i> )</tt><br \>
+<div class="fb_indent"><tt><b>Cva_Start</b></tt> "constructs" the <tt><i>argument_list</i></tt> object declared of <tt><b>Cva_List</b></tt> data-type, settling on the <tt><i>last_param</i></tt> declared in the procedures parameter list before the <a href="KeyPgDots.html">Ellipsis</a> <tt><a href="KeyPgDots.html">&quot;...&quot;</a></tt>.<br \>
+<br \>
+</div><tt><b>Cva_Copy</b>( <i>dst_list</i>, <i>src_list</i> )</tt><br \>
+<div class="fb_indent"><tt><b>Cva_Copy</b></tt> "copy-constructs" the <tt><i>dst_list</i></tt> object declared of <tt><b>Cva_List</b></tt> data-type, from an already constructed <tt><i>src_list</i></tt> object.<br \>
+<br \>
+</div><tt><i>variable</i> = <b>Cva_Arg</b>( <i>argument_list</i>, <a href="DataType.html">datatype</a> )</tt><br \>
+<div class="fb_indent"><tt><b>Cva_Arg</b></tt> returns the current argument in the <tt><i>argument_list</i></tt>, with an expected data-type of <tt><i>datatype</i></tt>.<br \>
+(<tt><b>Cva_Arg</b></tt> automatically increments <tt><i>argument_list</i></tt> to the next argument within the list after obtaining the value of the current argument)<br \>
+<br \>
+</div><tt><b>Cva_End</b>( <i>argument_list</i> )</tt><br \>
+<div class="fb_indent"><tt><b>Cva_End</b></tt> "destructs" the <tt><i>argument_list</i></tt> object of <tt><b>Cva_List</b></tt> data-type (previously "constructed" with <tt><b>Cva_Start</b></tt> or <tt><b>Cva_Copy</b></tt>).<br \>
+<br \>
+</div></div>The implementation and code emitted for <tt><b>Cva_List</b></tt>, <tt><b>Cva_Start</b></tt>, <tt><b>Cva_Copy</b></tt>, <tt><b>Cva_Arg</b></tt>, <tt><b>Cva_End</b></tt> varies depending on target, backend, and architecture.<br \>
+<br \>
+Note:<br \>
+<div class="fb_indent">The exact type and size of <tt><b>Cva_List</b></tt> depends on <tt>-target</tt>, <tt>-arch</tt>, <tt>-gen</tt> command line options:<br \>
+<div class="fb_indent">In <tt>-gen gas</tt>, <tt><b>Cva_List</b></tt> is a pointer.<br \>
+In <tt>-gen gcc</tt>, <tt><b>Cva_List</b></tt> is a pointer, a struct, or a struct array. The <tt><b>Cva_List</b></tt> type is replaced by <tt>"__builtin_va_list"</tt> in gcc.<br \>
+On 32-bit targets, gas backend: <tt>type <b>Cva_List</b> as any alias "char" ptr</tt><br \>
+On 32-bit targets, gcc backend: <tt>type <b>Cva_List</b> as any alias "__builtin_va_list" ptr</tt><br \>
+On Windows 64-bit, gcc backend: <tt>type <b>Cva_List</b> as any alias "__builtin_va_list" ptr</tt><br \>
+On Linux x86_64, gcc backend: <tt>type <b>Cva_List</b> as __va_list_tag alias "__builtin_va_list[]"</tt><br \>
+On arm64, gcc backend: <tt>type <b>Cva_List</b> as __va_list alias "__builtin_va_list"</tt><br \>
+<br \>
+</div><tt><b>Cva_Start</b> (or <b>Cva_Copy</b>)</tt> is like a constructor (or a copy-constructor) for the variadic <tt><i>argument_list</i></tt> object and must finally have a matching call to <tt><b>Cva_End</b></tt>, which is like a destructor.<br \>
+After <tt><b>Cva_End</b></tt> for <tt><i>argument_list</i></tt> has been called, <tt><i>argument_list</i></tt> can be reused and reinitialized with another call to <tt><b>Cva_Start</b> (or <b>Cva_Copy</b>)</tt>.<br \>
+The <tt><b>Cva_Start</b> (or <b>Cva_Copy</b>)</tt> and <tt><b>Cva_End</b></tt> calls must both be called in pairs in the same procedure (for cross platform compatibility).<br \>
+<br \>
+</div>Examples:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;Variadic&nbsp;function:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;first(fixed)&nbsp;parameter&nbsp;provides&nbsp;the&nbsp;number&nbsp;of&nbsp;elements.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;variable&nbsp;arguments&nbsp;are&nbsp;all&nbsp;strings&nbsp;except&nbsp;the&nbsp;last&nbsp;one&nbsp;which&nbsp;must&nbsp;be&nbsp;a&nbsp;float.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;user's&nbsp;string&nbsp;arguments&nbsp;are&nbsp;in&nbsp;fact&nbsp;passed&nbsp;under&nbsp;the&nbsp;hood&nbsp;through&nbsp;zstring&nbsp;pointers.</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">concatenation</span>&nbsp;<span class="key">cdecl</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="oth">...)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Cva_List</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_Start</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">count</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="oth">*</span><span class="key">Cva_Arg</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="key">Cva_Arg</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="key">Double</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_End</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">s</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">concatenation</span><span class="oth">(</span><span class="num">6</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Free&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;BASIC&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;version&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">,</span>&nbsp;<span class="num">1.07</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">'&nbsp;Output:&nbsp;FreeBASIC&nbsp;version&nbsp;1.07</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;Variadic&nbsp;sub:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;first(fixed)&nbsp;parameter&nbsp;provides&nbsp;the&nbsp;number&nbsp;of&nbsp;elements.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;variable&nbsp;arguments&nbsp;are&nbsp;all&nbsp;UDT&nbsp;Ptr.</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Single</span>&nbsp;<span class="wrd">d</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">printUDT</span>&nbsp;<span class="key">cdecl</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="oth">...)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Cva_List</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">pu</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_Start</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">count</span><span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pu</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Cva_Arg</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">d</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_End</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u1</span><span class="oth">,</span>&nbsp;<span class="wrd">u2</span><span class="oth">,</span>&nbsp;<span class="wrd">u3</span><br />
+<span class="wrd">u1.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;4*Atn(1)&quot;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">u1.d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">4</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">Atn</span><span class="oth">(</span><span class="num">1</span><span class="oth">)</span><br />
+<span class="wrd">u2.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;Sqr(2)&quot;</span>&nbsp;&nbsp;&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">u2.d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Sqr</span><span class="oth">(</span><span class="num">2</span><span class="oth">)</span><br />
+<span class="wrd">u3.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;Log(10)&quot;</span>&nbsp;&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">u3.d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Log</span><span class="oth">(</span><span class="num">10</span><span class="oth">)</span><br />
+<br />
+<span class="wrd">printUDT</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">u1</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">u2</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">u3</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">'&nbsp;Output:</span><br />
+<span class="com">'&nbsp;4*Atn(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.141593</span><br />
+<span class="com">'&nbsp;Sqr(2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.414214</span><br />
+<span class="com">'&nbsp;Log(10)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.302585</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;Variadic&nbsp;sub:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;first&nbsp;(fixed)&nbsp;parameter&nbsp;is&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;variable&nbsp;arguments&nbsp;(Integer&nbsp;Ptr&nbsp;or&nbsp;Double&nbsp;Ptr).</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;One&nbsp;terminal&nbsp;argument&nbsp;(added&nbsp;after&nbsp;the&nbsp;useful&nbsp;arguments)&nbsp;must&nbsp;be&nbsp;the&nbsp;null&nbsp;pointer.</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">printNumericList</span>&nbsp;<span class="key">cdecl</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">argtype</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="oth">...)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">datatype</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">UCase</span><span class="oth">(</span><span class="wrd">argtype</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;INTEGER&nbsp;PTR&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">datatype</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;List&nbsp;of&nbsp;integers&nbsp;:&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ElseIf</span>&nbsp;<span class="key">UCase</span><span class="oth">(</span><span class="wrd">argtype</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;DOUBLE&nbsp;PTR&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">datatype</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;List&nbsp;of&nbsp;doubles&nbsp;:&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Invalid&nbsp;argument&nbsp;type&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Cva_List</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">pn</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_Start</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">argtype</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pn</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Cva_Arg</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">pn</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Select</span>&nbsp;<span class="key">Case</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="wrd">datatype</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="key">CPtr</span><span class="oth">(</span><span class="key">Integer</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">pn</span><span class="oth">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="key">CPtr</span><span class="oth">(</span><span class="key">Double</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">pn</span><span class="oth">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Select</span>&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_End</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="wrd">printNumericList</span><span class="oth">(</span><span class="quo">&quot;Integer&nbsp;Ptr&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Integer</span><span class="oth">&gt;(</span><span class="num">123</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Integer</span><span class="oth">&gt;(</span><span class="num">456</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Integer</span><span class="oth">&gt;(</span><span class="num">789</span><span class="oth">),</span>&nbsp;<span class="key">CPtr</span><span class="oth">(</span><span class="key">Integer</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">))</span><br />
+<span class="wrd">printNumericList</span><span class="oth">(</span><span class="quo">&quot;Double&nbsp;Ptr&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Double</span><span class="oth">&gt;(</span><span class="num">1.2</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Double</span><span class="oth">&gt;(</span><span class="num">3.4</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Double</span><span class="oth">&gt;(</span><span class="num">5.6</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">Double</span><span class="oth">&gt;(</span><span class="num">7.8</span><span class="oth">),</span>&nbsp;<span class="key">CPtr</span><span class="oth">(</span><span class="key">Double</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">))</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">'&nbsp;Output:</span><br />
+<span class="com">'&nbsp;List&nbsp;of&nbsp;integers&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;123&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;789</span><br />
+<span class="com">'&nbsp;List&nbsp;of&nbsp;doubles&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.8</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div style="text-align: center;"><a href="#ProPgVariadicArgumentsTop">Back to top</a></div><br \>
+<br \>
+</div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgDots.html">... (Ellipsis)</a></tt><br \>
+<li> <tt><a href="KeyPgVaFirst.html">va_first</a></tt><br \>
+<li> <tt><a href="KeyPgVaArg.html">va_arg</a></tt><br \>
+<li> <tt><a href="KeyPgVaNext.html">va_next</a></tt><br \>
+<li> <tt><a href="KeyPgCvaList.html">Cva_List</a></tt><br \>
+<li> <tt><a href="KeyPgCvaStart.html">Cva_Start</a></tt><br \>
+<li> <tt><a href="KeyPgCvaCopy.html">Cva_Copy</a></tt><br \>
+<li> <tt><a href="KeyPgCvaArg.html">Cva_Arg</a></tt><br \>
+<li> <tt><a href="KeyPgCvaEnd.html">Cva_End</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

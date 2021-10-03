@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>__FB_ARG_COUNT__</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">__FB_ARG_COUNT__</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Intrinsic define (macro) performed by the compiler.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+__FB_ARG_COUNT__( args... )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>args...</i></tt><br \>
+<div class="fb_indent">argument list<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Counts the number of arguments in the argument list (<tt><i>args...</i></tt>) and returns the corresponding value.<br \>
+A value is always returned, with 0 corresponding to an empty argument list.<br \>
+<br \>
+Because the argument separator is the comma (,), the returned value for a non-empty argument list is the number of main commas (non-nested) plus 1.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="def">#macro&nbsp;m(&nbsp;args...&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">__FB_ARG_COUNT__</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="oth">)</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="wrd">m</span><span class="oth">()</span><br />
+<span class="wrd">m</span><span class="oth">(</span><span class="wrd">a</span><span class="oth">)</span><br />
+<span class="wrd">m</span><span class="oth">(</span><span class="wrd">b</span><span class="oth">,</span><span class="wrd">c</span><span class="oth">)</span><br />
+<span class="wrd">m</span><span class="oth">(,</span><span class="wrd">d</span><span class="oth">)</span><br />
+<span class="wrd">m</span><span class="oth">(,</span><span class="wrd">e</span><span class="oth">,)</span><br />
+<span class="wrd">m</span><span class="oth">(,,,)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">/'&nbsp;Output:</span><br />
+<span class="com">&nbsp;0</span><br />
+<span class="com">&nbsp;1</span><br />
+<span class="com">&nbsp;2</span><br />
+<span class="com">&nbsp;2</span><br />
+<span class="com">&nbsp;3</span><br />
+<span class="com">&nbsp;4</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;macro&nbsp;with&nbsp;a&nbsp;variadic&nbsp;parameter&nbsp;which&nbsp;can&nbsp;contain&nbsp;several&nbsp;sub-parameters:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;To&nbsp;distinguish&nbsp;between&nbsp;the&nbsp;different&nbsp;arguments&nbsp;passed&nbsp;by&nbsp;a&nbsp;variadic_parameter,</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;you&nbsp;can&nbsp;first&nbsp;convert&nbsp;the&nbsp;variadic_parameter&nbsp;to&nbsp;a&nbsp;string&nbsp;using&nbsp;the&nbsp;Operator&nbsp;#&nbsp;(Preprocessor&nbsp;Stringize),</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;then&nbsp;differentiate&nbsp;in&nbsp;this&nbsp;string&nbsp;(#variadic_parameter)&nbsp;each&nbsp;passed&nbsp;argument&nbsp;by&nbsp;locating&nbsp;the&nbsp;separators&nbsp;(usually&nbsp;a&nbsp;comma)</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;in&nbsp;a&nbsp;[For...Next]&nbsp;loop&nbsp;based&nbsp;on&nbsp;the&nbsp;number&nbsp;of&nbsp;arguments&nbsp;(__FB_ARG_COUNT__)&nbsp;passed&nbsp;to&nbsp;the&nbsp;macro.</span><br />
+<br />
+<span class="def">#macro&nbsp;average(result,&nbsp;arg...)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">#</span><span class="wrd">arg</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">__FB_ARG_COUNT__</span><span class="oth">(</span>&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">InStr</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;,&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="key">Val</span><span class="oth">(</span><span class="key">Left</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Mid</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="key">Val</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">/=</span>&nbsp;<span class="key">__FB_ARG_COUNT__</span><span class="oth">(</span>&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">result</span><br />
+<span class="wrd">average</span><span class="oth">(</span><span class="wrd">result</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="num">5</span><span class="oth">,</span>&nbsp;<span class="num">6</span><span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">result</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">/'&nbsp;Output&nbsp;:</span><br />
+<span class="com">&nbsp;3.5</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgDdfbargleftof.html">__FB_ARG_LEFTOF__</a></tt><br \>
+<li> <tt><a href="KeyPgDdfbargrightof.html">__FB_ARG_RIGHTOF__</a></tt><br \>
+<li> <tt><a href="KeyPgDdfbargextract.html">__FB_ARG_EXTRACT__</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

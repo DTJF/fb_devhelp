@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>Namespaces</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Namespaces</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<b>Namespace</b>, a container for identifiers so that they don't conflict with those in other <b>Namespaces</b> or the global scope.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<b>Namespace</b> <i>identifier</i> [ <a href="KeyPgAlias.html">Alias</a> "<i>aliasname</i>" ]<br \>
+<div class="fb_indent"><i>statements</i><br \>
+</div><b>End Namespace</b><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>identifier</i></tt><br \>
+<div class="fb_indent">The name of the Namespace (including nested names specifier).<br \>
+</div><tt><i>aliasname</i></tt><br \>
+<div class="fb_indent">An alternate external name for the Namespace.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Namespaces are declaration fields that allow to delimit the search for the names of identifiers by the compiler. Their purpose is essentially to group the identifiers logically and to avoid name conflicts between several parts of the same project.<br \>
+This type of conflict stems from the fact that only one global scope is provided by default, in which there should be no name conflict. With Namespaces, this type of problem can be more easily avoided, because defining global objects in the global scope can be avoid.<br \>
+<br \>
+Namespaces are not allowed to contain code directly, only inside procedures declared in that Namespace. That is because a Namespace is not a scope, it is not something that is executed, it is just something that can be used to hold declarations.<br \>
+<br \>
+Any variable declared in Namespace is implicitly static and visible throughout the entire program (<tt><a href="KeyPgStatic.html">Static</a></tt> and <tt><a href="KeyPgShared.html">Shared</a></tt> keywords are useless). Therefore only an initializer with a constant is authorized.<br \>
+<br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><br \>
+Unlike another declarative region such as a <tt><a href="KeyPgType.html">Type</a></tt>, a Namespace can be split into several pieces. The first piece serves as declaration, and the following ones as extensions. The syntax for a Namespace extension is exactly the same as that for the declaration part.<br \>
+Identifiers declared or defined within the same Namespace must not conflict. They may have the same names, but only as part of the overloading. A Namespace therefore behaves exactly like the declaration fields of Types and the global scope.<br \>
+<br \>
+Access to Namespace identifiers is through the resolution operator ("."), by prefixing the name of the identifier to use from the name of its Namespace. However, this prefixing is useless inside the Namespace itself, just like members inside their Type.<br \>
+Namespace member procedures can be defined inside this space. They can also be set outside this space, if the resolution operator is used (prefixing from the name of its Namespace). The procedures thus defined must appear after their declarations in the Namespace.<br \>
+<br \>
+It is possible to define a Namespace within another Namespace. However, this declaration must occur at the outermost declarative level of the Namespace that will contain the Namespace. Namespace declarations can not be put inside a procedure body or inside a Type block.<br \>
+<br \>
+When a Namespace has a very complicated name, it may be advantageous to define an alias for that name. The alias will then have a simpler name.<br \>
+Names given to Namespace aliases  must not conflict with the names of other identifiers in the same Namespace, whether this is the global scope or not.<br \>
+<br \>
+<b>Note:</b> The parser allows to define anonymous Namespaces (without <tt><i>identifier</i></tt> term), but this is the only similarity with the actual C++ capability: The FB compiler automatically generates multiple separate anonymous Namespaces instead of one only per module in such a case.<br \>
+The FB anonymous Namespaces are almost unusable because all their declarations are inaccessible, even from the body of the module that contains them. Apart from encapsulating module constructors/destructors also inside, nothing else can be done with them.<br \>
+<br \>
+<u>'Using (Namespaces)' command</u><br \>
+<div class="fb_indent"><tt><a href="KeyPgUsing.html">Using (Namespaces)</a></tt> allows to use a identifier from a Namespace in a simplified way, without having to specify its full name (that is, the Namespace name followed by the "." operator then the identifier name).<br \>
+Each Using command allows to directly use all the identifiers of the referred Namespace.<br \>
+<br \>
+<b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><b>Using</b> <i>identifier</i> [, <i>identifier</i> [, ...] ]</tt><br \>
+<br \>
+</div><b>-</b> Parameters:<br \>
+<div class="fb_indent"><tt><i>identifier</i></tt>: The name of the Namespace to use.<br \>
+<br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent">After a Using command, it is still possible to use the full names of the identifiers from a Namespace, but this is no longer necessary. The Using commands are valid from the line where they are declared until the end of the current scope block.<br \>
+If a Namespace is extended after a Using directive, the identifiers defined in the Namespace extension can be then used exactly as the identifiers defined before the using directive (that is, without the full expression of their Namespace names).<br \>
+<br \>
+When entering Using command(s) for several Namespace names, name conflicts may occur. In this case, no error is reported from the Using command(s), but an error occurs if one of the identifiers for which there is a conflict is used (using full name of the expected identifier solves the conflict).<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Namespace extension:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Namespace</span>&nbsp;<span class="wrd">A</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declaration&nbsp;of&nbsp;Namespace&nbsp;A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<br />
+<span class="key">Namespace</span>&nbsp;<span class="wrd">B</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declaration&nbsp;of&nbsp;Namespace&nbsp;B</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<br />
+<span class="key">Namespace</span>&nbsp;<span class="wrd">A</span>&nbsp;&nbsp;<span class="com">'&nbsp;Extension&nbsp;of&nbsp;Namespace&nbsp;A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">j</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+</div></tt><br />
+</div>Access to Namespace members:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declare&nbsp;i&nbsp;in&nbsp;the&nbsp;global&nbsp;scope</span><br />
+<br />
+<span class="key">Namespace</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declare&nbsp;i&nbsp;in&nbsp;Namespace&nbsp;A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">j</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">3</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declare&nbsp;j&nbsp;in&nbsp;Namespace&nbsp;A</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<br />
+<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;Use&nbsp;i&nbsp;from&nbsp;global&nbsp;scope&nbsp;(.i)</span><br />
+<span class="wrd">A.i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">4</span>&nbsp;&nbsp;<span class="com">'&nbsp;Use&nbsp;i&nbsp;from&nbsp;Namespace&nbsp;A&nbsp;(A.i)</span><br />
+</div></tt><br />
+</div>External definition of a function declared in a Namespace:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Namespace</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declaration&nbsp;of&nbsp;f()&nbsp;in&nbsp;Namespace&nbsp;A&nbsp;(A.f())</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">A.f</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">'&nbsp;Definition&nbsp;of&nbsp;f()&nbsp;from&nbsp;Namespace&nbsp;A&nbsp;(A.f())</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="num">0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+</div></tt><br />
+</div>Definition of nested Namespace:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Namespace</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;&nbsp;<span class="com">'&nbsp;(A.i)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Namespace</span>&nbsp;<span class="wrd">B</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">j</span>&nbsp;&nbsp;<span class="com">'&nbsp;(A.B.j)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+</div></tt><br />
+</div>Access with 'Using (Namespaces)' command:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Namespace</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declaration&nbsp;of&nbsp;A.i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">j</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declaration&nbsp;of&nbsp;A.j</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<br />
+<span class="key">Using</span>&nbsp;<span class="wrd">A</span>&nbsp;&nbsp;<span class="com">'&nbsp;Namespace&nbsp;A&nbsp;identifiers&nbsp;are&nbsp;also&nbsp;used</span><br />
+<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;<span class="com">'&nbsp;Equivalent&nbsp;to&nbsp;A.i</span><br />
+<span class="wrd">j</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;<span class="com">'&nbsp;Equivalent&nbsp;to&nbsp;A.j</span><br />
+</div></tt><br />
+</div>Extension of Namespace after 'Using (Namespace)' command:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Namespace</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<br />
+<span class="key">Using</span>&nbsp;<span class="wrd">A</span><br />
+<br />
+<span class="key">Namespace</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">j</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<br />
+<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;&nbsp;<span class="com">'&nbsp;Initialize&nbsp;A.i</span><br />
+<span class="wrd">j</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;&nbsp;<span class="com">'&nbsp;Initialize&nbsp;A.j</span><br />
+</div></tt><br />
+</div>Conflict between local identifiers with 'Using (Namespaces)' command:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Namespace</span>&nbsp;<span class="wrd">A</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declare&nbsp;A.i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">j</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declare&nbsp;A.j</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<br />
+<span class="key">Namespace</span>&nbsp;<span class="wrd">B</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declare&nbsp;B.i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">j</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declare&nbsp;B.j</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Using</span>&nbsp;<span class="wrd">A</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;A.i/j&nbsp;and&nbsp;B.i/j&nbsp;are&nbsp;in&nbsp;conflict,&nbsp;but&nbsp;no&nbsp;error&nbsp;is&nbsp;given</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">j</span>&nbsp;&nbsp;<span class="com">'&nbsp;Declare&nbsp;also&nbsp;j&nbsp;the&nbsp;global&nbsp;scope</span><br />
+<br />
+<span class="key">Using</span>&nbsp;<span class="wrd">B</span><br />
+<span class="com">'i&nbsp;=&nbsp;1&nbsp;&nbsp;&nbsp;'&nbsp;error:&nbsp;Ambiguous&nbsp;symbol&nbsp;access,&nbsp;explicit&nbsp;scope&nbsp;resolution&nbsp;required&nbsp;(between&nbsp;B.i&nbsp;and&nbsp;A.i)</span><br />
+<span class="wrd">B.i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;<span class="com">'&nbsp;ambiguity&nbsp;resolution&nbsp;solved&nbsp;by&nbsp;using&nbsp;full&nbsp;name</span><br />
+<span class="wrd">j</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;ambiguity&nbsp;(between&nbsp;.j,&nbsp;B.j,&nbsp;A.j)&nbsp;solved&nbsp;by&nbsp;compiler,&nbsp;by&nbsp;choosing&nbsp;override&nbsp;.j&nbsp;in&nbsp;the&nbsp;global&nbsp;scope</span><br />
+</div></tt><br />
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgNamespace.html">Namespace</a></tt><br \>
+<li> <tt><a href="KeyPgUsing.html">Using (Namespaces)</a></tt><br \>
+<li> <tt><a href="KeyPgScope.html">Scope...End Scope</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

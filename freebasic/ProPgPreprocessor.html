@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>Preprocessor</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Preprocessor</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The <b>Preprocessor</b> performs some processing on source code before the next step of compilation.<br \>
+<br \>
+The preprocessor is a program that parses a text file and makes it submit to certain transformations.<br \>
+These transformations can be the inclusion of a file, the deletion of a text block or the replacement of a text block.<br \>
+<br \>
+The preprocessor performs these operations through specific commands that it reads in the file being scanned.<br \>
+<br \>
+It is automatically called by the compiler, before compilation, to process the files to compile.<br \>
+<br \>
+<div class="fb_sect_title">Preprocessor commands</div><div class="fb_sect_cont"><br \>
+All preprocessor commands begin at the beginning of the line with the pound sign ("#").<br \>
+See '<a href="CatPgPreProcess.html">Preprocessor commands</a>' to get all commands that control the preprocessor.<br \>
+<br \>
+The main types of commands are the followings:<br \>
+<ul><ul><li> File inclusion:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">Text file inclusion allows you to factorize text that is common to many other files (for example, type, constant, function, etc.).<br \>
+The common text is usually put in a file with the extension ".bi".<br \>
+Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgInclude.html">#include</a> [once] <i>"file"</i></tt><br \>
+<div class="fb_indent"><tt><i>file</i></tt> is the name of the file to include.<br \>
+</div></div>The included file is also processed by the preprocessor.<br \>
+<br \>
+File inclusion also allows to include a library in the linking process.<br \>
+Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgInclib.html">#inclib</a> <i>"libname"</i></tt><br \>
+<div class="fb_indent"><tt><i>libname</i></tt> is the name of the library file to include in the linking process.<br \>
+<br \>
+</div></div></div></div></div><ul><ul><li> Text replacement:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">The preprocessor makes it possible to define identifiers which, used in the program, will be replaced textually by their value.<br \>
+Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgPpdefine.html">#define</a> <i>identifier</i> <i>body</i></tt><br \>
+<div class="fb_indent">where <tt><i>identifier</i></tt> is the identifier that will be used in the rest of the program, and <tt><i>body</i></tt> will be the replacement text that the preprocessor will use.<br \>
+</div></div>Whenever the identifier <tt><i>identifier</i></tt> is encountered by the preprocessor, it will be replaced by the text <tt><i>body</i></tt> throughout the rest of the program (<tt><a href="KeyPgPpundef.html">#undef</a> <i>identifier</i></tt> to undefine an <tt><i>identifier</i></tt> previously defined).<br \>
+<br \>
+Defines are <i>scoped</i> (they are only visible in the scope they were defined in).<br \>
+Namespaces on the other hand do not have any effect on the visibility of the defines.<br \>
+<br \>
+</div></div></div><ul><ul><li> Compilation constants and conditional compilation:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">See the next '<a href="ProPgConditionalCompilation.html">Conditional Compilation</a>' page of this section.<br \>
+<br \>
+</div></div></div><ul><ul><li> Macros:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">See the last page '<a href="ProPgMacros.html">Macros</a>' of this section.<br \>
+<br \>
+</div></div></div><ul><ul><li> Other commands:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">The preprocessor is able to perform other actions than those mentioned above.<br \>
+The directives for performing these actions are listed below:<br \>
+<div class="fb_indent"><b>-</b> <tt><a href="KeyPgPpassert.html">#assert</a> <i>condition</i> (conditional directive for debugging)</tt><br \>
+<b>-</b> <tt><a href="KeyPgPperror.html">#error</a> <i>error_text</i> (directive for displaying error message)</tt><br \>
+<b>-</b> <tt><a href="KeyPgPplang.html">#lang</a> <i>"lang"</i> (directive to set compiler dialect)</tt><br \>
+<b>-</b> <tt><a href="KeyPgPplibpath.html">#libpath</a> <i>"path"</i> (directive to add search path for libraries)</tt><br \>
+<b>-</b> <tt><a href="KeyPgPpline.html">#line</a> <i>number</i> [<i>"name"</i>](directive to set current line number [and file name])</tt><br \>
+<b>-</b> <tt><a href="KeyPgPpPragma.html">#pragma</a> / <a href="KeyPgPpcmdline.html">#Cmdline</a> (directive to set compiler options)</tt><br \>
+<b>-</b> <tt><a href="KeyPgPpPragmaReserve.html">#Pragma Reserve</a> (directive to reserve symbol name)</tt><br \>
+<b>-</b> <tt><a href="KeyPgPpprint.html">#print</a> <i>text</i> (directive to print text)</tt><br \>
+<br \>
+</div></div></div></div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Example with <tt><a href="KeyPgInclude.html">#include</a></tt> and <tt><a href="KeyPgPpdefine.html">#define</a></tt>:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;vbcompat.bi&quot;<br />
+#define&nbsp;TEMPLATE&nbsp;&quot;hh:mm:ss&nbsp;yyyy/mm/dd&quot;<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">TEMPLATE</span><span class="oth">)</span>&nbsp;<span class="wrd">hour_date</span><br />
+<br />
+<span class="wrd">hour_date</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Format</span><span class="oth">(</span><span class="key">Now</span><span class="oth">,</span>&nbsp;<span class="wrd">TEMPLATE</span><span class="oth">)</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">hour_date</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;(&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">TEMPLATE</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;)&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgConditionalCompilation.html">Conditional Compilation</a><br \>
+<li> <a href="ProPgMacros.html">Macros</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

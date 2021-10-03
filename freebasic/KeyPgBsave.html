@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>BSave</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">BSave</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Saves an array of arbitrary data and palette information to a file on disk<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgFunction.html">Function</a> <b>BSave</b> ( <a href="KeyPgByref.html">ByRef</a> <i>filename</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgConstQualifier.html">Const</a> <a href="KeyPgString.html">String</a>, <a href="KeyPgByval.html">ByVal</a> <i>source</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a>, <a href="KeyPgByval.html">ByVal</a> <i>size</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgUlong.html">ULong</a> = 0, <a href="KeyPgByval.html">ByVal</a> <i>pal</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> = 0, <a href="KeyPgByval.html">ByVal</a> <i>bitsperpixel</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgLong.html">Long</a> = 0 ) <a href="KeyPgAs.html">As</a> <a href="KeyPgLong.html">Long</a><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+<i>result</i> = <b>BSave</b>( <i>filename</i>, <i>source</i> [,[ <i>size</i> ][,{ <i>pal</i> | <i>pal</i>, <i>bitsperpixel</i> }]] )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>filename</i></tt><br \>
+<div class="fb_indent">the name of the file to create for storing the pixel and palette data.<br \>
+</div><tt><i>source</i></tt><br \>
+<div class="fb_indent">the address of the data to store, or null (<tt>0</tt>) to store pixel data from the current screen work page.<br \>
+</div><tt><i>size</i></tt><br \>
+<div class="fb_indent">optional, the total number of bytes of data to store.  This value is needed unless the output is a BMP file.<br \>
+</div><tt><i>pal</i></tt><br \>
+<div class="fb_indent">optional, the address of a buffer holding 256 <tt><a href="KeyPgPalette.html">Palette</a></tt> colors, or null (<tt>0</tt>) for the current screen palette.<br \>
+</div><tt><i>bitsperpixel</i></tt><br \>
+<div class="fb_indent">optional, a requested bit depth for the output BMP image. If <tt><i>bitsperpixel</i></tt> is specified, <tt><i>pal</i></tt> must also be specified (at a least null (<tt>0</tt>) value), otherwise an error is obtained.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Return Value</div><div class="fb_sect_cont"><br \>
+Returns zero (<tt>0</tt>) if successful, or a non-zero error code to indicate a failure. <i><a href="ProPgErrorHandling.html">(throws a runtime error)</a></i><br \>
+<br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>BSave</b></tt> is used for saving arbitrary data from memory into a file, using a file format specific to FB, or saving images into a standard BMP image file, replacing an existing file if necessary.<br \>
+<tt><b>BSave</b></tt> must be called only if a graphics mode is initialized, else the program crashes (see <tt><a href="FaqPgbloadworkaround.html">BLOAD/BSAVE text mode work-around</a></tt> to work in text mode).<br \>
+<br \>
+<tt><b>BSave</b></tt> outputs a <u>total</u> of <tt><i>size</i></tt> bytes of arbitrary data located at <tt><i>source</i></tt> to a specified file. If <tt><i>source</i></tt> is null (<tt>0</tt>), then <tt><b>BSave</b></tt> outputs a <u>maximum</u> of <tt><i>size</i></tt> bytes from the current work page's pixel buffer, which is structured in the current screen mode's internal pixel format. (This data is not compatible with the image buffer format as it has no header.)  For 8-bit images, palette information is obtained from <tt><i>pal</i></tt> if present and non-null, or if <tt><i>pal</i></tt> omitted or null (<tt>0</tt>), from the current screen palette.<br \>
+<br \>
+A BMP image file can be created if <tt><i>filename</i></tt> has a file extension of "<tt>.bmp</tt>" (case insensitive). <tt><i>source</i></tt> is assumed to point to a valid image buffer whose entire pixel data will be stored in the BMP file. If <tt><i>source</i></tt> is null (<tt>0</tt>), the contents of the current work page will be stored instead. For 8-bit images, palette information is obtained from <tt><i>pal</i></tt> if non-null, or if null (<tt>0</tt>), from the current screen palette. The <tt><i>size</i></tt> parameter is ignored when saving BMP files.<br \>
+<br \>
+The default bit depth for BMP files is 8-bit for 8-bit (palette) images, 24-bit for 16-bit images, and 32-bit for 32-bit images.  The <tt><i>bitsperpixel</i></tt> parameter can be used to request 24-bit output for 8-bit images, or 24-bit output for 32-bit images.<br \>
+<br \>
+The error code returned by <tt><b>BSave</b></tt> can be checked using <tt><a href="KeyPgErr.html">Err</a></tt> in the next line. The function version of  <tt><b>BSave</b></tt> returns directly the error code as a 32 bit <tt><a href="KeyPgLong.html">Long</a></tt>.<br \>
+<br \>
+<b>Runtime errors:</b><br \>
+<tt><b>BSave</b></tt> throws one of the following <a href="ProPgErrorHandling.html">runtime errors</a>:<br \>
+<br \>
+<i>(<tt>1</tt>) Illegal function call</i><br \>
+<ul><ul><li> <tt><i>size</i></tt> is less than zero (<tt>0</tt>), or <tt><i>size</i></tt> is zero and <tt><i>source</i></tt> is non-null, or a problem is detected with the image buffer.<br \>
+</ul></ul><i>(<tt>2</tt>) File not found</i><br \>
+<ul><ul><li> The file could not be created.<br \>
+</ul></ul><i>(<tt>3</tt>) File I/O error</i><br \>
+<ul><ul><li> The file could not be written to.<br \>
+<br \>
+</ul></ul></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">'&nbsp;Set&nbsp;gfx&nbsp;mode</span><br />
+<span class="key">ScreenRes</span>&nbsp;<span class="num">320</span><span class="oth">,</span>&nbsp;<span class="num">200</span><span class="oth">,</span>&nbsp;<span class="num">32</span><br />
+<br />
+<span class="com">'&nbsp;Clear&nbsp;with&nbsp;black&nbsp;on&nbsp;white</span><br />
+<span class="key">Color</span>&nbsp;<span class="key">RGB</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">RGB</span><span class="oth">(</span><span class="num">255</span><span class="oth">,</span>&nbsp;<span class="num">255</span><span class="oth">,</span>&nbsp;<span class="num">255</span><span class="oth">)</span><br />
+<span class="key">Cls</span><br />
+<br />
+<span class="key">Locate</span>&nbsp;<span class="num">13</span><span class="oth">,</span>&nbsp;<span class="num">15</span><span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Hello&nbsp;world!&quot;</span><br />
+<br />
+<span class="com">'&nbsp;Save&nbsp;screen&nbsp;as&nbsp;BMP</span><br />
+<span class="key">BSave</span>&nbsp;<span class="quo">&quot;hello.bmp&quot;</span><span class="oth">,</span>&nbsp;<span class="num">0</span><br />
+</div></tt><br />
+Save image buffer to bitmap file:<br \>
+<tt><div class="freebasic">
+<span class="com">'set&nbsp;graphics&nbsp;screen&nbsp;640&nbsp;x&nbsp;480&nbsp;pixels,&nbsp;32&nbsp;bit&nbsp;colors</span><br />
+<span class="key">Const</span>&nbsp;<span class="wrd">W</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">640</span><span class="oth">,</span>&nbsp;<span class="wrd">H</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">480</span>&nbsp;<span class="com">'width&nbsp;&amp;&nbsp;hight</span><br />
+<span class="key">ScreenRes</span>&nbsp;<span class="wrd">W</span><span class="oth">,</span>&nbsp;<span class="wrd">H</span><span class="oth">,</span>&nbsp;<span class="num">32</span><br />
+<span class="com">'draw&nbsp;a&nbsp;smiley&nbsp;at&nbsp;screen&nbsp;center</span><br />
+<span class="key">Circle</span>&nbsp;<span class="oth">(</span><span class="wrd">W</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="wrd">H</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span><span class="oth">),</span>&nbsp;<span class="num">180</span><span class="oth">,</span>&nbsp;<span class="num">&amp;h00ffff00</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="com">'yellow&nbsp;circle</span><br />
+<span class="key">Circle</span>&nbsp;<span class="oth">(</span><span class="wrd">W</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">55</span><span class="oth">,</span>&nbsp;<span class="wrd">H</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">70</span><span class="oth">),</span>&nbsp;<span class="num">35</span><span class="oth">,</span>&nbsp;<span class="num">&amp;h00000000</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="num">1.5</span><span class="oth">,</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="com">'left&nbsp;eye</span><br />
+<span class="key">Circle</span>&nbsp;<span class="oth">(</span><span class="wrd">W</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">55</span><span class="oth">,</span>&nbsp;<span class="wrd">H</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">60</span><span class="oth">),</span>&nbsp;<span class="num">35</span><span class="oth">,</span>&nbsp;<span class="num">&amp;h00000000</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="num">1.5</span><span class="oth">,</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="com">'right&nbsp;eye</span><br />
+<span class="key">Circle</span>&nbsp;<span class="oth">(</span><span class="wrd">W</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="wrd">H</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">80</span><span class="oth">),</span>&nbsp;<span class="num">70</span><span class="oth">,</span>&nbsp;<span class="num">&amp;h00000000</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="num">0.4</span><span class="oth">,</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="com">'mouth</span><br />
+<span class="com">'allocate&nbsp;memory&nbsp;for&nbsp;image&nbsp;buffer</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pImageBuffer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ImageCreate</span><span class="oth">(</span><span class="num">250</span><span class="oth">,</span>&nbsp;<span class="num">250</span><span class="oth">)</span><br />
+<span class="com">'copy&nbsp;screen&nbsp;section&nbsp;to&nbsp;buffer</span><br />
+<span class="key">Get</span>&nbsp;<span class="oth">(</span><span class="wrd">W</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">125</span><span class="oth">,</span>&nbsp;<span class="wrd">H</span>&nbsp;<span class="oth">\</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">125</span><span class="oth">)-</span><span class="key">Step</span><span class="oth">(</span><span class="num">250</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">250</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">),</span>&nbsp;<span class="wrd">pImageBuffer</span><br />
+<span class="com">'save&nbsp;image&nbsp;buffer&nbsp;to&nbsp;file</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">fileName</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;Smiley.bmp&quot;</span><br />
+<span class="key">If</span>&nbsp;<span class="key">BSave</span><span class="oth">(</span><span class="wrd">fileName</span><span class="oth">,</span>&nbsp;<span class="wrd">pImageBuffer</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Saved&nbsp;succesful:&nbsp;&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">fileName</span><br />
+<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Error&nbsp;saving:&nbsp;&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">fileName</span><br />
+<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="com">'free&nbsp;memory&nbsp;for&nbsp;image&nbsp;buffer</span><br />
+<span class="key">ImageDestroy</span><span class="oth">(</span><span class="wrd">pImageBuffer</span><span class="oth">)</span><br />
+<span class="com">'keep&nbsp;graphics&nbsp;screen&nbsp;open&nbsp;until&nbsp;key&nbsp;press</span><br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> Support for saving more than 64KiB of arbitrary data is new to FreeBASIC.<br \>
+<li> Support for saving BMP files is new to FreeBASIC.<br \>
+<li> QB cannot use <tt><a href="KeyPgBload.html">BLoad</a></tt> to load files created with <tt><b>BSave</b></tt> in FreeBASIC, but FreeBASIC can use <tt><a href="KeyPgBload.html">BLoad</a></tt> to load files created with <tt><b>BSave</b></tt> in QB<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgBload.html">BLoad</a></tt><br \>
+<li> <tt><a href="KeyPgPalette.html">Palette</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

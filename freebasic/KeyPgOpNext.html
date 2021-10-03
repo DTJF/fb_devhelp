@@ -1,0 +1,72 @@
+<html>
+<head>
+<title>Operator Next (Iteration)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Operator Next (Iteration)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Determines if a <tt><a href="KeyPgFornext.html">For...Next</a></tt> loop should be terminated<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+{ <a href="KeyPgType.html">Type</a> | <a href="KeyPgClass.html">Class</a> | <a href="KeyPgUnion.html">Union</a> } <i>typename</i><br \>
+<div class="fb_indent"><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgOperator.html">Operator</a> <b>Next</b> ( [ <a href="KeyPgByref.html">ByRef</a> | <a href="KeyPgByval.html">ByVal</a> ] <i>cond</i> <a href="KeyPgAs.html">As</a> <i>typename</i> ) <a href="KeyPgAs.html">As</a> <a href="KeyPgInteger.html">Integer</a><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgOperator.html">Operator</a> <b>Next</b> ( [ <a href="KeyPgByref.html">ByRef</a> | <a href="KeyPgByval.html">ByVal</a> ] <i>cond</i> <a href="KeyPgAs.html">As</a> <i>typename</i>, [ <a href="KeyPgByref.html">ByRef</a> | <a href="KeyPgByval.html">ByVal</a> ] <i>stp</i> <a href="KeyPgAs.html">As</a> <i>typename</i> ) <a href="KeyPgAs.html">As</a> <a href="KeyPgInteger.html">Integer</a><br \>
+<i>...</i><br \>
+</div>End { <a href="KeyPgType.html">Type</a> | <a href="KeyPgClass.html">Class</a> | <a href="KeyPgUnion.html">Union</a> }<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgFornext.html">For</a> <i>iterator</i> [ As <i>typename</i> ] = <i>start_value</i> To <i>end_value</i> [ <a href="KeyPgFornext.html">Step</a> <i>step_value</i> ]<br \>
+<div class="fb_indent">[<i> ...statements... </i>]<br \>
+</div><a href="KeyPgFornext.html">Next</a><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<b><tt>(including arguments)</tt></b><br \>
+<tt><i>typename</i></tt><br \>
+<div class="fb_indent">name of the <tt><a href="KeyPgType.html">Type</a></tt>, <tt><a href="KeyPgClass.html">Class</a></tt>, or <tt><a href="KeyPgUnion.html">Union</a></tt><br \>
+</div><tt><i>cond</i></tt>, <tt><i>end_value</i></tt><br \>
+<div class="fb_indent">a <tt><i>typename</i></tt> object used as a loop-terminating value<br \>
+</div><tt><i>stp</i></tt>, <tt><i>step_value</i></tt><br \>
+<div class="fb_indent">a <tt><i>typename</i></tt> object used as an incremental value<br \>
+</div><tt><i>iterator</i></tt><br \>
+<div class="fb_indent">a <tt><i>typename</i></tt> object used as an iterator<br \>
+</div><tt><i>start_value</i></tt><br \>
+<div class="fb_indent">a <tt><i>typename</i></tt> object used to copy construct or assign to the iterator initially<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><a href="KeyPgOpFor.html">Operator For</a></tt>, <tt><b>Operator Next</b></tt> and <tt><a href="KeyPgOpStep.html">Operator Step</a></tt> can be overloaded in user-defined type definitions to allow objects of that type to be used as iterators and step values in <tt><a href="KeyPgFornext.html">For...Next</a></tt> loops.<br \>
+As all non-static member procedures, they have passed a hidden <tt><a href="KeyPgThis.html">This</a></tt> parameter that allows to access by reference to the iterator object in the code body of the 3 operators.<br \>
+<br \>
+<tt><b>Operator Next</b></tt> is called every time the iterator object needs to be checked against the end value. This happens immediately after the call to its <tt><a href="KeyPgOpFor.html">Operator For</a></tt>, and immediately after any calls to its <tt><a href="KeyPgOpStep.html">Operator Step</a></tt>. <tt><b>Operator Next</b></tt> should return zero (0) if the loop should be terminated, or non-zero if the loop should continue iterating. The first time <tt><b>Operator Next</b></tt> is called, no statements in the <tt><a href="KeyPgFornext.html">For...Next</a></tt> body, if any, have been executed yet.<br \>
+<br \>
+The first version of <tt><b>Operator Next</b></tt> is used if no step value is given in the <tt><a href="KeyPgFornext.html">For...Next</a></tt> statement. If a step value is given, the second version is used and is passed the step value because testing for iterating end may depend on it.<br \>
+<br \>
+<u>Advanced usage</u><br \>
+<div class="fb_indent">The above description seems to imply that the 3 arguments <tt><i>start_value</i></tt>, <tt><i>end_value</i></tt>, and <tt><i>step_value</i></tt> must be of the same type as the <tt><i>iterator</i></tt> (this is the more obvious use), but it is not quite true:<br \>
+<div class="fb_indent"><b>-</b> The <tt><i>start_value</i></tt>, <tt><i>end_value</i></tt>, and <tt><i>step_value</i></tt> arguments can be of any type (of different types among themselves and also of different types from the one of the <tt><i>iterator</i></tt>).<br \>
+<b>-</b> The only constraint is that the <tt><i>iterator</i></tt> could be constructed (in case of local <tt><i>iterator</i></tt>) or assigned (in case of global <tt><i>iterator</i></tt>) from the <tt><i>start_value</i></tt> argument (because the <tt><i>iterator</i></tt> is implicitly constructed or assigned under the hood).<br \>
+<b>-</b> Similarly the other parameters <tt><i>end_value</i></tt>, and <tt><i>step_value</i></tt> must be able to be converted into objects of the same type as the <tt><i>iterator</i></tt>.<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+See the <a href="KeyPgOpStep.html">Operator Step</a> examples.<br \>
+<br \>
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Only available in the <i><a href="CompilerOptlang.html">-lang fb</a></i> dialect.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgOpFor.html">Operator For</a></tt><br \>
+<li> <tt><a href="KeyPgOpStep.html">Operator Step</a></tt><br \>
+<li> <tt><a href="KeyPgFornext.html">For...Next</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

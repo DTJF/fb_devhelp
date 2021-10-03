@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>Protected: (Access Control)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Protected: (Access Control)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Specifies protected member access control in a <tt><a href="KeyPgType.html">Type</a></tt> or <tt><a href="KeyPgClass.html">Class</a></tt><br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgType.html">Type</a> <i>typename</i><br \>
+<div class="fb_indent"><b>Protected:</b><br \>
+<div class="fb_indent"><i>member declarations</i><br \>
+</div></div>End Type<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>typename</i></tt><br \>
+<div class="fb_indent">name of the <tt><a href="KeyPgType.html">Type</a></tt> or <tt><a href="KeyPgClass.html">Class</a></tt><br \>
+</div><tt><i>member declarations</i></tt><br \>
+<div class="fb_indent">declarations for fields, functions, or enumerations<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>Protected:</b></tt> indicates that <tt><i>member declarations</i></tt> following it have protected access.  Protected members are accessible only from inside a member function for the <tt><a href="KeyPgType.html">Type</a></tt> or <tt><a href="KeyPgClass.html">Class</a></tt>, and classes which are derived from the <tt><a href="KeyPgType.html">Type</a></tt> or <tt><a href="KeyPgClass.html">Class</a></tt>.<br \>
+<br \>
+<tt><i>member declarations</i></tt> following <tt><b>Protected:</b></tt> are protected until a different access control specifier is given, like <tt><a href="KeyPgVisPrivate.html">Private:</a></tt> or <tt><a href="KeyPgVisPublic.html">Public:</a></tt>.<br \>
+<br \>
+Members in a <tt><a href="KeyPgType.html">Type</a></tt> declaration are <tt><b>Public:</b></tt> by default if no member access control specifier is given.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">animal</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">animalName</span><br />
+&nbsp;&nbsp;<span class="key">Protected</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">serialNumber</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">dog</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">animal</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">masterName</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">setSerialNumber</span>&nbsp;<span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">number</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">dog.setSerialNumber</span>&nbsp;<span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">number</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="com">''&nbsp;This&nbsp;is&nbsp;OK.&nbsp;We're&nbsp;inside&nbsp;a&nbsp;member&nbsp;function&nbsp;of&nbsp;the&nbsp;derived&nbsp;type</span><br />
+&nbsp;&nbsp;<span class="wrd">This.serialNumber</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">number</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">dog</span>&nbsp;<span class="wrd">d</span><br />
+<br />
+<span class="com">''&nbsp;This&nbsp;is&nbsp;OK,&nbsp;animalName&nbsp;is&nbsp;public</span><br />
+<span class="wrd">d.animalName</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;Buddy&quot;</span><br />
+<br />
+<span class="com">''&nbsp;this&nbsp;would&nbsp;generate&nbsp;a&nbsp;compile&nbsp;error:&nbsp;</span><br />
+<span class="com">''&nbsp;-&nbsp;serialNumber&nbsp;is&nbsp;protected&nbsp;and&nbsp;we're&nbsp;trying&nbsp;to&nbsp;access&nbsp;it&nbsp;outside&nbsp;its&nbsp;type&nbsp;and&nbsp;the&nbsp;derived&nbsp;type</span><br />
+<span class="com">''&nbsp;d.serialNumber&nbsp;=&nbsp;123456789</span><br />
+</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;Example&nbsp;to&nbsp;illustrate&nbsp;the&nbsp;access&nbsp;control&nbsp;'Protected'&nbsp;with&nbsp;a&nbsp;token&nbsp;provided&nbsp;by&nbsp;an&nbsp;admin&nbsp;right&nbsp;for&nbsp;an&nbsp;user&nbsp;right:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;The&nbsp;'admin_right'&nbsp;type&nbsp;extends&nbsp;the&nbsp;'user_right'&nbsp;type.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Create&nbsp;directly&nbsp;an&nbsp;'user_right'&nbsp;object&nbsp;is&nbsp;forbidden.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;('default&nbsp;user_right.constructor'&nbsp;access&nbsp;and&nbsp;'copy&nbsp;user_right.constructor'&nbsp;access&nbsp;are&nbsp;'Protected')</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;The&nbsp;'user_right'&nbsp;type&nbsp;has&nbsp;only&nbsp;the&nbsp;access&nbsp;right&nbsp;to&nbsp;get&nbsp;the&nbsp;token.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;('user_right.token'&nbsp;get-property&nbsp;access&nbsp;is&nbsp;'Public'&nbsp;and&nbsp;'user_right.token'&nbsp;set-property&nbsp;access&nbsp;is&nbsp;'protected')</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;The&nbsp;'admin_right'&nbsp;type&nbsp;has&nbsp;the&nbsp;access&nbsp;rights&nbsp;to&nbsp;set&nbsp;and&nbsp;to&nbsp;get&nbsp;the&nbsp;token.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;('admin_right.token'&nbsp;get-property&nbsp;access&nbsp;and&nbsp;'admin_right.token'&nbsp;set-property&nbsp;access&nbsp;are&nbsp;'Public')</span><br />
+<span class="com">'</span><br />
+<span class="com">'&nbsp;An&nbsp;'admin_right'&nbsp;object&nbsp;is&nbsp;created,&nbsp;and&nbsp;then&nbsp;a&nbsp;reference&nbsp;of&nbsp;type&nbsp;'user_right'&nbsp;to&nbsp;this&nbsp;object&nbsp;is&nbsp;defined.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;(create&nbsp;directly&nbsp;an&nbsp;'user_right'&nbsp;object&nbsp;is&nbsp;forbidden)</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">user_right</span><br />
+&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">token</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Public'&nbsp;to&nbsp;authorize&nbsp;user_right&nbsp;token&nbsp;get</span><br />
+&nbsp;&nbsp;<span class="key">Protected</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Protected'&nbsp;to&nbsp;forbid&nbsp;user_right&nbsp;object&nbsp;default-construction</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">user_right</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;'Protected'&nbsp;to&nbsp;forbid&nbsp;user_right&nbsp;object&nbsp;copy-construction</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">token</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Protected'&nbsp;to&nbsp;forbid&nbsp;user_right&nbsp;token&nbsp;set</span><br />
+&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">user_right_token</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Private'&nbsp;to&nbsp;forbid&nbsp;access&nbsp;from&nbsp;outside&nbsp;user_right</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">user_right</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;Default-constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">user_right</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">user_right</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;Protected&nbsp;copy-constructor</span><br />
+&nbsp;&nbsp;<span class="wrd">This.user_right_token</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u.user_right_token</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">user_right.token</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;&nbsp;<span class="com">''&nbsp;Public&nbsp;property&nbsp;user_right&nbsp;token&nbsp;get</span><br />
+&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This.user_right_token</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">user_right.token</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;Protected&nbsp;property&nbsp;user_right&nbsp;token&nbsp;set</span><br />
+&nbsp;&nbsp;<span class="wrd">This.user_right_token</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">s</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">admin_right</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">user_right</span><br />
+&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">token</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Public'&nbsp;to&nbsp;authorize&nbsp;admin_right&nbsp;token&nbsp;get</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">token</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;'Public'&nbsp;to&nbsp;authorize&nbsp;admin_right&nbsp;token&nbsp;set</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">admin_right.token</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;&nbsp;<span class="com">''&nbsp;Public&nbsp;property&nbsp;admin_right&nbsp;token&nbsp;get</span><br />
+&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">Base.token</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Base.'&nbsp;to&nbsp;access&nbsp;to&nbsp;the&nbsp;base&nbsp;type&nbsp;property&nbsp;shadowed&nbsp;by&nbsp;this&nbsp;property&nbsp;name</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">admin_right.token</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;Public&nbsp;property&nbsp;admin_right&nbsp;token&nbsp;set</span><br />
+&nbsp;&nbsp;<span class="wrd">Base.token</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">s</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Base.'&nbsp;to&nbsp;access&nbsp;to&nbsp;the&nbsp;base&nbsp;type&nbsp;property&nbsp;shadowed&nbsp;by&nbsp;this&nbsp;property&nbsp;name</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">admin_right</span>&nbsp;<span class="wrd">ar</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;Create&nbsp;an&nbsp;admin_right&nbsp;type&nbsp;object&nbsp;'ar'</span><br />
+<span class="wrd">ar.token</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;fxm123456789&quot;</span>&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;admin_right&nbsp;set&nbsp;the&nbsp;token&nbsp;for&nbsp;user_right</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">ar.token</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;&nbsp;<span class="com">''&nbsp;admin_right&nbsp;get&nbsp;the&nbsp;user_right&nbsp;token</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">user_right</span>&nbsp;<span class="wrd">ur</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">ar</span>&nbsp;&nbsp;<span class="com">''&nbsp;Create&nbsp;a&nbsp;user_right&nbsp;type&nbsp;reference&nbsp;'ur'&nbsp;to&nbsp;the&nbsp;'ar'&nbsp;instance&nbsp;of&nbsp;admin_right&nbsp;type</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">ur.token</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;user_right&nbsp;get&nbsp;its&nbsp;token</span><br />
+<span class="com">'ur.token&nbsp;=&nbsp;&quot;fxm0&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;Error:&nbsp;Illegal&nbsp;member&nbsp;access,&nbsp;USER_RIGHT.TOKEN.property.set&nbsp;(user_right&nbsp;cannot&nbsp;set&nbsp;its&nbsp;token)</span><br />
+<br />
+<span class="com">'Dim&nbsp;As&nbsp;user_right&nbsp;ur1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;Error:&nbsp;The&nbsp;default&nbsp;constructor&nbsp;has&nbsp;no&nbsp;public&nbsp;access</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;user_right&nbsp;ur2&nbsp;=&nbsp;ar&nbsp;&nbsp;''&nbsp;Error:&nbsp;Constructor&nbsp;has&nbsp;no&nbsp;public&nbsp;access</span><br />
+<br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Available only in the <i><a href="CompilerOptlang.html">-lang fb</a></i> dialect.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgClass.html">Class</a></tt><br \>
+<li> <tt><a href="KeyPgVisPrivate.html">Private:</a></tt> (Access Control)<br \>
+<li> <tt><a href="KeyPgVisPublic.html">Public:</a></tt> (Access Control)<br \>
+<li> <tt><a href="KeyPgType.html">Type</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

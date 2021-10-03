@@ -1,0 +1,446 @@
+<html>
+<head>
+<title>Critical Sections</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Critical Sections</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The proper use of the built-in procedures in <b>Critical Sections</b> for handling the concurrency with other threads.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+A critical section is a part of a multi-threading program that has to be executed as atomic actions (no concurrence with other threads executing similar actions):<br \>
+<div class="fb_indent"><b>-</b> It is a piece of a program that requires mutual exclusion of access.<br \>
+<b>-</b> Typically, the critical section accesses a shared resource, such as a data structure, a peripheral device, or a network connection, that does not allow multiple concurrent accesses.<br \>
+<br \>
+</div>When a program starts up, one thread already begins running immediately. This is usually called the "main" thread of the program, because it is the one that is executed when a program begins:<br \>
+<div class="fb_indent"><b>-</b> It is the thread from which user may spawn other "child" threads (which in turn may spawn other "sub-child" threads).<br \>
+<b>-</b> Often, it must be the last thread to finish execution because it performs various shutdown actions (as a "child" thread must also do so with respect to its eventual "sub-child" threads spawned).<br \>
+<b>-</b> But other than that, it can also compete (with its own critical sections) with all other threads explicitly spawned by user.<br \>
+<br \>
+</div><div class="fb_sect_title">Basic algorithms</div><div class="fb_sect_cont"><br \>
+Using the built-in procedures provided by FreeBASIC, the method to ensure exclusive use of a critical section may be designed in a algorithm either asynchronous or synchronous, which applies to the threads.<br \>
+<br \>
+<ul><li> Basic algorithm for an asynchronous method using a mutex:<br \>
+</ul><div class="fb_indent"><div class="fb_indent">By getting the mutex locking, the thread can take the exclusive control to access the shared resource.<br \>
+When shared resource access is ended, the thread unlocks the mutex.<br \>
+<br \>
+Algorithm:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'   Mutexlock
+'   |
+'   Critical section of code
+'   |
+'   Mutexunlock
+				</pre></div></div></div><ul><li> Basic algorithm for a synchronous method using a condwait then a condsignal/condbroadcast (and mutex):<br \>
+</ul><div class="fb_indent"><div class="fb_indent">The thread waits for a Boolean predicate is indeed true and also a condition signal (condwait) before executing its critical section.<br \>
+When shared resource access is ended, the thread sets another Boolean predicate then sends a condition signal to other thread(s) (condsignal or condbroadcast).<br \>
+<br \>
+Algorithm:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'   Mutexlock
+'   |
+'   While my_predicate <> True
+'   |   Condwait
+'   Wend
+'   my_predicate = False
+'   |
+'   Critical section of code
+'   |
+'   other_predicate = True
+'   Condsignal or Condbroadcast
+'   |
+'   Mutexunlock
+				</pre></div>Similar algorithm with waiting-for, then signaling are put in reverse order:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'   Mutexlock
+'   |
+'   Critical section of code
+'   |
+'   other_predicate = True
+'   Condsignal or Condbroadcast
+'   |
+'   While my_predicate <> True
+'   |   Condwait
+'   Wend
+'   my_predicate = False
+'   |
+'   Mutexunlock
+				</pre></div></div></div></div><div class="fb_sect_title">Examples</div><div class="fb_sect_cont"><br \>
+In the two following examples, the shared resource is the input/output display device:<br \>
+<div class="fb_indent"><b>-</b> Print its counter for each of 6 user threads (and read the flag <tt><i>'quit'</i></tt>).<br \>
+<b>-</b> Catching a key-press (any one) for the main thread (and if yes, set the flag <tt><i>'quit'</i></tt> to <tt>'true'</tt>).<br \>
+<br \>
+</div>The outputting procedure (<tt><i>'Sub Counter()'</i></tt>) has voluntarily a tempo between cursor positioning and printing, and also a repositioning of text cursor at middle of line before ending, in order to thoroughly check that there is no overlap between the critical sections executions (at opposite, one can see the result by removing some code dedicated to mutual exclusion processing).<br \>
+A different tempo value is set at the end of each thread loop (from smaller to bigger).<br \>
+A structure (UDT) groups all variables necessary to the threads. A pointer to each UDT instance is passed to each thread at its creation phase (with threadcreate).<br \>
+<br \>
+<ul><li> Asynchronous method example using one mutex for all threads:<br \>
+</ul><div class="fb_indent"><pre class="fb_pre">
+' User thread algorithm (same principle for the main thread):
+'
+'   Do
+'   |
+'   |   Mutexlock
+'   |   |
+'   |   Critical section of code
+'   |   |
+'   |   Mutexunlock
+'   |   |
+'   |   Sleep my_tempo, 1
+'   |
+'   Loop Until quit = true
+'
+' There is no any advantage or disadvantage between threads for running their critical sections.
+		</pre><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">number</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">tempo</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pThread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ULongInt</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pMutex</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">quit</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">UDT.pMutex</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">UDT.quit</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">Counter</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">pt</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">With</span>&nbsp;<span class="oth">*</span><span class="wrd">pt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Locate</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">5</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">.</span><span class="wrd">count</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">.</span><span class="wrd">count</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Locate</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="num">30</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">With</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">Thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">myquit</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pUDT</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">With</span>&nbsp;<span class="oth">*</span><span class="wrd">pUDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(.</span><span class="wrd">pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Counter</span><span class="oth">(</span><span class="wrd">pUDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">myquit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">.</span><span class="wrd">quit</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(.</span><span class="wrd">pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="oth">.</span><span class="wrd">tempo</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">myquit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">With</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="wrd">UDT.numberMax</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">6</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><span class="oth">)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">number</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">tempo</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">100</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">15</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">95</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">Sgn</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="wrd">UDT.pMutex</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">MutexCreate</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Single</span>&nbsp;<span class="wrd">t</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Timer</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">pThread</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">Thread</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">))</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Inkey</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDT.quit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="num">0</span><span class="oth">).</span><span class="wrd">tempo</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">pThread</span><span class="oth">)</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="wrd">t</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Timer</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">t</span><br />
+<br />
+<span class="key">MutexDestroy</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ULongInt</span>&nbsp;<span class="wrd">c</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">c</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">count</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Locate</span>&nbsp;<span class="wrd">UDT.numberMax</span><span class="oth">+</span><span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">CULngInt</span><span class="oth">(</span><span class="wrd">c</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="wrd">t</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;increments&nbsp;per&nbsp;second&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'   159
+'    127
+'     105
+'      85
+'       78
+'        71
+'
+'   63 increments per second
+			</pre>Different result values because asynchronous counting (decreasing count values because increasing tempo values).<br \>
+<br \>
+</div></div><ul><li> Synchronous method example using a condwait then a condbroadcast (and one mutex) for all threads:<br \>
+</ul><div class="fb_indent"><pre class="fb_pre">
+' User thread algorithm (same principle for the main thread):
+'
+'   Do
+'   |
+'   |   Mutexlock
+'   |   |
+'   |   While thread_priority_number <> my_number
+'   |   |   Condwait
+'   |   Wend
+'   |   |
+'   |   Critical section of code
+'   |   |
+'   |   thread_priority_number = next thread_priority_number
+'   |   Condbroadcast
+'   |   |
+'   |   Mutexunlock
+'   |   |
+'   |   Sleep my_tempo, 1
+'   |
+'   Loop Until quit = true
+'
+' The critical sections of the threads are run synchronously one after the other, with a predefined order.
+		</pre><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">number</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">tempo</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pThread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ULongInt</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">threadPriorityNumber</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pMutex</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pCond</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">quit</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">UDT.threadPriorityNumber</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">UDT.pMutex</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">UDT.pCond</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">UDT.quit</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">Counter</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">pt</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">With</span>&nbsp;<span class="oth">*</span><span class="wrd">pt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Locate</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">5</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">.</span><span class="wrd">count</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">.</span><span class="wrd">count</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Locate</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="num">30</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">With</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">Thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">myquit</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pUDT</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">With</span>&nbsp;<span class="oth">*</span><span class="wrd">pUDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(.</span><span class="wrd">pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="oth">.</span><span class="wrd">threadPriorityNumber</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span>&nbsp;&nbsp;<span class="com">''&nbsp;synchronous&nbsp;condwait&nbsp;for&nbsp;expected&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">CondWait</span><span class="oth">(.</span><span class="wrd">pCond</span><span class="oth">,</span>&nbsp;<span class="oth">.</span><span class="wrd">pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Counter</span><span class="oth">(</span><span class="wrd">pUDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">myquit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">.</span><span class="wrd">quit</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">.</span><span class="wrd">threadPriorityNumber</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(.</span><span class="wrd">threadPriorityNumber</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">Mod</span>&nbsp;<span class="oth">(.</span><span class="wrd">numberMax</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">CondBroadcast</span><span class="oth">(.</span><span class="wrd">pCond</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(.</span><span class="wrd">pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="oth">.</span><span class="wrd">tempo</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">myquit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">With</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="wrd">UDT.numberMax</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">6</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><span class="oth">)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">number</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">tempo</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">100</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">15</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">95</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">Sgn</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="wrd">UDT.pMutex</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">MutexCreate</span><br />
+<span class="wrd">UDT.PCond</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">CondCreate</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Single</span>&nbsp;<span class="wrd">t</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Timer</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">pThread</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">Thread</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">))</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">UDT.threadPriorityNumber</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="num">0</span><span class="oth">).</span><span class="wrd">number</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">CondWait</span><span class="oth">(</span><span class="wrd">UDT.pCond</span><span class="oth">,</span>&nbsp;<span class="wrd">UDT.pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Inkey</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDT.quit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDT.threadPriorityNumber</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(</span><span class="wrd">UDT.threadPriorityNumber</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">Mod</span>&nbsp;<span class="oth">(</span><span class="wrd">UDT.numberMax</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">CondBroadcast</span><span class="oth">(</span><span class="wrd">UDT.pCond</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="num">0</span><span class="oth">).</span><span class="wrd">tempo</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">pThread</span><span class="oth">)</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="wrd">t</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Timer</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">t</span><br />
+<br />
+<span class="key">MutexDestroy</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">)</span><br />
+<span class="key">CondDestroy</span><span class="oth">(</span><span class="wrd">UDT.pCond</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ULongInt</span>&nbsp;<span class="wrd">c</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">c</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">count</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Locate</span>&nbsp;<span class="wrd">UDT.numberMax</span><span class="oth">+</span><span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">CULngInt</span><span class="oth">(</span><span class="wrd">c</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="wrd">t</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;increments&nbsp;per&nbsp;second&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'   116
+'    116
+'     116
+'      116
+'       116
+'        116
+'
+'   51 increments per second
+			</pre>Same result values because synchronous counting (despite of increasing tempo values).<br \>
+<br \>
+</div></div><ul><li> Weird synchronous algorithm using a mutex for each thread, by self lock and mutual unlock:<br \>
+</ul><div class="fb_indent"><b>-</b> When one thread has run its critical section, it unlocks the mutex of the next thread and attempts to re-obtain its own mutex.<br \>
+<b>-</b> At initialization all mutexes are locked, except the mutex of the main thread.<br \>
+<pre class="fb_pre">
+' User thread (#N) algorithm (same principle for the main thread):
+'
+'   Do
+'   |
+'   |   Mutexlock(own thread mutex (#N))
+'   |   |
+'   |   Critical section of code
+'   |   |
+'   |   Mutexunlock(next thread mutex (#N+1))
+'   |   |
+'   |   Sleep tempo, 1
+'   |
+'   Loop Until quit = 1
+		</pre><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">number</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">tempo</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pThread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ULongInt</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pMutex</span><span class="oth">(</span><span class="key">Any</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">quit</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">UDT.pMutex</span><span class="oth">(</span><span class="key">Any</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">UDT.quit</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">Counter</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">pt</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">With</span>&nbsp;<span class="oth">*</span><span class="wrd">pt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Locate</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">5</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">.</span><span class="wrd">count</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">.</span><span class="wrd">count</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Locate</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="num">30</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="oth">.</span><span class="wrd">number</span><span class="oth">,</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">With</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">Thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">quit</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pUDT</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">With</span>&nbsp;<span class="oth">*</span><span class="wrd">pUDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(.</span><span class="wrd">pMutex</span><span class="oth">(.</span><span class="wrd">number</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Counter</span><span class="oth">(</span><span class="wrd">pUDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">quit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">.</span><span class="wrd">quit</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(.</span><span class="wrd">pMutex</span><span class="oth">((.</span><span class="wrd">number</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">Mod</span>&nbsp;<span class="oth">(</span><span class="wrd">UDT.numberMax</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="oth">.</span><span class="wrd">tempo</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">quit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">With</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="wrd">UDT.numberMax</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">6</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="wrd">UDT.pMutex</span><span class="oth">(</span><span class="wrd">UDT.numberMax</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><span class="oth">)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">number</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">tempo</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">100</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">15</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">95</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">Sgn</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDT.pMutex</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">MutexCreate</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">))</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">(</span><span class="wrd">u</span><span class="oth">(</span><span class="num">0</span><span class="oth">).</span><span class="wrd">number</span><span class="oth">))</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Single</span>&nbsp;<span class="wrd">t</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Timer</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">pThread</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">Thread</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">))</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">(</span><span class="wrd">u</span><span class="oth">(</span><span class="num">0</span><span class="oth">).</span><span class="wrd">number</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Inkey</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDT.quit</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">((</span><span class="wrd">u</span><span class="oth">(</span><span class="num">0</span><span class="oth">).</span><span class="wrd">number</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">Mod</span>&nbsp;<span class="oth">(</span><span class="wrd">UDT.numberMax</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="num">0</span><span class="oth">).</span><span class="wrd">tempo</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">pThread</span><span class="oth">)</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="wrd">t</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Timer</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">t</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexDestroy</span><span class="oth">(</span><span class="wrd">UDT.pMutex</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">))</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ULongInt</span>&nbsp;<span class="wrd">c</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDT.numberMax</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">c</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="wrd">u</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">count</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Locate</span>&nbsp;<span class="wrd">UDT.numberMax</span><span class="oth">+</span><span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">CULngInt</span><span class="oth">(</span><span class="wrd">c</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="wrd">t</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;increments&nbsp;per&nbsp;second&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'   102
+'    102
+'     102
+'      102
+'       102
+'        102
+'
+'   51 increments per second
+			</pre>Same result values because synchronous counting (despite of increasing tempo values).<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgMultiThreading.html">Multi-Threading Overview</a><br \>
+<li> <a href="ProPgMtThreads.html">Threads</a><br \>
+<li> <a href="ProPgMtMutualExclusion.html">Mutual Exclusion</a><br \>
+<li> <a href="ProPgMtConditionalVariables.html">Conditional Variables</a><br \>
+<li> <a href="ProPgMtCriticalSectionsFAQ.html">Critical Sections FAQ</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

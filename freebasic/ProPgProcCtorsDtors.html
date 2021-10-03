@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>Constructors and Destructors</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Constructors and Destructors</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The module <b>Constructors</b> / <b>Destructors</b> executed before / after module-level code.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+Do not confuse the module constructor (destructor) with the UDT constructor (destructor) that runs at the creation (destruction) of a UDT instance.<br \>
+<br \>
+The module constructors (destructors) allow to specify the execution of procedures at the beginning (at the end) of a program.<br \>
+<br \>
+<div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+The constructor (destructor) keyword is used to force execution of the procedure prior (posterior) to that of module-level code.<br \>
+Procedures defined as module constructors or destructors may be used the same way as ordinary procedures (they may be also called from within module-level code).<br \>
+A module may define multiple constructor and destructors procedures.<br \>
+<br \>
+In a single module, depending on the build and run-time environment of the target system:<br \>
+<div class="fb_indent"><b>-</b> module constructors (destructors) may execute in the order in which they are defined, or reverse order,<br \>
+<b>-</b> module constructors (destructors) may execute before or after global static variables having constructors (destructors),<br \>
+<b>-</b> module constructors (destructors) may execute before or after other module constructors (destructors) having priority attribute,<br \>
+<b>-</b> module constructors (destructors) with priority attribute may execute before or after global static variables having constructors (destructors).<br \>
+<br \>
+</div>The constructors and destructors of a module are always executed (like its main code), even if it is compiled as secondary module or static library, or even loaded as dynamic library (dll).<br \>
+<br \>
+</div><div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><br \>
+<tt>[<a href="KeyPgPublic.html">Public</a> | <a href="KeyPgPrivate.html">Private</a>] <a href="KeyPgSub.html">Sub</a> <i>procedure_name</i> [<a href="KeyPgAlias.html">Alias</a> "<i>external_identifier</i>"] [()] {<a href="KeyPgModuleConstructor.html">Constructor</a> | <a href="KeyPgModuleDestructor.html">Destructor</a>} [<i>priority</i>] [<a href="KeyPgStatic.html">Static</a>]<br \>
+<div class="fb_indent">{ <i>procedure body</i> }<br \>
+</div><a href="KeyPgEndblock.html">End</a> <a href="KeyPgSub.html">Sub</a></tt><br \>
+<br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><br \>
+The constructor (destructor) keyword is used in Sub definitions only (forbidden at declaration line level).<br \>
+Subs defined as constructors (destructors) may be used in the same way as ordinary Subs (they may be called from within module-level code).<br \>
+The Sub must have an empty parameter list. <br \>
+<br \>
+The priority attribute, an integer between 101 and 65535, can be used to force constructors (destructors) to be executed in a certain order, relative to other constructors (destructors) also having priority attribute.<br \>
+The value of priority has no specific meaning, only the relationship of the number with other constructor (destructor) priorities.<br \>
+101 is the highest (lowest) priority and is executed first (last), relative to other constructors (destructors) also having priority attribute.<br \>
+<br \>
+Public static member Subs (having an empty parameter list) of UDT can be defined as a module constructors (destructors), by adding the constructor (destructor) keyword in the Sub definitions.<br \>
+<br \>
+Accessing global static objects having constructors (destructors) from module constructors (destructors) should be avoided due to variations in execution order on different build systems.<br \>
+<br \>
+</div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgCtorsDtors.html">UDT Constructors and Destructors</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

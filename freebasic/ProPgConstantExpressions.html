@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>Constant Expressions</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Constant Expressions</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<b>Constant</b> term defines an <b>expression</b> that can be evaluated at compile time.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+A constant expression is an expression that contains only constants (this means that it does not contain any variables at the evaluation time) with some operators/functions allowed.<br \>
+A constant expression can be evaluated during compilation rather than at run time, and can be used in any place that a constant can occur.<br \>
+<br \>
+Constant expressions are mainly required:<br \>
+<div class="fb_indent"><b>-</b> as arguments for the preprocessor directives and intrinsic defines macros,<br \>
+<b>-</b> as initializers for the Enum/Type structures and global/static variables,<br \>
+<b>-</b> as data constants for the Data Statements.<br \>
+<br \>
+</div><div class="fb_sect_title">List of operators/functions allowed in constant expressions</div><div class="fb_sect_cont"><br \>
+fbc is not a scripting language and does not have a full feature macro processor on the front end.<br \>
+Constant folding is an optimization in fbc that takes constant expressions, evaluates the constant expression at compile time and produces a single constant result.<br \>
+For constant folding to work, a compile time implementation of the operators/functions must be written.<br \>
+<br \>
+Only the following operators/functions with constant arguments can be used to constitute constant expressions:<br \>
+<div class="fb_indent"><tt>Bit, BitReset, BitSet, HiByte, HiWord, LoByte, LoWord<br \>
++, -, *, /, \, ^, Mod, Shl, Shr<br \>
+=, <>, <=, >=, <, ><br \>
+And, Eqv, Imp, Or, Not, Xor<br \>
+Abs, Acos, Asin, Atan2, Atn, Cos, Exp, Fix, Frac, Int, Log, Sgn, Sin, Sqr, Tan<br \>
+Asc, Chr, CVD, CVI, CVL, CVLongInt, CVS, CVShort, Len, SizeOf<br \>
+Cast, CBool, CByte, CDbl, CInt, CLng, CLngInt, CShort, CSign, CSng, CUByte, CUInt, CULng, CULngInt, CUnsg, CUShort<br \>
+<b>more obviously all predefined symbols</b></tt><br \>
+<br \>
+</div></div><div class="fb_sect_title">Basic example of using constant expressions</div><div class="fb_sect_cont"><br \>
+Example illustrating three different use-cases:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#define&nbsp;pi&nbsp;4&nbsp;*&nbsp;Atn(1)<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Sqr</span><span class="oth">(</span><span class="num">2</span><span class="oth">)</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">pt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">300</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">Cos</span><span class="oth">(</span><span class="wrd">pi</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">6</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">300</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">Sin</span><span class="oth">(</span><span class="wrd">pi</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">6</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">pt</span>&nbsp;<span class="wrd">p</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">pi</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;3.14159...</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">d</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;1.41421...</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">p.x</span><span class="oth">,</span>&nbsp;<span class="wrd">p.y</span>&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;260&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;150</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgExpressionsStatements.html">Differences between Expressions and Statements</a><br \>
+<li> <a href="ProPgInitialization.html">Variable Initializers</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

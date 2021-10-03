@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>Cast</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Cast</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Converts an expression to a specified data type<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+Cast( <a href="DataType.html">datatype</a>, <i>expression</i> )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>datatype</i></tt> <br \>
+<div class="fb_indent">a built-in data type (standard type)<br \>
+</div><tt><i>expression</i></tt> <br \>
+<div class="fb_indent">a variable of another built-in data type<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Converts <tt><i>expression</i></tt> into a different <tt><a href="DataType.html">datatype</a></tt>. Useful to be used in macros when <tt><a href="DataType.html">datatype</a></tt> is unknown and also when converting to <a href="KeyPgTypeAlias.html">Type Alias</a>.<br \>
+<br \>
+This is a general form of conversion operators such as <tt><a href="KeyPgCint.html">CInt</a></tt> or <tt><a href="KeyPgCdbl.html">CDbl</a></tt>.<br \>
+<tt><b>Cast</b></tt> is more versatile because it can be used on built-in types that have a built-in <tt><a href="KeyPgOperator.html">Cast Operator</a></tt>, but don't have a built-in keyword for it: e.g. <tt><b>Cast</b>( <i>Byte</i>, <i>boolean</i> )</tt>.<br \>
+It is also suitable for use in cases where the type of a variable is not fixed in the code - for example, it might be <tt><a href="KeyPgPpdefine.html">Define</a></tt>d earlier, or may be the <tt><a href="KeyPgTypeof.html">Type Of</a></tt> a different variable or expression.<br \>
+<br \>
+<b>Note:</b> If you want to use an operator specifically for converting to different types of <tt><a href="KeyPgPtr.html">Pointer</a></tt>s, consider using <tt><a href="KeyPgCptr.html">CPtr</a></tt> instead.<br \>
+<br \>
+<b>Upcasting:</b> In an inheritance structure, the upcasting is converting a derived type reference or pointer into a base type.<br \>
+In this special use, <tt><b>Cast</b></tt> applied on a derived-type instance (<tt><i>expression</i></tt>) can be used to return a base-type (<tt><i>datatype</i></tt>) reference.<br \>
+<br \>
+By using a member <tt><a href="KeyPgOpCast.html">Operator Cast</a></tt>, <tt><b>Cast</b></tt> can be overloaded for a user defined type expression.<br \>
+  <br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;will&nbsp;print&nbsp;-128&nbsp;because&nbsp;the&nbsp;integer&nbsp;literal&nbsp;will&nbsp;be&nbsp;converted&nbsp;to&nbsp;a&nbsp;signed&nbsp;Byte</span><br />
+<span class="com">''&nbsp;(this&nbsp;Casting&nbsp;operation&nbsp;is&nbsp;equivalent&nbsp;to&nbsp;using&nbsp;CByte)</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span>&nbsp;<span class="key">Byte</span><span class="oth">,</span>&nbsp;<span class="num">&amp;h0080</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="com">''&nbsp;will&nbsp;print&nbsp;3&nbsp;because&nbsp;the&nbsp;floating-point&nbsp;value&nbsp;will&nbsp;be&nbsp;converted&nbsp;to&nbsp;an&nbsp;Integer</span><br />
+<span class="com">''&nbsp;(this&nbsp;Casting&nbsp;operator&nbsp;is&nbsp;equivalent&nbsp;to&nbsp;using&nbsp;CInt)</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="num">3.1</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">''&nbsp;macro&nbsp;sizeofDerefPtr():&nbsp;returns&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;dereferenced&nbsp;pointer</span><br />
+<span class="def">#define&nbsp;sizeofDerefPtr(ptrToDeref)&nbsp;SizeOf(*Cast(TypeOf(ptrToDeref),&nbsp;0))<br />
+</span><br />
+<span class="com">''&nbsp;macro&nbsp;typeofDerefPtr():&nbsp;returns&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;dereferenced&nbsp;pointer</span><br />
+<span class="def">#define&nbsp;typeofDerefPtr(ptrToDeref)&nbsp;TypeOf(*Cast(TypeOf(ptrToDeref),&nbsp;0))<br />
+</span><br />
+<br />
+<span class="com">'&nbsp;Allocate&nbsp;dynamically&nbsp;memory&nbsp;for&nbsp;a&nbsp;Double&nbsp;by&nbsp;New</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pd</span><br />
+<span class="wrd">pd</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">typeofDerefPtr</span><span class="oth">(</span><span class="wrd">pd</span><span class="oth">)</span><br />
+<span class="oth">*</span><span class="wrd">pd</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">3.14159</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="wrd">pd</span><br />
+<br />
+<span class="com">'&nbsp;Allocate&nbsp;dynamically&nbsp;memory&nbsp;for&nbsp;a&nbsp;Zstring*10&nbsp;by&nbsp;Callocate</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pz</span><br />
+<span class="wrd">pz</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">CAllocate</span><span class="oth">(</span><span class="num">10</span><span class="oth">,</span>&nbsp;<span class="wrd">sizeofDerefPtr</span><span class="oth">(</span><span class="wrd">pz</span><span class="oth">))</span><br />
+<span class="oth">*</span><span class="wrd">pz</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="wrd">pz</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<span class="key">Delete</span>&nbsp;<span class="wrd">pd</span><br />
+<span class="key">Deallocate</span><span class="oth">(</span><span class="wrd">pz</span><span class="oth">)</span><br />
+</div></tt><br />
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Not available in the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect unless referenced with the alias <tt><b>__Cast</b></tt>.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgOpCast.html">Cast (Operator)</a></tt><br \>
+<li> <tt><a href="KeyPgCptr.html">CPtr</a></tt><br \>
+<li> <tt><a href="KeyPgCint.html">CInt</a></tt><br \>
+<li> <tt><a href="KeyPgTypeof.html">TypeOf</a></tt><br \>
+<li> <a href="ProPgDataConversion.html">Coercion and Conversion</a><br \>
+</ul> <br \>
+</div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

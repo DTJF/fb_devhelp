@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>fb_MemCopyClear</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">fb_MemCopyClear</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Copies the first part of a block of memory from a location to another and clears the rest<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <b>fb_MemCopyClear</b> ( <a href="KeyPgByref.html">ByRef</a> <i>dst</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a>, <a href="KeyPgByval.html">ByVal</a> <i>dstlen</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgUinteger.html">UInteger</a>, <a href="KeyPgByref.html">ByRef</a> <i>src</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a>, <a href="KeyPgByval.html">ByVal</a> <i>srclen</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgUinteger.html">UInteger</a> )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+<b>fb_memcopy</b>( <i>dst</i>, <i>dstlen</i>, <i>src</i>, <i>srclen</i> )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>dst</i></tt><br \>
+<div class="fb_indent">starting address of destination memory<br \>
+</div><tt><i>dstlen</i></tt><br \>
+<div class="fb_indent">number of bytes to write<br \>
+</div><tt><i>src</i></tt><br \>
+<div class="fb_indent">starting address of source memory<br \>
+</div><tt><i>srclen</i></tt><br \>
+<div class="fb_indent">number of first bytes to copy (other are cleared)<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>fb_memcopycopy</b></tt> copies a given number of bytes (<tt><i>dstlen</i></tt>) from the memory location <tt><i>src</i></tt> to the memory location <tt><i>dst</i></tt>, but only the first <tt><i>srclen</i></tt> bytes are really copied and the rest is cleared (<tt><i>(dstlen</i></tt> - <tt><i>srclen)</i></tt> bytes).<br \>
+Each starting address is taken from a reference to a variable or array element.<br \>
+The memory areas must not overlap (otherwise, the copying is not guaranteed to work properly, especially depending on the platform).<br \>
+To avoid overflows, the valid memory areas pointed to by both <tt><i>src</i></tt> and <tt><i>dst</i></tt> must be at least equal in size to the number of bytes to be copied (including the bytes cleared).<br \>
+<br \>
+The underlying type of the objects pointed to by both the source and destination pointers are irrelevant for this function.<br \>
+The function does not check for any terminating null character in the source area. It always copies exactly the given number of bytes.<br \>
+The result is a binary copy of the data for the first <tt><i>srclen</i></tt> bytes and a zeroing for the rest (<tt><i>(dstlen</i></tt> - <tt><i>srclen)</i></tt> bytes).<br \>
+<br \>
+<b>Note:</b> In order to copy from/to memory referenced by a <tt><a href="KeyPgPtr.html">Pointer</a></tt>, it must be dereferenced first (or else specify in argument term the <tt><a href="KeyPgByval.html">ByVal</a></tt> keyword in front of the pointer name). Otherwise, <tt><b>fb_MemCopyClear</b></tt> will try to copy the bytes from/to the <b>pointer variable</b>'s memory location.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="wrd">src</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">10</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&quot;</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">dst</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">10</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;012345678&quot;</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;before:&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;src&nbsp;=&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">src</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;dst&nbsp;=&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">dst</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="com">''&nbsp;copy&nbsp;first&nbsp;4&nbsp;bytes&nbsp;and&nbsp;clear&nbsp;the&nbsp;rest</span><br />
+<span class="key">fb_MemCopyClear</span><span class="oth">(</span><span class="wrd">dst</span><span class="oth">,</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">dst</span><span class="oth">),</span>&nbsp;<span class="wrd">src</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">)</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;after:&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;src&nbsp;=&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">src</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;dst&nbsp;=&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">dst</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+before:
+src = FreeBASIC
+dst = 012345678
+
+after:
+src = FreeBASIC
+dst = Free
+		</pre></div></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> The behavior and usage is new to FreeBASIC.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgFBMemcopy.html">Fb_Memcopy</a></tt><br \>
+<li> <tt><a href="KeyPgFBMemmove.html">Fb_Memmove</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

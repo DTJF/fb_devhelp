@@ -1,0 +1,423 @@
+<html>
+<head>
+<title>Using References</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Using References</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The syntax for declaring the <b>References</b> and <b>Using</b> them instead of pointers.<br \>
+<a name="ProPgReferencesTop"></a><br \>
+<b>Preamble:</b><br \>
+<br \>
+The different syntaxes used to declare a reference all use the 'Byref' keyword.<br \>
+Since a pointer is a variable, it is possible to modify its contents, and the same pointer can allow successive access to different variables. The association between a reference and the object that it designates is, however, fixed when it is declared.<br \>
+<br \>
+The 'Byref' keyword indicates a variable that is declared by reference. It is used in three different contexts:<br \>
+<div class="fb_indent"><b>-</b> In a procedure signature, to pass an argument by reference (byref parameter).<br \>
+<b>-</b> In a function signature, to return a variable to the caller by reference (byref return).<br \>
+<b>-</b> In the body of the code, to define a reference variable (byref variable).<br \>
+<br \>
+</div><u>Table of Contents</u><br \>
+<div class="fb_indent"><b><a href="#ProPgReferences1">1. Passing parameter by reference to procedure (byref parameter)</a></b><br \>
+<b><a href="#ProPgReferences2">2. Returning variable by reference from function (byref return)</a></b><br \>
+<b><a href="#ProPgReferences3">3. Defining reference variable in code (byref variable)</a></b><br \>
+<b><a href="#ProPgReferences4">4. References versus pointers by comparative examples</a></b><br \>
+<b><a href="#ProPgReferences5">5. Hacking on usage of references with the additional syntaxes allowed by FreeBASIC</a></b><br \>
+<br \>
+</div><a name="ProPgReferences1"></a><br \>
+<div class="fb_sect_title">1. Passing parameter by reference to procedure (byref parameter)</div><div class="fb_sect_cont"><br \>
+<ul><li> Syntax of declaration:<br \>
+</ul><div class="fb_indent"><tt>{<a href="KeyPgSub.html">Sub</a>|<a href="KeyPgFunction.html">Function</a>} <i>procedure_name</i> (<a href="KeyPgByrefVariables.html">ByRef</a> <i>parameter</i> <a href="KeyPgAs.html">As</a> [<a href="KeyPgConstQualifier.html">Const</a>] <a href="DataType.html">datatype</a>, ...</tt><br \>
+<br \>
+When used in the parameter list of a procedure, the <i>Byref</i> keyword indicates that an argument is passed by reference, not by value. The consequence is that any modification made to the argument in the called procedure is reflected in the body of the call.<br \>
+If the procedure does not need or must not to modify the transmitted object, the <i>Const</i> qualifier can be used in the declaration (before the declaration of the <i>datatype</i>) so that the compiler checks in the body of the procedure that the passed object is not modified in any place (otherwise, a compiler error message is issued).<br \>
+<br \>
+</div><ul><li> Full syntax example for passing a parameter by reference:<br \>
+</ul><div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">passbyref</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">ref</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">value</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;for&nbsp;passing&nbsp;by&nbsp;reference</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">X</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">X</span><br />
+<span class="wrd">passbyref</span><span class="oth">(</span><span class="wrd">X</span><span class="oth">,</span>&nbsp;<span class="num">1.23</span><span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">X</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">passbyref</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">ref</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">value</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;for&nbsp;passing&nbsp;by&nbsp;reference</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">ref</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">value</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+ 0
+ 1.23
+			</pre></div></div><b>Note:</b> A pointer can be passed directly (without first dereferencing it) to <tt>Byref</tt> procedure parameter if in argument term the <tt>Byval</tt> keyword is specified in front of the pointer name.<br \>
+<br \>
+<div style="text-align: center;"><a href="#ProPgReferencesTop">Back to top</a></div><br \>
+<a name="ProPgReferences2"></a><br \>
+</div><div class="fb_sect_title">2. Returning variable by reference from function (byref return)</div><div class="fb_sect_cont"><br \>
+<ul><li> Syntax of declaration:<br \>
+</ul><div class="fb_indent"><tt><a href="KeyPgFunction.html">Function</a> <i>function_name</i> (...) <a href="KeyPgByrefVariables.html">ByRef</a> <a href="KeyPgAs.html">As</a> [<a href="KeyPgConstQualifier.html">Const</a>] <a href="DataType.html">datatype</a></tt><br \>
+<br \>
+When used in the return type of a function, the <i>Byref</i> keyword indicates that the variable is returned by reference, not by value. The consequence is that the caller can modify the variable returned by the function and the modification is reflected in the state of the variable that the function processes.<br \>
+If the caller does not need or must not to modify the transmitted object, the <i>Const</i> qualifier can be used in the declaration (before the declaration of the <i>datatype</i>) so that the compiler checks in the body of the caller that the returned object is not modified in any place (otherwise, a compiler error message is issued).<br \>
+<br \>
+Operators (member or global), when used as functions, have also the capability to return results by reference, by using the similar syntax.<br \>
+<br \>
+</div><ul><li> Full syntax example for returning a variable by reference:<br \>
+</ul><div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">returnbyref</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;for&nbsp;returning&nbsp;by&nbsp;reference</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">returnbyref</span><span class="oth">()</span><br />
+<span class="wrd">returnbyref</span><span class="oth">()</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">4.56</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">returnbyref</span><span class="oth">()</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">returnbyref</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;for&nbsp;returning&nbsp;by&nbsp;reference</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">X</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">X</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+ 0
+ 4.56
+		</pre>As for the arguments list, it should always be surrounded with parentheses even if empty.<br \>
+<br \>
+<br \>
+</div><b>Specific syntax:</b><br \>
+<div class="fb_indent">On the left-hand side of an assignment expression using the '=' symbol, the result of the function (returned by reference) must be enclosed in parentheses when the function calls one single argument, in order to solve the parsing ambiguity.<br \>
+From fbc version 0.90, '=&gt;' can be used for assignments, in place of '=', same as for initializers, allowing to avoid parsing ambiguity (without parentheses):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">transitbyref</span><span class="oth">(</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">_s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+<br />
+<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;abcd&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">s</span><br />
+<br />
+<span class="com">''&nbsp;the&nbsp;enclosing&nbsp;parentheses&nbsp;are&nbsp;required&nbsp;here.</span><br />
+<span class="oth">(</span>&nbsp;<span class="wrd">transitbyref</span><span class="oth">(</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">transitbyref</span><span class="oth">(</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;efgh&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">s</span><br />
+<br />
+<span class="com">''&nbsp;the&nbsp;enclosing&nbsp;parentheses&nbsp;are&nbsp;not&nbsp;required&nbsp;here.</span><br />
+<span class="wrd">transitbyref</span><span class="oth">(</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">=&gt;</span>&nbsp;<span class="wrd">transitbyref</span><span class="oth">(</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;ijkl&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">s</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">transitbyref</span><span class="oth">(</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">_s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;This&nbsp;var-len&nbsp;string&nbsp;will&nbsp;transit&nbsp;by&nbsp;reference&nbsp;(input&nbsp;and&nbsp;output),&nbsp;no&nbsp;copy&nbsp;will&nbsp;be&nbsp;created.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">_s</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+abcd
+abcdefgh
+abcdefghijkl
+					</pre></div></div></div></div><b>Note:</b> A pointer can be returned directly (without first dereferencing it) for a <tt>Byref</tt> function return if in <tt>identifier=</tt> or <tt>Function=</tt> or <tt>Return</tt> statement the <tt>Byval</tt> keyword is specified in front of the pointer name.<br \>
+<br \>
+<div style="text-align: center;"><a href="#ProPgReferencesTop">Back to top</a></div><br \>
+<a name="ProPgReferences3"></a><br \>
+</div><div class="fb_sect_title">3. Defining reference variable in code (byref variable)</div><div class="fb_sect_cont"><br \>
+<ul><li> Syntax of declaration:<br \>
+</ul><div class="fb_indent"><div class="fb_indent"><tt>{<a href="KeyPgDim.html">Dim</a>|<a href="KeyPgStatic.html">Static</a>} [<a href="KeyPgShared.html">Shared</a>] <a href="KeyPgByrefVariables.html">ByRef</a> <a href="KeyPgAs.html">As</a> [<a href="KeyPgConstQualifier.html">Const</a>] <a href="DataType.html">datatype</a> <i>ref</i> = <i>variable</i></tt><br \>
+</div>or<br \>
+<div class="fb_indent"><tt>[<a href="KeyPgStatic.html">Static</a>] <a href="KeyPgVar.html">Var</a> [<a href="KeyPgShared.html">Shared</a>] <a href="KeyPgByrefVariables.html">ByRef</a> <i>ref</i> = <i>variable</i></tt><br \>
+<br \>
+</div>Unlike pointers, the reference variable must be assigned as soon as the declaration using an initializer.<br \>
+<i>datatype</i> must be the same type as that of the variable, or a compatible type (for example one from the types of its Bases in case of inheritance):<br \>
+<div class="fb_indent"><b>-</b> Only when the two types are identical (or using the second syntax with <i>Var</i>), a reference variable can be considered as an alias of the variable. One can do the same operations through such a reference variable as one can do with the original variable.<br \>
+<b>-</b> Otherwise (types compatible but not identical), one can not do all same operations than with the original variable:<br \>
+<div class="fb_indent">For example, a base type reference variable referring to a derived type object allows to activate polymorphism when a virtual method is called on it, similarly to a base type pointer referring to a derived type object. One can do the same operations through such a reference variable as one can do with a dereferenced pointer of same type (but for both not the same operations as using directly the derived type instance).<br \>
+<br \>
+</div></div>If the code does not need or must not to modify the referred object, the <i>Const</i> qualifier can be used in the declaration (before the declaration of the <i>data_type</i> in the first syntax) so that the compiler checks in the code that the object is not modified, through the reference variable, in any place (otherwise, a compiler error message is issued).<br \>
+<br \>
+There is no interaction between the life of a reference and the life of the object who is referred (similarly to a pointer: destroy an object does not destroy its pointer(s)).<br \>
+Once created, each one lives his life independently.<br \>
+<br \>
+</div><ul><li> Full syntax example for defining a reference variable in code:<br \>
+</ul><div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">X</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">refX</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">X</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;for&nbsp;defining&nbsp;a&nbsp;reference</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">X</span><br />
+<span class="wrd">refX</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">7.89</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">X</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+ 0
+ 7.89
+</pre><br \>
+</div></div><div style="text-align: center;"><a href="#ProPgReferencesTop">Back to top</a></div><br \>
+<a name="ProPgReferences4"></a><br \>
+</div><div class="fb_sect_title">4. References versus pointers by comparative examples</div><div class="fb_sect_cont"><br \>
+<ul><li> Function returning the greater variable between two integer variables:<br \>
+</ul><div class="fb_indent"><b>-</b> Using pointers (by passing/returning pointer variables):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">maxPtr</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">*</span><span class="wrd">p1</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="oth">*</span><span class="wrd">p2</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">p1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">p2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">i2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">i1</span><span class="oth">,</span>&nbsp;<span class="wrd">i2</span><br />
+<span class="oth">*</span><span class="wrd">maxPtr</span><span class="oth">(@</span><span class="wrd">i1</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">i2</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">3</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">i1</span><span class="oth">,</span>&nbsp;<span class="wrd">i2</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+ 1             2
+ 1             3
+				</pre></div></div><b>-</b> Using references (by passing/returning reference variables):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">maxRef</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">r1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">r2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">r1</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="wrd">r2</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">r1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">r2</span><br />
+&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">i2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">i1</span><span class="oth">,</span>&nbsp;<span class="wrd">i2</span><br />
+<span class="wrd">maxRef</span><span class="oth">(</span><span class="wrd">i1</span><span class="oth">,</span>&nbsp;<span class="wrd">i2</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">3</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">i1</span><span class="oth">,</span>&nbsp;<span class="wrd">i2</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+ 1             2
+ 1             3
+				</pre><br \>
+</div></div></div><ul><li> Inheritance structure with overriding subroutine and overriding function with covariant return:<br \>
+</ul><div class="fb_indent"><b>-</b> Using pointers to objects:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="key">Object</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">clone</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">Destroy</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">myBase.clone</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pp</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">myBase</span><span class="oth">(</span><span class="key">This</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myBase.clone()&nbsp;As&nbsp;myBase&nbsp;Ptr&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">pp</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pp</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">myBase.Destroy</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myBase.Destroy()&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">myBase</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">clone</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;<span class="com">''&nbsp;overriding&nbsp;member&nbsp;function&nbsp;with&nbsp;covariant&nbsp;return</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">Destroy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;overriding&nbsp;member&nbsp;subroutine</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">myDerived.clone</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Ptr</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;overriding&nbsp;member&nbsp;function&nbsp;with&nbsp;covariant&nbsp;return</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pc</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">myDerived</span><span class="oth">(</span><span class="key">This</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myDerived.clone()&nbsp;As&nbsp;myDerived&nbsp;Ptr&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">pc</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pc</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">myDerived.Destroy</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;overriding&nbsp;member&nbsp;subroutine</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myDerived.Destroy()&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="wrd">c</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ppc</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">c</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;base&nbsp;type&nbsp;pointer&nbsp;to&nbsp;derived&nbsp;object&nbsp;c</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pcc</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">c</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;derived&nbsp;type&nbsp;pointer&nbsp;to&nbsp;derived&nbsp;object&nbsp;c</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ppc1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">ppc</span><span class="oth">-&gt;</span><span class="wrd">clone</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;base&nbsp;type&nbsp;pointer&nbsp;to&nbsp;clone&nbsp;of&nbsp;object&nbsp;c</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(through&nbsp;its&nbsp;base&nbsp;type&nbsp;pointer&nbsp;and&nbsp;polymorphism)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pcc1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pcc</span><span class="oth">-&gt;</span><span class="wrd">clone</span><span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;derived&nbsp;type&nbsp;pointer&nbsp;to&nbsp;derived&nbsp;object&nbsp;c</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(through&nbsp;its&nbsp;derived&nbsp;type&nbsp;pointer&nbsp;and&nbsp;covariance&nbsp;of&nbsp;return&nbsp;value)</span><br />
+<span class="key">Print</span><br />
+<span class="wrd">ppc1</span><span class="oth">-&gt;</span><span class="wrd">Destroy</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;using&nbsp;base&nbsp;type&nbsp;pointer&nbsp;and&nbsp;polymorphism</span><br />
+<span class="wrd">pcc1</span><span class="oth">-&gt;</span><span class="wrd">Destroy</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;using&nbsp;derived&nbsp;type&nbsp;pointer</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+myDerived.clone() As myDerived Ptr        4663904
+myDerived.clone() As myDerived Ptr        4663952
+
+myDerived.Destroy()                       4663904
+myDerived.Destroy()                       4663952
+				</pre></div></div><b>-</b> Using references to objects:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="key">Object</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">clone</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">Destroy</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">myBase.clone</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pp</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">myBase</span><span class="oth">(</span><span class="key">This</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myBase.clone()&nbsp;Byref&nbsp;As&nbsp;myBase&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">pp</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="wrd">pp</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">myBase.Destroy</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myBase.Destroy()&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">myBase</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">clone</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;<span class="com">''&nbsp;overriding&nbsp;member&nbsp;function&nbsp;with&nbsp;covariant&nbsp;return</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">Destroy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;overriding&nbsp;member&nbsp;subroutine</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">myDerived.clone</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;overriding&nbsp;member&nbsp;function&nbsp;with&nbsp;covariant&nbsp;return</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pc</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">myDerived</span><span class="oth">(</span><span class="key">This</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myDerived.clone()&nbsp;Byref&nbsp;As&nbsp;myDerived&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">pc</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="wrd">pc</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">myDerived.Destroy</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;overriding&nbsp;member&nbsp;subroutine</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myDerived.Destroy()&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="wrd">c</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="wrd">rpc</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">c</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;base&nbsp;type&nbsp;reference&nbsp;to&nbsp;derived&nbsp;object&nbsp;c</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="wrd">rcc</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">c</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;derived&nbsp;type&nbsp;reference&nbsp;to&nbsp;derived&nbsp;object&nbsp;c</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="wrd">rpc1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">rpc.clone</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;base&nbsp;type&nbsp;reference&nbsp;to&nbsp;clone&nbsp;of&nbsp;object&nbsp;c</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(through&nbsp;its&nbsp;base&nbsp;type&nbsp;reference&nbsp;and&nbsp;polymorphism)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="wrd">rcc1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">rcc.clone</span><span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;derived&nbsp;type&nbsp;reference&nbsp;to&nbsp;derived&nbsp;object&nbsp;c</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(through&nbsp;its&nbsp;derived&nbsp;type&nbsp;reference&nbsp;and&nbsp;covariance&nbsp;of&nbsp;return&nbsp;value)</span><br />
+<span class="key">Print</span><br />
+<span class="wrd">rpc1.Destroy</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;using&nbsp;base&nbsp;typpe&nbsp;reference&nbsp;and&nbsp;polymorphism</span><br />
+<span class="wrd">rcc1.Destroy</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;using&nbsp;derived&nbsp;type&nbsp;reference</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+myDerived.clone() Byref As myDerived      9775712
+myDerived.clone() Byref As myDerived      9775760
+
+myDerived.Destroy()                       9775712
+myDerived.Destroy()                       9775760
+</pre></div></div></div><div style="text-align: center;"><a href="#ProPgReferencesTop">Back to top</a></div><br \>
+<a name="ProPgReferences5"></a><br \>
+</div><div class="fb_sect_title">5. Hacking on usage of references with the additional syntaxes allowed by FreeBASIC</div><div class="fb_sect_cont"><br \>
+In FB, a reference is implemented under the hood through an internal pointer which holds the address of the variable.<br \>
+<br \>
+The access to this internal pointer is presently allowed for user, in read, and also in write for a reference variable (unlike many other languages):<br \>
+<div class="fb_indent"><b>-</b> Therefore, the address of the referred variable (the value of the internal pointer) can be get by using the '@' operator applied on the reference variable symbol name:<br \>
+<div class="fb_indent"><tt><i>variable_address</i> = <a href="KeyPgOpAt.html">@</a><i>ref</i></tt><br \>
+</div><b>-</b> And even, a reference variable can be reassigned (by modifying the value of the internal pointer) to refer to another variable (of compatible type) by doing:<br \>
+<div class="fb_indent"><tt><a href="KeyPgOpAt.html">@</a><i>ref</i> = <a href="KeyPgOpAt.html">@</a><i>other_variable</i></tt><br \>
+</div><b>-</b> The address of the internal pointer of a reference variable can even be obtained:<br \>
+<div class="fb_indent"><tt>internal_pointer_address = <a href="KeyPgOpAt.html">@</a><a href="KeyPgOpAt.html">@</a>ref</tt><br \>
+</div><b>Note:</b><br \>
+<div class="fb_indent"><b>-</b> A reference variable can also be re-initialized to a "null" reference:<br \>
+<div class="fb_indent"><tt><a href="KeyPgOpAt.html">@</a><i>ref</i> = 0</tt><br \>
+</div><b>-</b> A reference variable can even be directly declared as a "null" reference:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDim.html">Dim</a> <a href="KeyPgByrefVariables.html">ByRef</a> <a href="KeyPgAs.html">As</a> <a href="DataType.html">datatype</a> <i>ref</i> = <a href="KeyPgOpValueOf.html">*</a><a href="KeyPgCptr.html">CPtr</a>(<a href="DataType.html">datatype</a> <a href="KeyPgPtr.html">Ptr</a>, 0)</tt><br \>
+<br \>
+</div></div></div>Thus, by always using the same reference symbol name, one can mix the pure syntax on the reference with the syntax on its internal pointer.<br \>
+<br \>
+<ul><li> Example of hacking on reference symbol name:<br \>
+</ul><div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">resizeZstring</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">refZstring</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">length</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span><br />
+<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">prntZstring</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">refZstring</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="wrd">refZ</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">CPtr</span><span class="oth">(</span><span class="key">ZString</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;&quot;null&quot;&nbsp;reference&nbsp;declaration</span><br />
+<br />
+<span class="key">Const</span>&nbsp;<span class="wrd">cz1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FB&quot;</span><br />
+<span class="oth">@</span><span class="wrd">refZ</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@(</span><span class="wrd">resizeZstring</span><span class="oth">(</span><span class="wrd">refZ</span><span class="oth">,</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">cz1</span><span class="oth">)))</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;reference&nbsp;(re-)inititialization</span><br />
+<span class="wrd">refZ</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">cz1</span><br />
+<span class="wrd">prntZstring</span><span class="oth">(</span><span class="wrd">refZ</span><span class="oth">)</span><br />
+<br />
+<span class="key">Const</span>&nbsp;<span class="wrd">cz2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&quot;</span><br />
+<span class="oth">@</span><span class="wrd">refZ</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@(</span><span class="wrd">resizeZstring</span><span class="oth">(</span><span class="wrd">refZ</span><span class="oth">,</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">cz2</span><span class="oth">)))</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;reference&nbsp;re-inititialization</span><br />
+<span class="wrd">refZ</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">cz2</span><br />
+<span class="wrd">prntZstring</span><span class="oth">(</span><span class="wrd">refZ</span><span class="oth">)</span><br />
+<br />
+<span class="key">Const</span>&nbsp;<span class="wrd">cz3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&nbsp;1.06.0&quot;</span><br />
+<span class="oth">@</span><span class="wrd">refZ</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@(</span><span class="wrd">resizeZstring</span><span class="oth">(</span><span class="wrd">refZ</span><span class="oth">,</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">cz3</span><span class="oth">)))</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;reference&nbsp;re-inititialization</span><br />
+<span class="wrd">refZ</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">cz3</span><br />
+<span class="wrd">prntZstring</span><span class="oth">(</span><span class="wrd">refZ</span><span class="oth">)</span><br />
+<br />
+<span class="key">Const</span>&nbsp;<span class="wrd">cz4</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+<span class="oth">@</span><span class="wrd">refZ</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@(</span><span class="wrd">resizeZstring</span><span class="oth">(</span><span class="wrd">refZ</span><span class="oth">,</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">cz4</span><span class="oth">)))</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;reference&nbsp;re-inititialization&nbsp;to&nbsp;&quot;null&quot;&nbsp;reference</span><br />
+<span class="wrd">refZ</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">cz4</span><br />
+<span class="wrd">prntZstring</span><span class="oth">(</span><span class="wrd">refZ</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">resizeZstring</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">refZstring</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">length</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">length</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">@</span><span class="wrd">refZstring</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Zstring&nbsp;memory&nbsp;buffer&nbsp;allocation&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Zstring&nbsp;memory&nbsp;buffer&nbsp;re-allocation&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">length</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Zstring&nbsp;memory&nbsp;buffer&nbsp;de-allocation&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="com">'&nbsp;Return&nbsp;*Cptr(Zstring&nbsp;Ptr,&nbsp;Reallocate(@refZstring,&nbsp;length&nbsp;*&nbsp;Sizeof(Zstring)))</span><br />
+<span class="com">'&nbsp;''&nbsp;Using&nbsp;the&nbsp;&quot;Return&nbsp;Byval&nbsp;...&quot;&nbsp;syntax&nbsp;allows&nbsp;to&nbsp;avoid&nbsp;casting&nbsp;+&nbsp;dereferencing&nbsp;as&nbsp;above</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="key">Reallocate</span><span class="oth">(@</span><span class="wrd">refZstring</span><span class="oth">,</span>&nbsp;<span class="wrd">length</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">ZString</span><span class="oth">))</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">prntZstring</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">refZstring</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="oth">@</span><span class="wrd">refZstring</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">refZstring</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+Zstring memory buffer allocation
+  9513600     'FB'
+
+Zstring memory buffer re-allocation
+  9513600     'FreeBASIC'
+
+Zstring memory buffer re-allocation
+  9513600     'FreeBASIC 1.06.0'
+
+Zstring memory buffer de-allocation
+  0           ''
+</pre></div></div><div style="text-align: center;"><a href="#ProPgVariadicArgumentsTop">Back to top</a></div><br \>
+<br \>
+</div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgByref.html">Byref (Parameters)</a></tt>, <tt><a href="KeyPgByrefFunction.html">Byref (Function Results)</a></tt>, <tt><a href="KeyPgByrefVariables.html">Byref (Variables)</a></tt><br \>
+<li> <tt><a href="KeyPgOpAt.html">Operator @ (Address Of)</a></tt>, <tt><a href="KeyPgOpValueOf.html">Operator * (Value Of)</a></tt><br \>
+<li> <a href="ProPgFromPtrToRef.html">From Pointers to References</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

@@ -1,0 +1,914 @@
+<html>
+<head>
+<title>Replace Recursion with Iteration</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Replace Recursion with Iteration</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	How to <b>replace</b> any <b>recursion</b> with simple <b>iteration</b>, or unlimited <b>iteration</b> with its own stack.<br \>
+<a name="ProPgRecursionIterationTop"></a><br \>
+<b>Preamble:</b><br \>
+<br \>
+Iteration and recursion are two very useful ways to program, especially to perform a certain number of times a certain script, and thus allow optimization of the code. If iteration is relatively easy to understand, recursion is a concept not necessarily obvious at the beginning.<br \>
+When speaking of a recursive procedure (subroutine or function), we refer to a syntactic characteristic: the procedure, in its own definition, refers to itself (it calls itself).<br \>
+But when talking about recursive process, linear or tree, we are interested in the process flow, not in the syntax of the procedure's writing.<br \>
+Thus, a procedure can have a recursive definition but correspond to an iterative process.<br \>
+<br \>
+Some treatments are naturally implemented as a recursive algorithm (although this is not always the most optimal solution).<br \>
+The main problem of the recursive approach is that it consumes potentially a lot of space on the execution stack: from a certain level of "depth" of recursion, the space allocated for the execution stack of the thread is exhausted, and causes an error of type "stack overflow".<br \>
+Repeatedly calling the same procedure can also make the execution slower, although this may make the code easier.<br \>
+To increase the speed of execution, simple recursive algorithms can be recreated in little more complicated iterative algorithms using loops that execute much faster.<br \>
+<br \>
+What is the use of recursion if it increases the execution time and memory space compared to an iterative solution?<br \>
+There are still cases where it is not possible to do otherwise, where iterative translation does not exist or, where it exists, is much heavier to implement (requiring for example a dynamic storage capacity to substitute for the execution stack).<br \>
+<br \>
+<u>Table of Contents</u><br \>
+<div class="fb_indent"><b><a href="#ProPgRecursionIteration1">1. Recursion and iteration definition</a></b><br \>
+<b><a href="#ProPgRecursionIteration2">2. Problem of replacing recursion with iteration</a></b><br \>
+<b><a href="#ProPgRecursionIteration3">3. Replace tail recursion with simple iteration</a></b><br \>
+<b><a href="#ProPgRecursionIteration4">4. Replace non-tail recursion with more complex iteration</a></b><br \>
+<br \>
+</div><a name="ProPgRecursionIteration1"></a><br \>
+<div class="fb_sect_title">1. Recursion and iteration definition</div><div class="fb_sect_cont"><br \>
+Recursion and iteration both repeatedly execute the instruction set:<br \>
+<div class="fb_indent"><b>-</b> Recursion occurs when an instruction in a procedure calls the procedure itself repeatedly.<br \>
+<b>-</b> Iteration occurs when a loop executes repeatedly until the control condition becomes false.<br \>
+<br \>
+</div>The main difference between recursion and iteration is that recursion is a process always applied to a procedure, while iteration is applied to a set of instructions to execute repeatedly.<br \>
+<br \>
+<u>Definition of Recursion</u><br \>
+<div class="fb_indent">FreeBASIC allows a procedure to call itself in its code. This means that the procedure definition has a procedure call to itself.<br \>
+The set of local variables and parameters used by the procedure are newly created each time the procedure is called and are stored at the top of the execution stack.<br \>
+But every time a procedure calls itself, it does not create a new copy of that procedure.<br \>
+The recursive procedure does not significantly reduce the size of the code and does not even improve the memory usage, but it does a little bit compared to iteration.<br \>
+<br \>
+To end recursion, a condition must be tested to force the return of the procedure without giving a recursive call to itself.<br \>
+The absence of a test of a condition in the definition of a recursive procedure would leave the procedure in infinite recursion once called.<br \>
+<br \>
+<b>Note:</b> When the parameters of a recursive procedure are passed by reference, take care to work with local variables when the code body needs to modify their values.<br \>
+<br \>
+Simple example with a recursive function which returns the factorial of the integer:<br \>
+<div class="fb_indent">The code body of the recursive function is defined by using the recursive definition of the factorial function:<br \>
+<div class="fb_indent"><b><tt>Case (n = 0) : factorial(0) = 1</tt></b><br \>
+<b><tt>Case (n &gt; 0) : factorial(n) = n * factorial(n-1)</tt></b><br \>
+<br \>
+</div>The first line allows to determine the end condition: <tt>If (n = 0) Then Return 1</tt><br \>
+The second line allows to determine the statement syntax which calls the function itself: <tt>Return n * factorial(n - 1)</tt><br \>
+<br \>
+Full code:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">recursiveFactorial</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">recursiveFactorial</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div></div><u>Definition of Iteration</u><br \>
+<div class="fb_indent">Iteration is a process of repeatedly executing a set of instructions until the iteration condition becomes false.<br \>
+The iteration block includes the initialization, the comparison, the execution of the instructions to be iterated and finally the update of the control variable.<br \>
+Once the control variable is updated, it is compared again and the process is repeated until the condition in the iteration is false.<br \>
+Iteration blocks are "for" loop, "while" loop, ...<br \>
+<br \>
+The iteration block does not use the execution stack to store the variables at each cycle. Therefore, the execution of the iteration block is faster than the recursion block.<br \>
+In addition, iteration does not have the overhead of repeated procedure calls that also make its execution faster than a recursion.<br \>
+The iteration is complete when the control condition becomes false.<br \>
+<br \>
+Simple example with a iterative function which returns the factorial of the integer:<br \>
+<div class="fb_indent">The code body of the iterative function is defined by using the iterative definition of the factorial function:<br \>
+<div class="fb_indent"><b><tt>Case (n = 0) : factorial(0) = 1</tt></b><br \>
+<b><tt>Case (n &gt; 0) : factorial(n) = (1) * ..... * (n - 2) * (n - 1) * (n)</tt></b><br \>
+<br \>
+</div>The first line allows to determine the cumulative variable initialization: <tt>result = 1</tt><br \>
+The second line allows to determine the statement syntax which accumulates: <tt>result = result * I</tt><br \>
+<br \>
+Full code:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">iterativeFactorial</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;<span class="com">''&nbsp;variable&nbsp;initialization</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">n</span>&nbsp;&nbsp;<span class="com">''&nbsp;iteration&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">I</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;iterative&nbsp;accumulation</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">result</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div></div><div style="text-align: center;"><a href="#ProPgRecursionIterationTop">Back to top</a></div><br \>
+<a name="ProPgRecursionIteration2"></a><br \>
+</div><div class="fb_sect_title">2. Problem of replacing recursion with iteration</div><div class="fb_sect_cont"><br \>
+Whatever the problem to be solved, there is the choice between the writing of an iterative procedure and that of a recursive procedure.<br \>
+If the problem has a natural recursive structure, then the recursive program is a simple adaptation of the chosen structure. This is the case of the factorial functions (seen above) for example.<br \>
+The recursive approach, however, has drawbacks: some languages ​​do not allow recursion (like the machine language!), and a recursive procedure is often expensive in memory (for execution stack) as in execution time.<br \>
+<br \>
+These disadvantages can be overcome by transforming the recursive procedure, line by line, into an iterative procedure: it is always possible.<br \>
+Replace a recursion with an iteration allows to suppress the limitation on the number of cycles due to the execution stack size available.<br \>
+But for an iteration with its own storage stack, the time spent to calls to the procedures for pushing and pulling stack data is generally greater than the one for passing the parameters of a recursive procedure at each calling cycle.<br \>
+<br \>
+The complexity of the iterative procedure obtained by such a transformation depends on the structure of the recursive procedure:<br \>
+<div class="fb_indent"><b>-</b> For some form of recursive procedure (see below the tail recursion), the transformation into an iterative procedure is very simple by means of just defining local variables corresponding to the parameters of the recursive procedure (passed arguments).<br \>
+<b>-</b> At opposite for other forms of recursive procedure (non-tail recursions), the use of a user storage stack in the iterative procedure is necessary to save the context, as the recursive calls do (values ​​of the passed arguments at each call):<br \>
+<div class="fb_indent">- when executing a recursive procedure, each recursive call leads to push the context on execution stack,<br \>
+- when the condition of stopping recursion occurs, the different contexts are progressively popped from execution stack to continue executing the procedure.<br \>
+<br \>
+</div></div><div style="text-align: center;"><a href="#ProPgRecursionIterationTop">Back to top</a></div><br \>
+<a name="ProPgRecursionIteration3"></a><br \>
+</div><div class="fb_sect_title">3. Replace tail recursion with simple iteration</div><div class="fb_sect_cont"><br \>
+The recursive procedure is a tail recursive procedure if the only recursive call is at the end of the recursion and is therefore not followed by any other statement:<br \>
+<div class="fb_indent"><b>-</b> For a recursive subroutine, the only recursive call is at the end of the recursion.<br \>
+<b>-</b> For a recursive function, the only recursive call is at the end of the recursion and consists in taking into account the return of the function without any other additional operation on it.<br \>
+<br \>
+</div>A tail recursive procedure is easy to transform into an iterative procedure.<br \>
+The principle is that if the recursive call is the last instruction of a procedure, it is not necessary to keep on the execution stack the context of the current call, since it is not necessary to return to it:<br \>
+<div class="fb_indent"><b>-</b> It suffices to replace the parameters by their new values, and resume execution at the beginning of the procedure.<br \>
+<b>-</b> The recursion is thus transformed into iteration, so that there is no longer any risk of causing an overflow of the execution stack.<br \>
+<br \>
+</div>Some non-tail recursive procedures can be transformed into tail recursive procedures, sometimes with a little more complex code, but even before they are subsequently transformed into iterative procedures, these tail recursive procedures often already gain in memory usage and execution time.<br \>
+<br \>
+Example with the simple "factorial" recursive function:<br \>
+<div class="fb_indent">Non-tail recursive form (already presented above):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">recursiveFactorial</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">recursiveFactorial</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+This function has a non-tail recursive form because even though the recursive call is at the end of the function, this recursive call is not the last instruction of the function because one has to multiplied again by <tt>n</tt> when <tt>recursiveFactorial(n - 1)</tt> is got.<br \>
+This calculation is done when popping context from execution stack.<br \>
+<br \>
+</div>It is quite easy to transform this function so that the recursion is a tail recursion.<br \>
+To achieve this, it is necessary to add a new parameter to the function: the <tt>result</tt> parameter which will serve as accumulator:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">tailRecursiveFactorial</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">result</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">tailRecursiveFactorial</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">n</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;tail&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+This time, the calculation is done when pushing context on execution stack.<br \>
+<br \>
+</div>Tail recursion is more explicit by calculating <tt>n - 1</tt> and <tt>result * n</tt> just before the recursive call:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">explicitTailRecursiveFactorial</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">result</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">explicitTailRecursiveFactorial</span><span class="oth">(</span><span class="wrd">n</span><span class="oth">,</span>&nbsp;<span class="wrd">result</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;tail&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Now it is sufficient to resume execution at the beginning of the procedure by a <tt>Goto begin</tt> instead of the function call, to obtain an iterative function:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">translationToIterativeFactorial</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">begin</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">result</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;iteration&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">n</span>&nbsp;&nbsp;<span class="com">''&nbsp;iterative&nbsp;accumulation</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Goto</span>&nbsp;<span class="wrd">begin</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;iterative&nbsp;jump</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Finally it is better to avoid the <tt>If ... Goto ... End If</tt> instructions by using for example a <tt>While ... Wend</tt> block instead, and the added <tt>result</tt> parameter can be transformed into a local variable:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;&nbsp;<span class="wrd">betterTranslationToIterativeFactorial</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="key">Not</span>&nbsp;<span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition&nbsp;of&nbsp;iterative&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">n</span>&nbsp;&nbsp;<span class="com">''&nbsp;iterative&nbsp;accumulation</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">result</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div>Similar transformation steps for the simple "reverse string" recursive function following:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">recursiveReverse</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">s</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">recursiveReverse</span><span class="oth">(</span><span class="key">Mid</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">))</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Left</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">tailRecursiveReverse</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">cumul</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">tailRecursiveReverse</span><span class="oth">(</span><span class="key">Mid</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">),</span>&nbsp;<span class="key">Left</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">cumul</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;tail&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Note: As the <tt>&</tt> operator (string concatenation) is not a symmetric operator <tt>((a & b) &lt;&gt; (b & a)</tt>, while <tt>(x * y) = (y * x)</tt> like previously), the two operand order must to be reversed when pushing context on execution stack instead of before when popping context from execution stack.<br \>
+<tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">explicitTailRecursiveReverse</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">cumul</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Left</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">cumul</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Mid</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">explicitTailRecursiveReverse</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="wrd">cumul</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;tail&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">translationToIterativeReverse</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">begin</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">cumul</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;iteration&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Left</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">cumul</span>&nbsp;&nbsp;<span class="com">''&nbsp;iterative&nbsp;accumulation</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Mid</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Goto</span>&nbsp;<span class="wrd">begin</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;iterative&nbsp;jump</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">betterTranslationToIterativeReverse</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="key">Not</span>&nbsp;<span class="oth">(</span><span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition&nbsp;of&nbsp;iterative&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Left</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">cumul</span>&nbsp;&nbsp;<span class="com">''&nbsp;iterative&nbsp;accumulation</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Mid</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">cumul</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>As less simple example, the "Fibonacci series" non-tail recursive function:<br \>
+<div class="fb_indent">Sometimes, the transformation to a tail recursive function is less obvious.<br \>
+The code body of the recursive function is defined by using the recursive definition of the Fibonacci series:<br \>
+<div class="fb_indent"><b><tt>Case (n = 0) : F(0) = 0</tt></b><br \>
+<b><tt>Case (n = 1) : F(1) = 1</tt></b><br \>
+<b><tt>Case (n &gt; 1) : F(n) = F(n-1) + F(n-2)</tt></b><br \>
+<br \>
+</div>The first two lines allow to determine the end condition: <tt>If n = 0 Or n = 1 Then Return n</tt><br \>
+The third line allows to determine the statement syntax which calls the function itself: <tt>Return F(n - 1) + F(n - 2)</tt><br \>
+<br \>
+Non-tail recursive form code:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">recursiveFibonacci</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Or</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">recursiveFibonacci</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">recursiveFibonacci</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>The execution time duration for the highest values becomes no more negligible.<br \>
+Indeed, to compute F(n), there are 2^(n-1) calls: about one milliard for n=31.<br \>
+<br \>
+Try to make the recursive algorithm linear, using a recursive function which have 2 other parameters corresponding to the previous value and the last value of the series, let f(n, a, b).<br \>
+We obtain:<br \>
+<div class="fb_indent"><b><tt>Case (n = 1): a = F(0) = 0, b = F(1) = 1</tt></b><br \>
+<b><tt>Case (n-1): a = F(n-2), b = F(n-1)</tt></b><br \>
+<b><tt>Case (n): F(n-1) = b, F(n) = F(n-1) + F(n-2) = a + b</tt></b><br \>
+<br \>
+</div>Consequently, for this new function f(n, a, b), the recursive call becomes f(n-1, b, a+b), and there are only (n-1) calls.<br \>
+<br \>
+Tail recursive form code:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">tailRecursiveFibonacci</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">tailRecursiveFibonacci</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span><span class="oth">,</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">b</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;tail&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Then, similar transformations as previously in order to obtain the iterative form:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">explicitTailRecursiveFibonacci</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Swap</span>&nbsp;<span class="wrd">a</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">a</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">explicitTailRecursiveFibonacci</span><span class="oth">(</span><span class="wrd">n</span><span class="oth">,</span>&nbsp;<span class="wrd">a</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;tail&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">translationToIterativeFibonacci</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">begin</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;iteration&nbsp;loopp</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Swap</span>&nbsp;<span class="wrd">a</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">a</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Goto</span>&nbsp;<span class="wrd">begin</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;iterative&nbsp;jump</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">betterTranslationToIterativeFibonacci</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="key">Not</span>&nbsp;<span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition&nbsp;of&nbsp;iterative&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Swap</span>&nbsp;<span class="wrd">a</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">a</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">n</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div style="text-align: center;"><a href="#ProPgRecursionIterationTop">Back to top</a></div><br \>
+<a name="ProPgRecursionIteration4"></a><br \>
+</div><div class="fb_sect_title">4. Replace non-tail recursion with more complex iteration</div><div class="fb_sect_cont"><br \>
+The recursive procedure is a non-tail recursive procedure if there is at least one recursive call followed by at least one instruction.<br \>
+A non-tail recursion cannot be normally transformed into a simple iteration, or it could have been transformed already into tail recursion.<br \>
+<br \>
+To avoid limitation due to the execution stack size, a non-tail recursive algorithm can always (more or less easily) be replaced by an iterative algorithm, by pushing the parameters that would normally be passed to the recursive procedure onto an own storage stack.<br \>
+In fact, the execution stack is replaced by a user stack (less limited in size).<br \>
+<br \>
+In the following examples, the below user stack macro (compatible with any datatype) is used:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;save&nbsp;as&nbsp;file:&nbsp;&quot;DynamicUserStackTypeCreateMacro.bi&quot;</span><br />
+<br />
+<span class="def">#macro&nbsp;DynamicUserStackTypeCreate(typename,&nbsp;datatype)<br />
+</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="wrd">typename</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;pre-allocating&nbsp;user&nbsp;stack&nbsp;memory</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">push</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">datatype</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;pushing&nbsp;on&nbsp;the&nbsp;user&nbsp;stack</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">pop</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">datatype</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;popping&nbsp;from&nbsp;the&nbsp;user&nbsp;stack</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">used</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;outputting&nbsp;number&nbsp;of&nbsp;used&nbsp;elements&nbsp;in&nbsp;the&nbsp;user&nbsp;stack</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">allocated</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;outputting&nbsp;number&nbsp;of&nbsp;allocated&nbsp;elements&nbsp;in&nbsp;the&nbsp;user&nbsp;stack</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;deallocating&nbsp;user&nbsp;stack&nbsp;memory</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">datatype</span>&nbsp;<span class="wrd">ae</span>&nbsp;<span class="oth">(</span><span class="key">Any</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;array&nbsp;of&nbsp;elements</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">nue</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;number&nbsp;of&nbsp;used&nbsp;elements</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">nae</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;number&nbsp;of&nbsp;allocated&nbsp;elements</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">nae0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;minimum&nbsp;number&nbsp;of&nbsp;allocated&nbsp;elements</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Constructor</span>&nbsp;<span class="wrd">typename</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.nae0</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span><span class="oth">^</span><span class="key">Int</span><span class="oth">(</span><span class="key">Log</span><span class="oth">(</span><span class="num">1024</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">1024</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">datatype</span><span class="oth">))</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="key">Log</span><span class="oth">(</span><span class="num">2</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="com">''&nbsp;only&nbsp;a&nbsp;power&nbsp;of&nbsp;2&nbsp;(1&nbsp;MB&nbsp;&lt;&nbsp;stack&nbsp;memory&nbsp;&lt;&nbsp;2&nbsp;MB&nbsp;here)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.nue</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.nae</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">This.nae0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="wrd">This.ae</span><span class="oth">(</span><span class="wrd">This.nae</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;pre-allocating&nbsp;user&nbsp;stack&nbsp;memory</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">typename.push</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">datatype</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;pushing&nbsp;on&nbsp;the&nbsp;user&nbsp;stack</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.nue</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.nue</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="wrd">This.nae0</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">This.nae</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="wrd">This.nue</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">2</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.nae</span>&nbsp;<span class="oth">*=</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">This.ae</span><span class="oth">(</span><span class="wrd">This.nae</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;allocating&nbsp;user&nbsp;stack&nbsp;memory&nbsp;for&nbsp;double&nbsp;used&nbsp;elements&nbsp;at&nbsp;least</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.ae</span><span class="oth">(</span><span class="wrd">This.nue</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">typename.pop</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">datatype</span>&nbsp;&nbsp;<span class="com">''&nbsp;popping&nbsp;from&nbsp;the&nbsp;user&nbsp;stack</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.nue</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Property</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">This.ae</span><span class="oth">(</span><span class="wrd">This.nue</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.nue</span>&nbsp;<span class="oth">-=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.nue</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="wrd">This.nae0</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">This.nae</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="wrd">This.nue</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">2</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.nae</span>&nbsp;<span class="oth">\=</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">This.ae</span><span class="oth">(</span><span class="wrd">This.nae</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;allocating&nbsp;user&nbsp;stack&nbsp;memory&nbsp;for&nbsp;double&nbsp;used&nbsp;elements&nbsp;at&nbsp;more</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">datatype</span>&nbsp;<span class="wrd">d</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">datatype</span>&nbsp;<span class="wrd">d0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">d0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Property</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">d</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">AssertWarn</span><span class="oth">(</span><span class="wrd">This.nue</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;warning&nbsp;if&nbsp;popping&nbsp;while&nbsp;empty&nbsp;user&nbsp;stack&nbsp;and&nbsp;debug&nbsp;mode&nbsp;(-g&nbsp;compiler&nbsp;option)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">typename.used</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">''&nbsp;outputting&nbsp;number&nbsp;of&nbsp;used&nbsp;elements&nbsp;in&nbsp;the&nbsp;user&nbsp;stack</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Property</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">This.nue</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">typename.allocated</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">''&nbsp;outputting&nbsp;number&nbsp;of&nbsp;allocated&nbsp;elements&nbsp;in&nbsp;the&nbsp;user&nbsp;stack</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Property</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">This.nae</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Destructor</span>&nbsp;<span class="wrd">typename</span>&nbsp;&nbsp;<span class="com">''&nbsp;deallocating&nbsp;user&nbsp;stack&nbsp;memory</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.nue</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.nae</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Erase</span>&nbsp;<span class="wrd">This.ae</span>&nbsp;&nbsp;<span class="com">''&nbsp;deallocating&nbsp;user&nbsp;stack&nbsp;memory</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="def">#endmacro<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><u>Translation Quite Simple from Final Recursive Procedure (non-tail) to Iterative Procedure</u><br \>
+<div class="fb_indent">A non-tail recursive procedure is final when the recursive call(s) is(are) placed at the end of executed code (no executable instruction line after and between for several recursive calls).<br \>
+<br \>
+In the 3 following examples, the transformation of a recursive procedure into an iterative procedure is quite simple because the recursive calls are always at the end of executed code block, and without order constraints:<br \>
+<div class="fb_indent"><b>-</b> Make the procedure parameters (and the return value for a function) as local ones.<br \>
+<b>-</b> Push the initial parameter values in the user stack.<br \>
+<b>-</b> Enter in a While ... Wend loop to empty the user stack:<br \>
+<div class="fb_indent">- Pull the variables from the user stack.<br \>
+- Process the variables similarly to the recursive procedure body.<br \>
+- Accumulate the "return" variable for a recursive function (the final value will be returned at function body end).<br \>
+- Replace the recursive calls by pushing the corresponding variables on the user stack.<br \>
+<br \>
+</div></div>First example (for console window): Computation of the combination coefficients nCp (binomial coefficients calculation) and display of the Pascal's triangle:<br \>
+<div class="fb_indent">The first function <tt>recursiveCombination</tt> is the recursive form (not a tail recursion because there are two recursive calls with summation in the last active statement).<br \>
+The second function <tt>translationToIterativeCombinationStack</tt> is the iterative form using an own stack.<br \>
+<br \>
+In the two functions, a similar structure is conserved to enlighten the conversion method.<br \>
+From recursive function to iterative stacking function:<br \>
+<div class="fb_indent"><b>-</b> Ahead, declaration of 1 local variable for the accumulator.<br \>
+<b>-</b> Pushing the two initial parameters values in the user stack.<br \>
+<b>-</b> Entering in the <tt>While ... Wend</tt> loop to empty the user stack.<br \>
+<b>-</b> Pulling parameters from the user stack.<br \>
+<b>-</b> <tt>Return 1</tt> is replaced by <tt>cumul = cumul + 1</tt>.<br \>
+<b>-</b> <tt>Return recursiveCombination(n - 1, p) + recursiveCombination(n - 1, p - 1)</tt> is replaced by <tt>S.push = n - 1 : S.push = p</tt> and <tt>S.push = n - 1 : S.push = p - 1</tt>.<br \>
+<br \>
+</div><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">recursiveCombination</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Or</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">recursiveCombination</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">p</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">recursiveCombination</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="com">'---------------------------------------------------------------------------</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;DynamicUserStackTypeCreateMacro.bi&quot;<br />
+</span><span class="wrd">DynamicUserStackTypeCreate</span><span class="oth">(</span><span class="wrd">DynamicUserStackTypeForUinteger</span><span class="oth">,</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">translationToIterativeCombinationStack</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">DynamicUserStackTypeForUinteger</span>&nbsp;<span class="wrd">S</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">S.used</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Or</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">cumul</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">cumul</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="com">'---------------------------------------------------------------------------</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">Display</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">Combination</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Locate</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="num">6</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">3</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">Combination</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">,</span>&nbsp;<span class="wrd">J</span><span class="oth">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">'---------------------------------------------------------------------------</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;recursion:&quot;</span><span class="oth">;</span><br />
+<span class="wrd">Display</span><span class="oth">(@</span><span class="wrd">recursiveCombination</span><span class="oth">,</span>&nbsp;<span class="num">12</span><span class="oth">)</span><br />
+<br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;iteration&nbsp;with&nbsp;own&nbsp;storage&nbsp;stack:&quot;</span><span class="oth">;</span><br />
+<span class="wrd">Display</span><span class="oth">(@</span><span class="wrd">translationToIterativeCombinationStack</span><span class="oth">,</span>&nbsp;<span class="num">12</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Second example (for graphics window), using a non-tail recursive subroutine (recursive drawing of circles):<br \>
+<div class="fb_indent">Similar transformation steps:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Sub</span>&nbsp;<span class="wrd">recursiveCircle</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Circle</span>&nbsp;<span class="oth">(</span><span class="wrd">x</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span><span class="oth">),</span>&nbsp;<span class="wrd">r</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">16</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recursiveCircle</span><span class="oth">(</span><span class="wrd">x</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span><span class="oth">,</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recursiveCircle</span><span class="oth">(</span><span class="wrd">x</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span><span class="oth">,</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recursiveCircle</span><span class="oth">(</span><span class="wrd">x</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recursiveCircle</span><span class="oth">(</span><span class="wrd">x</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">'---------------------------------------------------------------------------</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;DynamicUserStackTypeCreateMacro.bi&quot;<br />
+</span><span class="wrd">DynamicUserStackTypeCreate</span><span class="oth">(</span><span class="wrd">DynamicUserStackTypeForInteger</span><span class="oth">,</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">recursiveToIterativeCircleStack</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">DynamicUserStackTypeForInteger</span>&nbsp;<span class="wrd">S</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">r</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span>&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">S.used</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Circle</span>&nbsp;<span class="oth">(</span><span class="wrd">x</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span><span class="oth">),</span>&nbsp;<span class="wrd">r</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">16</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">'---------------------------------------------------------------------------</span><br />
+<br />
+<span class="key">Screen</span>&nbsp;<span class="num">12</span><br />
+<br />
+<span class="key">Locate</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">2</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;recursion:&quot;</span><br />
+<span class="wrd">recursiveCircle</span><span class="oth">(</span><span class="num">160</span><span class="oth">,</span>&nbsp;<span class="num">160</span><span class="oth">,</span>&nbsp;<span class="num">150</span><span class="oth">)</span><br />
+<br />
+<span class="key">Locate</span>&nbsp;<span class="num">10</span><span class="oth">,</span>&nbsp;<span class="num">47</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;iteration&nbsp;with&nbsp;own&nbsp;storage&nbsp;stack:&quot;</span><br />
+<span class="wrd">recursiveToIterativeCircleStack</span><span class="oth">(</span><span class="num">480</span><span class="oth">,</span>&nbsp;<span class="num">320</span><span class="oth">,</span>&nbsp;<span class="num">150</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div>Third example (for console window), using a non-tail recursive subroutine (Quick Sort algorithm):<br \>
+<div class="fb_indent">Similar transformation steps:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="num">99</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">recursiveQuicksort</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">R</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">pivot</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span><span class="oth">,</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span><span class="oth">,</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">R</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">J</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Swap</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">),</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">J</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pivot</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">R</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">pivot</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">pivot</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recursiveQuicksort</span><span class="oth">(</span><span class="wrd">L</span><span class="oth">,</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">R</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recursiveQuicksort</span><span class="oth">(</span><span class="wrd">J</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">R</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;DynamicUserStackTypeCreateMacro.bi&quot;<br />
+</span><span class="wrd">DynamicUserStackTypeCreate</span><span class="oth">(</span><span class="wrd">DynamicUserStackTypeForInteger</span><span class="oth">,</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">translationToIteraticeQuicksortStack</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">R</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">DynamicUserStackTypeForInteger</span>&nbsp;<span class="wrd">S</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">R</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">S.used</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">R</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">pivot</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span><span class="oth">,</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span><span class="oth">,</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">R</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">J</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Swap</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">),</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">J</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pivot</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">R</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">pivot</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">pivot</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">L</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">R</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">R</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<br />
+<span class="key">Randomize</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">i</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Int</span><span class="oth">(</span><span class="key">Rnd</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">256</span><span class="oth">)</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;raw&nbsp;memory:&quot;</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">K</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;####&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">K</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">K</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="wrd">recursiveQuicksort</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">),</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">))</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;sorted&nbsp;memory&nbsp;by&nbsp;recursion:&quot;</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">K</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;####&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">K</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">K</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Randomize</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">i</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Int</span><span class="oth">(</span><span class="key">Rnd</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">256</span><span class="oth">)</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;raw&nbsp;memory:&quot;</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">K</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;####&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">K</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">K</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="wrd">translationToIteraticeQuicksortStack</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">),</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">))</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;sorted&nbsp;memory&nbsp;by&nbsp;iteration&nbsp;with&nbsp;stack:&quot;</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">K</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">t</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;####&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">t</span><span class="oth">(</span><span class="wrd">K</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">K</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div></div><u>Translation Little More Complex from Non-Final Recursive Procedure to Iterative Procedure</u><br \>
+<div class="fb_indent">For theses examples, the transformation of the non-final recursive procedure into an iterative procedure is a little more complex because the recursive call(s) is(are) not placed at the end of executed code.<br \>
+<br \>
+The general method used hereafter is to first transform original recursive procedure into a "final" recursive procedure where the recursive call(s) is(are) now placed at the end of executed code block (no executable instruction line between or after).<br \>
+<br \>
+First example (for console window), using a non-tail recursive subroutine (tower of Hanoi algorithm):<br \>
+<div class="fb_indent">For this example, the two recursive calls are at the end of executed code block but separated by an instruction line and there is an order constraint.<br \>
+In the two functions, a similar structure is conserved to enlighten the conversion method.<br \>
+From recursive function to iterative stacking function:<br \>
+<div class="fb_indent"><b>-</b> The first step consists in removing the instruction line between the two recursive calls by adding its equivalent at top of the recursive code body (2 parameters are added to the procedure to pass the corresponding useful data).<br \>
+<b>-</b> Then the process of translation to iterative form is similar to the previous examples (using a own storage stack) but reversing the order of the 2 recursive calls when pushing on the storage stack.<br \>
+<br \>
+</div><tt><div class="freebasic">
+<span class="key">Sub</span>&nbsp;<span class="wrd">recursiveHanoi</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">departure</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">middle</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">arrival</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recursiveHanoi</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">departure</span><span class="oth">,</span>&nbsp;<span class="wrd">arrival</span><span class="oth">,</span>&nbsp;<span class="wrd">middle</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;move&nbsp;one&nbsp;disk&nbsp;from&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">departure</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;to&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">arrival</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recursiveHanoi</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span><span class="num">1</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="wrd">middle</span><span class="oth">,</span>&nbsp;<span class="wrd">departure</span><span class="oth">,</span>&nbsp;<span class="wrd">arrival</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">finalRecursiveHanoi</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">departure</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">middle</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">arrival</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">dep</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">arr</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">dep</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;move&nbsp;one&nbsp;disk&nbsp;from&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">dep</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;to&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">arr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">finalRecursiveHanoi</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">departure</span><span class="oth">,</span>&nbsp;<span class="wrd">arrival</span><span class="oth">,</span>&nbsp;<span class="wrd">middle</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">finalRecursiveHanoi</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">middle</span><span class="oth">,</span>&nbsp;<span class="wrd">departure</span><span class="oth">,</span>&nbsp;<span class="wrd">arrival</span><span class="oth">,</span>&nbsp;<span class="wrd">departure</span><span class="oth">,</span>&nbsp;<span class="wrd">arrival</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;DynamicUserStackTypeCreateMacro.bi&quot;<br />
+</span><span class="wrd">DynamicUserStackTypeCreate</span><span class="oth">(</span><span class="wrd">DynamicUserStackTypeForString</span><span class="oth">,</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">translationToIterativeHanoi</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">departure</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">middle</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">arrival</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">dep</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">arr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">DynamicUserStackTypeForString</span>&nbsp;<span class="wrd">S</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">n</span><span class="oth">)</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">departure</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">middle</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">arrival</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">dep</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">arr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">S.used</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">arr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">dep</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">arrival</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">middle</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">departure</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Val</span><span class="oth">(</span><span class="wrd">S.pop</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">dep</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;move&nbsp;one&nbsp;disk&nbsp;from&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">dep</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;to&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">arr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">middle</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">departure</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">arrival</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">departure</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">arrival</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">departure</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">arrival</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">middle</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;recursive&nbsp;tower&nbsp;of&nbsp;Hanoi:&quot;</span><br />
+<span class="wrd">recursiveHanoi</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;A&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;B&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;C&quot;</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;final&nbsp;recursive&nbsp;tower&nbsp;of&nbsp;Hanoi:&quot;</span><br />
+<span class="wrd">finalRecursiveHanoi</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;A&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;B&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;C&quot;</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;iterative&nbsp;tower&nbsp;of&nbsp;Hanoi:&quot;</span><br />
+<span class="wrd">translationToIterativeHanoi</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;A&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;B&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;C&quot;</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Second example (for console window), using a non-tail recursive subroutine (counting-down from n, then re-counting up to n):<br \>
+<div class="fb_indent">For this example, the recursive call is followed by an instruction line before the end of executed code block.<br \>
+In the two functions, a similar structure is conserved to enlighten the conversion method.<br \>
+From recursive function to iterative stacking function:<br \>
+<div class="fb_indent"><b>-</b> The first step consists in replacing the instruction line at the end of executed code block by a new recursive call (a parameter is added to the procedure to pass the corresponding useful data).<br \>
+<b>-</b> An equivalent instruction line is added at top of the recursive code body (using the passed data), executed in this case instead of the normal code.<br \>
+<b>-</b> Then the process of translation to iterative form is similar to the previous example (using a own storage stack) and reversing the order of the 2 recursive calls when pushing on the storage stack.<br \>
+<br \>
+</div><tt><div class="freebasic">
+<span class="key">Sub</span>&nbsp;<span class="wrd">recursiveCount</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recursiveCount</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">finalRecursiveCount</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">recount</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">recount</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">recount</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">finalRecursiveCount</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">finalRecursiveCount</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">n</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;DynamicUserStackTypeCreateMacro.bi&quot;<br />
+</span><span class="wrd">DynamicUserStackTypeCreate</span><span class="oth">(</span><span class="wrd">DynamicUserStackTypeForString</span><span class="oth">,</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">translationToIterativeCount</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">recount</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">DynamicUserStackTypeForString</span>&nbsp;<span class="wrd">S</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">n</span><span class="oth">)</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">recount</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">S.used</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">recount</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Val</span><span class="oth">(</span><span class="wrd">S.pop</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">recount</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">recount</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">n</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;recursive&nbsp;counting-down&nbsp;then&nbsp;re-counting&nbsp;up:&quot;</span><br />
+<span class="wrd">recursiveCount</span><span class="oth">(</span><span class="num">9</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;final&nbsp;recursive&nbsp;counting-down&nbsp;then&nbsp;re-counting&nbsp;up:&quot;</span><br />
+<span class="wrd">finalRecursiveCount</span><span class="oth">(</span><span class="num">9</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;iterative&nbsp;counting-down&nbsp;then&nbsp;re-counting&nbsp;up:&quot;</span><br />
+<span class="wrd">translationToIterativeCount</span><span class="oth">(</span><span class="num">9</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><u>Translation from Other Non-Obvious Recursive Procedure to Iterative Procedure</u><br \>
+<div class="fb_indent">Two other cases of translation from recursion to iteration are presented here by means of simple examples:<br \>
+<div class="fb_indent"><b>-</b> For mutual recursion.<br \>
+<b>-</b> For nested recursion.<br \>
+<br \>
+</div>Two functions are said to be mutually recursive if the first calls the second, and in turn the second calls the first.<br \>
+A recursive function is said nested if an argument passed to the function refers to the function itself.<br \>
+<br \>
+Example using mutual recursive functions ('even()' and 'odd()' functions):<br \>
+<div class="fb_indent">From mutual recursive procedures to iterative stacking procedures (for the general case):<br \>
+<div class="fb_indent"><b>-</b> The first step consists in transforming the recursive procedures into "final" recursive procedures.<br \>
+<b>-</b> Then, the method is similar than that already described, with besides an additional parameter (an index) which is also pushed on the user stack in order to select the right code body to execute when pulling data from the stack.<br \>
+<b>-</b> Therefore, each iterative procedure contains the translation (for stacking) of all code bodies from the recursive procedures.<br \>
+<br \>
+</div>In this following examples, the simple mutual recursive functions are here processed as in the general case (other very simple iterative solutions exist):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">recursiveIsEven</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">recursiveIsOdd</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">recursiveIsEven</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">True</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">recursiveIsOdd</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">recursiveIsOdd</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">False</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">recursiveIsEven</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;DynamicUserStackTypeCreateMacro.bi&quot;<br />
+</span><span class="wrd">DynamicUserStackTypeCreate</span><span class="oth">(</span><span class="wrd">DynamicUserStackTypeForInteger</span><span class="oth">,</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">iterativeIsEven</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">DynamicUserStackTypeForInteger</span>&nbsp;<span class="wrd">S</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">S.used</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">True</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ElseIf</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">False</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">iterativeIsOdd</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">DynamicUserStackTypeForInteger</span>&nbsp;<span class="wrd">S</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">S.used</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">S.pop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">True</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ElseIf</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">False</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">S.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">recursiveIsEven</span><span class="oth">(</span><span class="num">16</span><span class="oth">),</span>&nbsp;<span class="wrd">recursiveIsOdd</span><span class="oth">(</span><span class="num">16</span><span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">recursiveIsEven</span><span class="oth">(</span><span class="num">17</span><span class="oth">),</span>&nbsp;<span class="wrd">recursiveIsOdd</span><span class="oth">(</span><span class="num">17</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">iterativeIsEven</span><span class="oth">(</span><span class="num">16</span><span class="oth">),</span>&nbsp;<span class="wrd">iterativeIsOdd</span><span class="oth">(</span><span class="num">16</span><span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">iterativeIsEven</span><span class="oth">(</span><span class="num">17</span><span class="oth">),</span>&nbsp;<span class="wrd">iterativeIsOdd</span><span class="oth">(</span><span class="num">17</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div>Example using nested recursive function ('Ackermann()' function):<br \>
+<div class="fb_indent">From nested recursive function to iterative stacking function:<br \>
+<div class="fb_indent"><b>-</b> Use 2 independent storage stacks, one for the first parameter <tt>m</tt> and another for the second parameter <tt>n</tt> of the function, because of the nested call on one parameter.<br \>
+<b>-</b> <tt>Return expression</tt> is transformed into a pushing the expression on the stack dedicated to the parameter where the nesting call is.<br \>
+<b>-</b> Therefore a <tt>Return</tt> of data popping from the same stack is added at code end.<br \>
+<br \>
+</div><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">recursiveAckermann</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">m</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">m</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">recursiveAckermann</span><span class="oth">(</span><span class="wrd">m</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">recursiveAckermann</span><span class="oth">(</span><span class="wrd">m</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">recursiveAckermann</span><span class="oth">(</span><span class="wrd">m</span><span class="oth">,</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;DynamicUserStackTypeCreateMacro.bi&quot;<br />
+</span><span class="wrd">DynamicUserStackTypeCreate</span><span class="oth">(</span><span class="wrd">DynamicUserStackTypeForInteger</span><span class="oth">,</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">iterativeAckermann</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">m</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">DynamicUserStackTypeForInteger</span>&nbsp;<span class="wrd">Sm</span><span class="oth">,</span>&nbsp;<span class="wrd">Sn</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Sm.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">m</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">Sn.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">Sm.used</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">m</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">Sm.pop</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">Sn.pop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">m</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Sn.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;Return&nbsp;n&nbsp;+&nbsp;1&nbsp;(and&nbsp;because&nbsp;of&nbsp;nested&nbsp;call)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Sm.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">m</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">Sn.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;Return&nbsp;Ackermann(m&nbsp;-&nbsp;1,&nbsp;1)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Sm.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">m</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">Sm.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">m</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">Sn.push</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;<span class="com">'&nbsp;Return&nbsp;Ackermann(m&nbsp;-&nbsp;1,&nbsp;Ackermann(m,&nbsp;n&nbsp;-&nbsp;1))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">Sn.pop</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;(because&nbsp;of&nbsp;Sn.push&nbsp;=&nbsp;n&nbsp;+&nbsp;1)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">recursiveAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="wrd">recursiveAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">),</span>&nbsp;<span class="wrd">recursiveAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">),</span>&nbsp;<span class="wrd">recursiveAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">3</span><span class="oth">),</span>&nbsp;<span class="wrd">recursiveAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">iterativeAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="wrd">iterativeAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">),</span>&nbsp;<span class="wrd">iterativeAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">),</span>&nbsp;<span class="wrd">iterativeAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">3</span><span class="oth">),</span>&nbsp;<span class="wrd">iterativeAckermann</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div style="text-align: center;"><a href="#ProPgRecursionIterationTop">Back to top</a></div><br \>
+<br \>
+</div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgRecursion.html">Recursion</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>Manage Reusable Procedures by Including Source vs Compiled Modules</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Manage Reusable Procedures by Including Source vs Compiled Modules</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	How to <b>manage</b> FreeBASIC <b>reusable procedures</b> by <b>including source modules</b> versus <b>including compiled modules</b>.<br \>
+<b><tt><i>(written with help of Josep Roca's posts)</i></tt></b><br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+When old OSs (like DOS) were used, compiling by separate modules was mandatory as soon as the program was not very short, because of the small memory size available for the compiler (about 200 KB with Quick Basic 4.5).<br \>
+Now, with modern PC and OS, this compilation limit is pushed back by a factor of about 10000, and the compile time for a large file in one go has become acceptable especially with FreeBASIC.<br \>
+This allows to use another method (than a library of compiled files) to manage the reusable user procedures.<br \>
+<br \>
+First, the reusable user procedures source codes are grouped into different source modules, for example by functionality.<br \>
+Then the process is different depending on each method used.<br \>
+<br \>
+To simplify the explanation that follows, it is considered that there is only one source file containing the main program, which calls the various user procedures contained in source modules for reuse.<br \>
+But one can easily complete these methods to take into account a main program spread over several source files.<br \>
+<br \>
+<div class="fb_sect_title">First method: The compiled modules stored in a library file are included in the linking process with the compiled main program</div><div class="fb_sect_cont"><br \>
+The principle of this method is by only accessing to the compiled user procedures.<br \>
+<br \>
+The different modules (containing the sources of the user procedures to be reused) are turned in to object files and then stored into a library file (using the <tt><a href="CompilerOptlib.html">-lib</a></tt> compile option).<br \>
+Finally the source file of the main program is compiled, then linked to the library, to make an executable (using the <tt><a href="CompilerOptl.html">-l &lt; libname &gt;</a></tt> compile option, or the <tt><a href="KeyPgInclib.html">#Inclib &quot;Libname&quot;</a></tt> directive put at beginning of the main program source code).<br \>
+<br \>
+For each compiled module, if at least one procedure is called, then the entire module will be added in the final executable.<br \>
+<br \>
+Thus, the granularity of the added code to the executable is at the module level (coarse granularity).<br \>
+<br \>
+</div><div class="fb_sect_title">Second method: The source modules are included directly in the main source program to be compiled in one go</div><div class="fb_sect_cont"><br \>
+The principle of this method is by fully accessing to the sources of user procedures.<br \>
+<br \>
+The different modules (containing the sources of the user procedures to be reused) are directly included in the source of the main program (using the <tt><a href="KeyPgInclude.html">#Include &quot;File&quot;</a></tt> directive for each module, put at the beginning of the main program source code).<br \>
+Finally, the big resulting source file is compiled in one go to make it an executable.<br \>
+<br \>
+Since the compiler processes a single source file, all reusable user procedures can be declared as <tt><a href="KeyPgPrivate.html">Private</a></tt> (which is obviously impossible when using library because the external links are required during the linkage).<br \>
+As a result, only the Private procedures really called will be kept in the executable.<br \>
+<br \>
+Thus, the granularity of the code added to the executable is at the elementary procedure level (fine granularity).<br \>
+<br \>
+<b>Note:</b><br \>
+<div class="fb_indent">The compiler removes the Private procedures that are not called, but this does not currently work for Private procedures that are only called by other Private procedures that are not called themselves, because the first ones appear as being called.<br \>
+The problem is that the one-pass compiler only uses a simple flag to track the "used" state of a procedure, which is set whenever the procedure is accessed, no matter from where.<br \>
+<br \>
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="CompilerCmdLine.html">fbc command-line</a><br \>
+<li> <a href="ProPgSourceFiles.html">Source Files (.bas)</a><br \>
+<li> <a href="ProPgHeaderFiles.html">Header Files (.bi)</a><br \>
+<li> <a href="ProPgPrebuiltLibraries.html">Using Prebuilt Libraries</a>	<br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

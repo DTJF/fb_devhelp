@@ -1,0 +1,125 @@
+<html>
+<head>
+<title>Simple Variable Lifetime vs Scope</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Simple Variable Lifetime vs Scope</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<b>Lifetime</b> of <b>Simple Variable</b>, created from declaration keyword for static memory allocation, relative to its <b>Scopes</b>.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+<ul><li> The Lifetime of a variable is the time period in which the variable has valid memory (the Scope referring to the program part where its name is visible). The value of a variable may change during its lifetime, but it retains some consistent value.<br \>
+<li> The simple variables considered are the predefined variables including the raw pointers, and the fixed-length strings/arrays, but excluding the variable-length strings/arrays. Instances of simple UDT (without any dynamic data allocated) are also considered.<br \>
+<li> The declaration keywords for static memory allocation are: 'Dim', 'Static', 'Var'.<br \>
+<br \>
+<br \>
+</ul>For such variables allocated in static way as defined above, the lifetime generally matches the surrounding scope, otherwise it can be greater than this one.<br \>
+<br \>
+<div class="fb_sect_title">Declaration syntax for a lifetime matching the surrounding scope</div><div class="fb_sect_cont"><br \>
+For such variables declared anywhere, as follows (or similar syntax):<br \>
+<div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><tt>(1)	<a href="KeyPgDim.html">Dim</a> <strike>Shared</strike> <a href="KeyPgAs.html">As</a> <a href="DataType.html">datatype</a> [<a href="KeyPgPtr.html">Ptr</a>] <i>variablename</i> ...</tt><br \>
+</div><tt>or</tt><br \>
+<div class="fb_indent"><tt>(2)	<a href="KeyPgVar.html">Var</a> <strike>Shared</strike> <i>variablename</i> = <i>expression</i></tt><br \>
+<div class="fb_indent"><div class="fb_indent"><tt>(equivalent to: '<a href="KeyPgDim.html">Dim</a> <strike>Shared</strike> <a href="KeyPgAs.html">As</a> <a href="KeyPgTypeof.html">TypeOf</a>((<i>expression</i>)) = <i>expression</i>')</tt><br \>
+</div></div></div></div>or<br \>
+<div class="fb_indent"><div class="fb_indent"><tt>(3)	{<a href="KeyPgDim.html">Dim</a>|<a href="KeyPgStatic.html">Static</a>} <a href="KeyPgShared.html">Shared</a> <a href="KeyPgAs.html">As</a> <a href="DataType.html">datatype</a> [<a href="KeyPgPtr.html">Ptr</a>] <i>variablename</i> ...</tt><br \>
+</div><tt>or</tt><br \>
+<div class="fb_indent"><tt>(4)	[<a href="KeyPgStatic.html">Static</a>] <a href="KeyPgVar.html">Var</a> <a href="KeyPgShared.html">Shared</a> <i>variablename</i> = <i>expression</i></tt><br \>
+<div class="fb_indent"><div class="fb_indent"><tt>(equivalent to: '{<a href="KeyPgDim.html">Dim</a>|<a href="KeyPgStatic.html">Static</a>} <a href="KeyPgShared.html">Shared</a> <a href="KeyPgAs.html">As</a> <a href="KeyPgTypeof.html">TypeOf</a>((<i>expression</i>)) = <i>expression</i>')</tt><br \>
+</div></div></div><tt>or</tt><br \>
+<div class="fb_indent"><tt>(5)	<a href="KeyPgCommon.html">Common</a> [<a href="KeyPgShared.html">Shared</a>] <a href="KeyPgAs.html">As</a> <a href="DataType.html">datatype</a> [<a href="KeyPgPtr.html">Ptr</a>] <i>variablename</i></tt><br \>
+</div></div></div>they always have a lifetime matching their surrounding scope (global scope, or scope block, or compound statement block, or procedure scope).<br \>
+<br \>
+With <tt>(1)</tt> or <tt>(2)</tt> syntax, the local variable is always allocated on the program stack at the time of its declarations, and is automatically deallocated when going out its scope.<br \>
+With <tt>(3)</tt> or <tt>(4)</tt> or <tt>(5)</tt> syntax, the global variable is always allocated in the .BSS or .DATA section of the executable (its scopes and lifetimes begins at program creation and ends with program termination).<br \>
+<br \>
+</div><div class="fb_sect_title">Declaration syntax for a lifetime that may be greater than the surrounding scope</div><div class="fb_sect_cont"><br \>
+For such variables declared anywhere, as follows (or similar syntax):<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><a href="KeyPgStatic.html">Static</a> <strike>Shared</strike> <a href="KeyPgAs.html">As</a> <a href="DataType.html">datatype</a> [<a href="KeyPgPtr.html">Ptr</a>] <i>variablename</i> ...</tt><br \>
+<tt><a href="KeyPgStatic.html">Static</a> <a href="KeyPgVar.html">Var</a> <strike>Shared</strike> <i>variablename</i> = <i>expression</i></tt><br \>
+</div></div>they always have a lifetime equal to the program duration, so greater than their surrounding scope if there are declared in any local scope block (matching their surrounding scope if there are declared in the global scope).<br \>
+<br \>
+The static variable is always allocated in the .BSS or .DATA section of the executable (its lifetimes begins at program creation and ends with program termination).<br \>
+<br \>
+Interest of declaring such static variables in a compound instruction block or in a procedure scope:<br \>
+<div class="fb_indent"><b>-</b> As for 'Dim', the 'Static' keyword is used in a compound statement block or in a procedure scope to declare variables whose scope stops at the end of the compound statement block or the procedure.<br \>
+<b>-</b> However, unlike 'Dim', the lifetime differs because the variables declared with the 'Static' keyword retain their value between the successive loops of the compound instruction block or the successive calls to the procedure.<br \>
+<b>-</b> In summary, a declared static variable has a local scope, but its lifetime is comparable to that of a global scope variable.<br \>
+<b>-</b> So, static variables with the same name can be declared in several different compound statement blocks and in different procedure scopes. Each of these variables therefore remains independent and retains its own value in its own local scope.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Lifetime's comparison between different variables declared in a local scope:<br \>
+local variable vs static variable, both declared in a procedure scope<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pzl</span>&nbsp;<span class="com">'&nbsp;global&nbsp;variable&nbsp;to&nbsp;memorize&nbsp;the&nbsp;local&nbsp;Zstring&nbsp;address</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pzs</span>&nbsp;<span class="com">'&nbsp;global&nbsp;variable&nbsp;to&nbsp;memorize&nbsp;the&nbsp;static&nbsp;Zstring&nbsp;address</span><br />
+<br />
+<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">prntSubString</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+<br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;beginning&nbsp;of&nbsp;procedure&nbsp;scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">15</span>&nbsp;<span class="wrd">zl</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;local&nbsp;variable&quot;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;declare/initialize&nbsp;a&nbsp;local&nbsp;Zstring</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pzl</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">zl</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;memorize&nbsp;the&nbsp;local&nbsp;Zstring&nbsp;address</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">16</span>&nbsp;<span class="wrd">zs</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;static&nbsp;variable&quot;</span>&nbsp;<span class="com">'&nbsp;declare/initialize&nbsp;a&nbsp;static&nbsp;Zstring</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pzs</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">zs</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;memorize&nbsp;the&nbsp;static&nbsp;Zstring&nbsp;address</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;From&nbsp;inside&nbsp;the&nbsp;procedure&nbsp;scope:&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">prntSubString</span><span class="oth">(</span><span class="wrd">pzl</span><span class="oth">,</span>&nbsp;<span class="num">14</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;display&nbsp;address/content&nbsp;of&nbsp;the&nbsp;local&nbsp;zstring</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">prntSubString</span><span class="oth">(</span><span class="wrd">pzs</span><span class="oth">,</span>&nbsp;<span class="num">15</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;display&nbsp;address/content&nbsp;of&nbsp;the&nbsp;static&nbsp;zstring</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;end&nbsp;of&nbsp;procedure&nbsp;scope</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Lifetimes&nbsp;comparison&nbsp;between&nbsp;local/static&nbsp;variables&nbsp;declared&nbsp;in&nbsp;a&nbsp;local&nbsp;scope:&quot;</span><br />
+<span class="wrd">s</span><span class="oth">()</span>&nbsp;<span class="com">'&nbsp;call&nbsp;the&nbsp;procedure</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;From&nbsp;outside&nbsp;the&nbsp;procedure&nbsp;scope:&quot;</span><br />
+<span class="wrd">prntSubString</span><span class="oth">(</span><span class="wrd">pzl</span><span class="oth">,</span>&nbsp;<span class="num">14</span><span class="oth">)</span>&nbsp;<span class="com">'&nbsp;display&nbsp;address/content&nbsp;of&nbsp;the&nbsp;local&nbsp;zstring&nbsp;after&nbsp;going&nbsp;out&nbsp;its&nbsp;scope</span><br />
+<span class="wrd">prntSubString</span><span class="oth">(</span><span class="wrd">pzs</span><span class="oth">,</span>&nbsp;<span class="num">15</span><span class="oth">)</span>&nbsp;<span class="com">'&nbsp;display&nbsp;address/content&nbsp;of&nbsp;the&nbsp;static&nbsp;zstring&nbsp;after&nbsp;going&nbsp;out&nbsp;its&nbsp;scope</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">prntSubString</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="quo">&quot;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">p</span><span class="oth">,</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">2</span><span class="oth">),</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(*</span><span class="wrd">p</span><span class="oth">)[</span><span class="wrd">I</span><span class="oth">]</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="key">Asc</span><span class="oth">(</span><span class="quo">&quot;&nbsp;&quot;</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Chr</span><span class="oth">(</span><span class="wrd">u</span><span class="oth">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><div class="fb_indent"><pre class="fb_pre">
+Lifetimes comparison between local/static variables declared in a local scope:
+	 From inside the procedure scope:
+			  &h0019FE74    "local variable"
+			  &h00407004    "static variable"
+	 From outside the procedure scope:
+			  &h0019FE74    " p@ Çp@ ¿■  Y "
+			  &h00407004    "static variable"
+</pre> <br \>
+</div></div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgDim.html">Dim</a></tt>, <tt><a href="KeyPgStatic.html">Static</a></tt>, <tt><a href="KeyPgVar.html">Var</a></tt><br \>
+<li> <a href="ProPgStorageClasses.html">Storage Classes</a><br \>
+<li> <a href="ProPgVariableScope.html">Variable Scope</a><br \>
+<li> <a href="ProPgObjectLifetime.html">Dynamic Object and Data Lifetime</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

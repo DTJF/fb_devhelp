@@ -1,0 +1,546 @@
+<html>
+<head>
+<title>Operator Overloading</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Operator Overloading</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Changing the way user defined types work with built-in operators.<br \>
+<br \>
+<a href="#OVERVIEW">Overview</a><br \>
+<a href="#GLOBAL">Global Operators</a><br \>
+<a href="#MEMBER">Member Operators</a><br \>
+<a href="#SPECIAL">Special Cases of Operators: '.' (Member access), '@' (Address of), '-&gt;' (Pointer to member access), and '*' (Value of)</a><br \>
+<br \>
+<a name="OVERVIEW"></a><div class="fb_sect_title">Overview</div><div class="fb_sect_cont"><br \>
+Simply, operators are procedures, and their arguments are called <i>operands</i>. Operators that take one operand (<tt><a href="KeyPgOpNot.html">Operator Not</a></tt>) are called <i>unary operators</i>, operators that take two operands (<tt><a href="KeyPgOpAdd.html">Operator +</a></tt>) are called <i>binary operators</i> and operators taking three operands (<tt><a href="KeyPgIif.html">Operator Iif</a></tt>) are called <i>ternary operators</i>.<br \>
+<br \>
+Most operators are not called like procedures. Instead, their operator symbol is placed next to their operands. For unary operators, their sole operand is placed to the right of the symbol. For binary operators, their operands - referred to as the left and right-hand side operands - are placed to the left and right of the operator symbol. FreeBASIC has one ternary operator, <tt><a href="KeyPgIif.html">Operator Iif</a></tt>, and it is called like a procedure, with its operands comma-separated surrounded by parenthesis.<br \>
+For example, the following code calls <tt><a href="KeyPgIif.html">Operator Iif</a></tt> to determine if a pointer is valid. If it is, <tt><a href="KeyPgOpValueOf.html">Operator * (Value Of)</a></tt> is called to dereference the pointer, and if not, <tt><a href="KeyPgOpDivide.html">Operator / (Divide)</a></tt> is called to find the value of twenty divided by four:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">420</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">i</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">IIf</span><span class="oth">(</span>&nbsp;<span class="wrd">p</span><span class="oth">,</span>&nbsp;<span class="oth">*</span><span class="wrd">p</span><span class="oth">,</span>&nbsp;<span class="key">CInt</span><span class="oth">(</span>&nbsp;<span class="num">20</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">4</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Notice the call to <tt><a href="KeyPgIif.html">Operator Iif</a></tt> is similar to a procedure call, while the calls to <tt><a href="KeyPgOpValueOf.html">Operator * (Value Of)</a></tt> and <tt><a href="KeyPgOpDivide.html">Operator / (Divide)</a></tt> are not. In the example, <tt><i>p</i></tt> is the operand to <tt><a href="KeyPgOpValueOf.html">Operator * (Value Of)</a></tt>, and <tt><i>20</i></tt> and <tt><i>4</i></tt> are the left and right-hand side operands of <tt><a href="KeyPgOpDivide.html">Operator / (Divide)</a></tt>, respectively.<br \>
+<br \>
+</div>All operators in FreeBASIC are predefined to take operands of standard data types, like <tt><a href="KeyPgInteger.html">Integer</a></tt> and <tt><a href="KeyPgSingle.html">Single</a></tt>, but they may also be overloaded for user-defined types; that is, they can be defined to accept operands that are objects as well. There are two types of operators that can be overloaded, <i>global operators</i> and <i>member operators</i>.<br \>
+<br \>
+<a name="GLOBAL"></a></div><div class="fb_sect_title">Global Operators</div><div class="fb_sect_cont"><br \>
+Global operators are those that are declared in module-level scope (globally). These are the operators <tt><a href="KeyPgOpNegate.html">- (Negate)</a></tt>, <tt><a href="KeyPgOpNot.html">Not (Bitwise Not)</a></tt>, <tt><a href="KeyPgOpPtrMemberAccess.html">-&gt; (Pointer To Member Access)</a></tt>, <tt><a href="KeyPgOpValueOf.html">* (Value Of)</a></tt>, <tt><a href="KeyPgOpAdd.html">+ (Add)</a></tt>, <tt><a href="KeyPgOpSubtract.html">- (Subtract)</a></tt>, <tt><a href="KeyPgOpMultiply.html">* (Multiply)</a></tt>, <tt><a href="KeyPgOpDivide.html">/ (Divide)</a></tt>, <tt><a href="KeyPgOpIntegerDivide.html">\ (Integer Divide)</a></tt>, <tt><a href="KeyPgOpConcatConvert.html">&amp; (Concatenate)</a></tt>, <tt><a href="KeyPgOpModulus.html">Mod (Modulus)</a></tt>, <tt><a href="KeyPgOpShiftLeft.html">Shl (Shift Left)</a></tt>, <tt><a href="KeyPgOpShiftRight.html">Shr (Shift Right)</a></tt>, <tt><a href="KeyPgOpAnd.html">And (Bitwise And)</a></tt>, <tt><a href="KeyPgOpOr.html">Or (Bitwise Or)</a></tt>, <tt><a href="KeyPgOpXor.html">Xor (Bitwise Xor)</a></tt>, <tt><a href="KeyPgOpImp.html">Imp (Bitwise Imp)</a></tt>, <tt><a href="KeyPgOpEqv.html">Eqv (Bitwise Eqv)</a></tt>, <tt><a href="KeyPgOpExponentiate.html">^ (Exponentiate)</a></tt>, <tt><a href="KeyPgOpEqual.html">= (Equal)</a></tt>, <tt><a href="KeyPgOpNotEqual.html">&lt;&gt; (Not Equal)</a></tt>, <tt><a href="KeyPgOpLessThan.html">&lt; (Less Than)</a></tt>, <tt><a href="KeyPgOpGreaterThan.html">&gt; (Greater Than)</a></tt>, <tt><a href="KeyPgOpLessThanOrEqual.html">&lt;= (Less Than Or Equal)</a></tt>, <tt><a href="KeyPgOpGreaterThanOrEqual.html">&gt;= (Greater Than Or Equal)</a></tt>, <tt><a href="KeyPgAbs.html">Abs</a></tt>, <tt><a href="KeyPgSgn.html">Sgn</a></tt>, <tt><a href="KeyPgFix.html">Fix</a></tt>, <tt><a href="KeyPgFrac.html">Frac</a></tt>, <tt><a href="KeyPgInt.html">Int</a></tt>, <tt><a href="KeyPgExp.html">Exp</a></tt>, <tt><a href="KeyPgLog.html">Log</a></tt>, <tt><a href="KeyPgSin.html">Sin</a></tt>, <tt><a href="KeyPgAsin.html">Asin</a></tt>, <tt><a href="KeyPgCos.html">Cos</a></tt>, <tt><a href="KeyPgAcos.html">Acos</a></tt>, <tt><a href="KeyPgTan.html">Tan</a></tt>, <tt><a href="KeyPgAtn.html">Atan</a></tt>, <tt><a href="KeyPgLen.html">Len</a></tt>, and <tt><a href="KeyPgSqr.html">Sqr</a></tt>.<br \>
+<br \>
+Declaring a custom global operator is similar to declaring a procedure. The <tt><a href="KeyPgDeclare.html">Declare</a></tt> keyword is used with the <tt><a href="KeyPgOperator.html">Operator</a></tt> keyword. The operator symbol is placed next followed by the comma-separated list of parameters surrounded in parenthesis that will represent the operands passed to the operator. Unlike procedures, operators can be overloaded by default, so the <tt><a href="KeyPgOverload.html">Overload</a></tt> keyword is not necessary when declaring custom operators. At least one of the operator's parameters must be of user-defined type (after all, operators with built-in type parameters are already defined).<br \>
+<br \>
+The following example declares the global operators <tt><a href="KeyPgOpNegate.html">- (Negate)</a></tt> and <tt><a href="KeyPgOpMultiply.html">+ (Multiply)</a></tt> to accept operands of a user-defined type:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">Rational</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">numerator</span><span class="oth">,</span>&nbsp;<span class="wrd">denominator</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">Type</span><span class="oth">(-</span><span class="wrd">rhs.numerator</span><span class="oth">,</span>&nbsp;<span class="wrd">rhs.denominator</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">lhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="wrd">lhs.numerator</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">rhs.numerator</span><span class="oth">,</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">lhs.denominator</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">rhs.denominator</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span>&nbsp;<span class="wrd">r1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(</span><span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">3</span><span class="oth">),</span>&nbsp;<span class="wrd">r2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span>&nbsp;<span class="wrd">r3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">-(</span><span class="wrd">r1</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">r2</span><span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">r3.numerator</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;/&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">r3.denominator</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Here the global operators are defined for type <tt><i>Rational</i></tt>, and are used in the initialization expression for <tt><i>r3</i></tt>. The output is <tt><i>-6/12</i></tt>.<br \>
+<br \>
+</div><a name="MEMBER"></a></div><div class="fb_sect_title">Member Operators</div><div class="fb_sect_cont"><br \>
+Member operators are declared inside a <tt><a href="KeyPgType.html">Type</a></tt> or <tt><a href="KeyPgClass.html">Class</a></tt> definition, like member procedures, and they are the cast and assignment operators <tt><a href="KeyPgOpCast.html">Operator Cast (Cast)</a></tt>, <tt><a href="KeyPgOpAt.html">Operator @ (Address Of)</a></tt>,  <tt><a href="KeyPgOpPtrIndex.html">Operator [] (Pointer Index)</a></tt>, <tt><a href="KeyPgOpNewOverload.html">Operator New Overload</a></tt>, <tt><a href="KeyPgOpDeleteOverload.html">Operator Delete Overload</a></tt>, <tt><a href="KeyPgOpFor.html">Operator For (Iteration)</a></tt>, <tt><a href="KeyPgOpStep.html">Operator Step (Iteration)</a></tt>, <tt><a href="KeyPgOpNext.html">Operator Next (Iteration)</a></tt>, <tt><a href="KeyPgOpAssignment.html">Let (Assign)</a></tt>, <tt><a href="KeyPgOpCombineAdd.html">+= (Add And Assign)</a></tt>, <tt><a href="KeyPgOpCombineSub.html">-= (Subtract And Assign)</a></tt>, <tt><a href="KeyPgOpCombineMultiply.html">*= (Multiply And Assign)</a></tt>, <tt><a href="KeyPgOpCombineDivide.html">/= (Divide And Assign)</a></tt>, <tt><a href="KeyPgOpCombineIntegerDivide.html">\= (Integer Divide And Assign)</a></tt>, <tt><a href="KeyPgOpCombineExponentiate.html">^= (Exponentiate And Assign)</a></tt>, <tt><a href="KeyPgOpCombineConcat.html">&amp;= (Concat And Assign)</a></tt>, <tt><a href="KeyPgOpCombineModulus.html">Mod= (Modulus And Assign)</a></tt>, <tt><a href="KeyPgOpCombineShiftLeft.html">Shl= (Shift Left And Assign)</a></tt>, <tt><a href="KeyPgOpCombineShiftRight.html">Shr= (Shift Right And Assign)</a></tt>, <tt><a href="KeyPgOpCombineAnd.html">And= (Conjunction And Assign)</a></tt>, <tt><a href="KeyPgOpCombineOr.html">Or= (Inclusive Disjunction And Assign)</a></tt>, <tt><a href="KeyPgOpCombineXor.html">Xor= (Exclusive Disjunction And Assign)</a></tt>, <tt><a href="KeyPgOpCombineImp.html">Imp= (Implication And Assign)</a></tt> and <tt><a href="KeyPgOpCombineEqv.html">Eqv= (Equivalence And Assign)</a></tt>.<br \>
+<br \>
+When declaring member operators, the <tt><a href="KeyPgDeclare.html">Declare</a></tt> and <tt><a href="KeyPgOperator.html">Operator</a></tt> keywords are used followed by the operator symbol and its parameter list. Like member procedures, member operators are defined outside the <tt><a href="KeyPgType.html">Type</a></tt> or <tt><a href="KeyPgClass.html">Class</a></tt> definition, and the symbol name is prefixed with the name of the <tt><a href="KeyPgType.html">Type</a></tt> or <tt><a href="KeyPgClass.html">Class</a></tt> name.<br \>
+<br \>
+The following example overloads the member operators <tt><a href="KeyPgOpCast.html">Operator Cast (Cast)</a></tt> and <tt><a href="KeyPgOpCombineMultiply.html">*= (Multiply And Assign)</a></tt> for objects of a user-defined type:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">Rational</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">numerator</span><span class="oth">,</span>&nbsp;<span class="wrd">denominator</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="oth">*=</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">Rational.cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">numerator</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="wrd">denominator</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">Rational.cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">numerator</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;/&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">denominator</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">Rational.</span><span class="oth">*=</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">numerator</span>&nbsp;<span class="oth">*=</span>&nbsp;<span class="wrd">rhs.numerator</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">denominator</span>&nbsp;<span class="oth">*=</span>&nbsp;<span class="wrd">rhs.denominator</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span>&nbsp;<span class="wrd">r1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(</span><span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">3</span><span class="oth">),</span>&nbsp;<span class="wrd">r2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">)</span><br />
+<span class="wrd">r1</span>&nbsp;<span class="oth">*=</span>&nbsp;<span class="wrd">r2</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">d</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">r1</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">r1</span><span class="oth">,</span>&nbsp;<span class="wrd">d</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Notice that the member operator <tt><a href="KeyPgCast.html">Cast (Cast)</a></tt> is declared twice, once for the conversion to <tt><a href="KeyPgDouble.html">Double</a></tt> and once for the conversion to <tt><a href="KeyPgString.html">String</a></tt>. This is the only operator (or procedure) that can be declared multiple times when only the return type differs. The compiler decides which cast overload to call based on how the object is used (in the initialization of the <tt><a href="KeyPgDouble.html">Double</a></tt> <tt><i>d</i></tt>, <tt><i>Rational.Cast as double</i></tt> is called, and in the <tt><a href="KeyPgPrint.html">Print</a></tt> statement, <tt><i>Rational.Cast as string</i></tt> is used instead).<br \>
+<br \>
+</div><a name="SPECIAL"></a></div><div class="fb_sect_title">Special Cases of Operators: '.' (Member access), '@' (Address of), '->' (Pointer to member access), and '*' (Value of)</div><div class="fb_sect_cont"><br \>
+<b>-</b> Overloading <tt>Operator . (Member access)</tt><br \>
+<div class="fb_indent">The <tt>operator '.' (member access)</tt> cannot be overloaded.<br \>
+<br \>
+</div><b>-</b> Overloading <tt>Operator @ (Address of)</tt><br \>
+<div class="fb_indent">The <tt>operator @ (Adress of)</tt> is used to access the address of a variable.<br \>
+There is no many interest to overload this operator for an object, and moreover if we did, we could no longer access its address.<br \>
+<br \>
+</div><b>-</b> Overloading <tt>Operator -&gt; (Pointer to member access)</tt> and <tt>Operator * (Value of)</tt><br \>
+<div class="fb_indent">The <tt>operator -&gt; (Pointer to member access)</tt> is used to access any member of an object (instance) via a pointer to this instance.<br \>
+The <tt>operator * (Value of)</tt> is used to access to variable via a pointer to this variable.<br \>
+Under normal circumstances, the operand of these operators must be a pointer:<br \>
+<div class="fb_indent"><tt>Declare Operator -&gt; ( ByRef lhs As T Ptr ) ByRef As U<br \>
+Declare Operator * ( ByRef rhs As T Ptr ) ByRef As T</tt><br \>
+<br \>
+</div>Overloading of these operators allows you to create a pointer wrapper class and let it behave like the pointer itself:<br \>
+<div class="fb_indent"><tt>Declare Operator -&gt; ( ByRef lhs As wrapperClass ) ByRef As U<br \>
+Declare Operator * ( ByRef rhs As wrapperClass ) ByRef As U</tt><br \>
+<br \>
+</div>The wrapper can be then used (to access a member) like:<br \>
+<div class="fb_indent"><tt>wrapper-&gt;member</tt><br \>
+instead of:<br \>
+<tt>wrapper.realPointer-&gt;member</tt><br \>
+and:<br \>
+<tt>(*wrapper).member</tt><br \>
+instead of:<br \>
+<tt>(*wrapper.realPointer).member</tt><br \>
+<br \>
+</div>Clarifying the particular case of overloading the <tt>operator -&gt; (pointer to member access)</tt>:<br \>
+<div class="fb_indent"><div class="fb_indent">The <tt>operator -&gt; (pointer to member access)</tt> exhibits a different behavior from the other operators with respect to overloading:<br \>
+<div class="fb_indent">- It doesn't return only the user datatype as indicated in the overloaded procedure header,<br \>
+- but it returns this user datatype implicitly followed by the <tt>operator . (member access)</tt>.<br \>
+<br \>
+</div></div></div>The <tt>operator -&gt; (pointer to member access)</tt> is mainly used often in conjunction with the <tt>operator * (Value of)</tt> to implement "smart pointers".<br \>
+<br \>
+</div><b>-</b> Using smart pointer<br \>
+<div class="fb_indent">The use of smart pointers allows automatic management of dynamic references created by <tt>New</tt> (each reference is destroyed automatically when its smart pointer goes out of scope), without even making any copy of these references.<br \>
+<br \>
+Reminder of what a smart pointer:<br \>
+<div class="fb_indent">- A smart pointer is an object which behaves like a pointer but does more than a pointer.<br \>
+- This object is flexible as a pointer and has the advantage of being an object (like constructor and destructor called automatically).<br \>
+- Therefore, the destructor of the smart pointer will be automatically called when this object goes out of scope, and it will delete the user pointer.<br \>
+<br \>
+</div>As the smart pointer must behave like a pointer, it must support the same interface as a pointer does.<br \>
+So it must support the following operations:<br \>
+<div class="fb_indent">- Dereferencing (<tt>operator * (Value of)</tt>)<br \>
+- Indirection (<tt>operator -&gt; (pointer to member access)</tt>)<br \>
+<br \>
+</div>The <tt>operator * (Value of)</tt> and the <tt>operator -&gt; (pointer to member access)</tt> must return references (by means of using <tt>Byref As .....</tt> in the declaration of there return type).<br \>
+<br \>
+Example of a smart pointer (to UDT) with an interface:<br \>
+<div class="fb_indent">- public default-constructor<br \>
+- public copy-constructor<br \>
+- public destructor<br \>
+- private UDT pointer and public <tt>operator cast (Cast)</tt> to access it in read only mode<br \>
+- private operator <tt>let</tt> to disallow assignment not implemented here (to avoid copying the pointers values only)<br \>
+- <tt>operator * (Value of)</tt> and <tt>operator -&gt; (pointer to member access)</tt><br \>
+<tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;object&nbsp;#0&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;UDT&nbsp;construction&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;UDT&nbsp;destruction&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">SmartPointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;construct&nbsp;smart&nbsp;pointer&nbsp;(and&nbsp;UDT&nbsp;object)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;copy&nbsp;construct&nbsp;smart&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;cast&nbsp;private&nbsp;UDT&nbsp;pointer&nbsp;(for&nbsp;read&nbsp;only)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;destroy&nbsp;smart&nbsp;pointer&nbsp;(and&nbsp;UDT&nbsp;object)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;private&nbsp;UDT&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;disallow&nbsp;assignment&nbsp;(to&nbsp;avoid&nbsp;copy&nbsp;of&nbsp;real&nbsp;pointers)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">SmartPointer</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;SmartPointer&nbsp;construction&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">SmartPointer</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;SmartPointer&nbsp;copy-construction&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="oth">@</span><span class="key">This</span><span class="oth">;</span>&nbsp;<span class="quo">&quot;&nbsp;from&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="oth">@</span><span class="wrd">rhs</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">*</span><span class="wrd">This.p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="wrd">rhs.p</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">SmartPointer.Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This.p</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">SmartPointer</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;SmartPointer&nbsp;destruction&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">This.p</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">sp</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer</span><span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;overloaded&nbsp;operator&nbsp;'*'</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;SmartPointer&nbsp;operator&nbsp;'*'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="oth">*</span><span class="key">Cast</span><span class="oth">(</span><span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">sp</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;(returning&nbsp;byref)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;behave&nbsp;as&nbsp;pointer</span><br />
+&nbsp;<br />
+<span class="key">Operator</span>&nbsp;<span class="oth">-&gt;</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">sp</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer</span><span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;&nbsp;<span class="com">''&nbsp;overloaded&nbsp;operator&nbsp;'-&gt;'</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;SmartPointer&nbsp;operator&nbsp;'-&gt;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="oth">*</span><span class="key">Cast</span><span class="oth">(</span><span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">sp</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;(returning&nbsp;byref)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;behave&nbsp;as&nbsp;pointer</span><br />
+&nbsp;<br />
+<br />
+<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">sp1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">sp1</span><span class="oth">-&gt;</span><span class="wrd">s</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">sp1</span><span class="oth">-&gt;</span><span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;object&nbsp;#1&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">sp1</span><span class="oth">-&gt;</span><span class="wrd">s</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">sp2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">sp1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="oth">(*</span><span class="wrd">sp2</span><span class="oth">).</span><span class="wrd">s</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">(*</span><span class="wrd">sp2</span><span class="oth">).</span><span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;object&nbsp;#2&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="oth">(*</span><span class="wrd">sp2</span><span class="oth">).</span><span class="wrd">s</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">sp3</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">sp1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">sp3</span><span class="oth">-&gt;</span><span class="wrd">s</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">*</span><span class="wrd">sp3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="wrd">sp2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">sp3</span><span class="oth">-&gt;</span><span class="wrd">s</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">sp3</span><span class="oth">-&gt;</span><span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;object&nbsp;#3&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">sp3</span><span class="oth">-&gt;</span><span class="wrd">s</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Example of output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+SmartPointer construction 1703576
+  UDT construction 10693312
+SmartPointer operator '->'
+'object #0'
+SmartPointer operator '->'
+SmartPointer operator '->'
+'object #1'
+
+SmartPointer copy-construction 1703524 from 1703576
+  UDT construction 10693384
+SmartPointer operator '*'
+'object #1'
+SmartPointer operator '*'
+SmartPointer operator '*'
+'object #2'
+
+SmartPointer copy-construction 1703472 from 1703576
+  UDT construction 10693456
+SmartPointer operator '->'
+'object #1'
+SmartPointer operator '*'
+SmartPointer operator '*'
+SmartPointer operator '->'
+'object #2'
+SmartPointer operator '->'
+SmartPointer operator '->'
+'object #3'
+
+SmartPointer destruction 1703472
+  UDT destruction 10693456
+SmartPointer destruction 1703524
+  UDT destruction 10693384
+SmartPointer destruction 1703576
+  UDT destruction 10693312
+				</pre></div></div>Example of an extended smart pointer type macro for any UDT (or any predefined type), with an extended interface:<br \>
+<div class="fb_indent">- public constructor<br \>
+- public reference counter in read only mode<br \>
+- public destructor<br \>
+- private UDT pointer and 2 public operators <tt>cast</tt> to access it in read only mode (numeric value and string value)<br \>
+- private default-constructor to disallow self construction<br \>
+- private copy-constructor to disallow cloning<br \>
+- private operator <tt>let</tt> to disallow assignment<br \>
+- <tt>operator * (Value of)</tt> and <tt>operator -&gt; (pointer to member access)</tt><br \>
+<tt><div class="freebasic">
+<span class="def">#macro&nbsp;Define_SmartPointer&nbsp;(_UDTname_)<br />
+</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">_UDTname_</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;construct&nbsp;smart&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;from&nbsp;_UDTname_&nbsp;pointer,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;with&nbsp;reference&nbsp;counter&nbsp;increment</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">returnCount</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;return&nbsp;reference&nbsp;counter&nbsp;value</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">_UDTname_</span>&nbsp;<span class="key">Ptr</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;cast&nbsp;private&nbsp;_UDTname_&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;to&nbsp;_UDTname_&nbsp;pointer&nbsp;(read&nbsp;only)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;cast&nbsp;private&nbsp;_UDTname_&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;to&nbsp;string&nbsp;(read&nbsp;only)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;destroy&nbsp;smart&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;and&nbsp;_UDTname_&nbsp;object</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;with&nbsp;reference&nbsp;counter&nbsp;decrement</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">_UDTname_</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;private&nbsp;_UDTname_&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">Count</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;private&nbsp;reference&nbsp;counter</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;disallow&nbsp;default-construction</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;disallow&nbsp;copy-construction</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;disallow&nbsp;copy-assignment</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_.Count</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Constructor</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">_UDTname_</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">rhs</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_.count</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_.returnCount</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_.count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Operator</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_.Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">_UDTname_</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This.p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Operator</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_.Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">This.p</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Destructor</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.p</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">This.p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_.count</span>&nbsp;<span class="oth">-=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Operator</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">sp</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_</span><span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">_UDTname_</span>&nbsp;&nbsp;<span class="com">''&nbsp;operator&nbsp;'*'&nbsp;(return&nbsp;byref)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;to&nbsp;behave&nbsp;as&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">sp</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Return&nbsp;*sp'&nbsp;would&nbsp;induce&nbsp;an&nbsp;infinite&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Operator</span>&nbsp;<span class="oth">-&gt;</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">sp</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer_#</span><span class="oth">#</span><span class="wrd">_UDTname_</span><span class="oth">)</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">_UDTname_</span>&nbsp;&nbsp;<span class="com">''&nbsp;operator&nbsp;'-&gt;'&nbsp;(return&nbsp;byref)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;to&nbsp;behave&nbsp;as&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">sp</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="com">'--------------------------------------------------------------------------------------------------------</span><br />
+<br />
+<span class="com">'&nbsp;Example&nbsp;using&nbsp;all&nbsp;eight&nbsp;keywords&nbsp;of&nbsp;inheritance:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;'Extends',&nbsp;'Base.',&nbsp;'Base()',&nbsp;'Object',&nbsp;'Is'&nbsp;operator,&nbsp;'Virtual',&nbsp;'Abstract',&nbsp;'Override'</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">root</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="key">Object</span>&nbsp;<span class="com">'&nbsp;'Extends'&nbsp;to&nbsp;activate&nbsp;RTTI&nbsp;by&nbsp;inheritance&nbsp;of&nbsp;predefined&nbsp;Object&nbsp;type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ObjectHierarchy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ObjectName</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Abstract</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ObjectRealType</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;&nbsp;<span class="com">''&nbsp;'Abstract'&nbsp;declares&nbsp;function&nbsp;without&nbsp;local&nbsp;body</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;which&nbsp;must&nbsp;be&nbsp;overridden</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Virtual'&nbsp;declares&nbsp;destructor</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Protected</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;avoid&nbsp;default-construction&nbsp;from&nbsp;outside&nbsp;Types</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;avoid&nbsp;construction&nbsp;from&nbsp;outside&nbsp;Types</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">root</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;avoid&nbsp;copy-construction&nbsp;from&nbsp;outside&nbsp;Types</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">root</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;avoid&nbsp;copy-assignment&nbsp;from&nbsp;outside&nbsp;Types</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">Name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;derived&nbsp;type&nbsp;may&nbsp;be&nbsp;member&nbsp;data&nbsp;empty</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">root</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;only&nbsp;to&nbsp;avoid&nbsp;compile&nbsp;error&nbsp;(due&nbsp;to&nbsp;inheritance)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">root</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;only&nbsp;to&nbsp;avoid&nbsp;compile&nbsp;error&nbsp;(due&nbsp;to&nbsp;inheritance)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.name</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_name</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;root&nbsp;constructor:&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">This.name</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">root.ObjectHierarchy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="quo">&quot;Object(forRTTI)&nbsp;&lt;-&nbsp;root&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">root.ObjectName</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This.name</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Virtual</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="wrd">root</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;root&nbsp;destructor:&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">This.name</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">root.Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">root</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;only&nbsp;to&nbsp;avoid&nbsp;compile&nbsp;error&nbsp;(due&nbsp;to&nbsp;onheritance)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">animal</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">root</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Extends'&nbsp;to&nbsp;inherit&nbsp;of&nbsp;root</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ObjectHierarchy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ObjectRealType</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;<span class="com">''&nbsp;'Virtual'&nbsp;declares&nbsp;function&nbsp;with&nbsp;local</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;&nbsp;&nbsp;&nbsp;body&nbsp;which&nbsp;can&nbsp;be&nbsp;overridden</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;'Override'&nbsp;to&nbsp;check&nbsp;if&nbsp;the&nbsp;function&nbsp;is</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;&nbsp;&nbsp;&nbsp;well&nbsp;an&nbsp;override</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Virtual'&nbsp;declares&nbsp;destructor&nbsp;with&nbsp;local&nbsp;body</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;'Override'&nbsp;to&nbsp;check&nbsp;if&nbsp;the&nbsp;destructor&nbsp;is&nbsp;well&nbsp;an&nbsp;override</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">animal</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Base</span><span class="oth">(</span><span class="wrd">_name</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Base()'&nbsp;allows&nbsp;to&nbsp;call&nbsp;parent&nbsp;constructor</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;animal&nbsp;constructor:&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">This.ObjectName</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">animal.ObjectHierarchy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">Base.ObjectHierarchy</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&lt;-&nbsp;animal&quot;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Base.'&nbsp;allows&nbsp;to&nbsp;access&nbsp;to&nbsp;parent&nbsp;member&nbsp;function</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Virtual</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">animal.ObjectRealType</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="quo">&quot;animal&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Virtual</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="wrd">animal</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;animal&nbsp;destructor:&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">This.ObjectName</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">dog</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">animal</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Extends'&nbsp;to&nbsp;inherit&nbsp;of&nbsp;animal</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ObjectHierarchy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ObjectRealType</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;<span class="com">''&nbsp;'Override'&nbsp;to&nbsp;check&nbsp;if&nbsp;the&nbsp;function&nbsp;is&nbsp;well&nbsp;an</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;&nbsp;&nbsp;&nbsp;override</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Override'&nbsp;to&nbsp;check&nbsp;if&nbsp;the&nbsp;destructor&nbsp;is&nbsp;well&nbsp;an&nbsp;override</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;derived&nbsp;type&nbsp;may&nbsp;be&nbsp;member&nbsp;data&nbsp;empty</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">dog</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Base</span><span class="oth">(</span><span class="wrd">_name</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Base()'&nbsp;allows&nbsp;to&nbsp;call&nbsp;parent&nbsp;constructor</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;dog&nbsp;constructor:&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">This.ObjectName</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">dog.ObjectHierarchy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">Base.ObjectHierarchy</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&lt;-&nbsp;dog&quot;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Base.'&nbsp;allows&nbsp;to&nbsp;access&nbsp;to&nbsp;parent&nbsp;member&nbsp;function</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">dog.ObjectRealType</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="quo">&quot;dog&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">dog</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;dog&nbsp;destructor:&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">This.ObjectName</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">cat</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">animal</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Extends'&nbsp;to&nbsp;inherit&nbsp;of&nbsp;animal</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ObjectHierarchy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ObjectRealType</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;<span class="com">''&nbsp;'Override'&nbsp;to&nbsp;check&nbsp;if&nbsp;the&nbsp;function&nbsp;is&nbsp;well&nbsp;an</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;&nbsp;&nbsp;&nbsp;override</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Override'&nbsp;to&nbsp;check&nbsp;if&nbsp;the&nbsp;destructor&nbsp;is&nbsp;well&nbsp;an&nbsp;override</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;derived&nbsp;type&nbsp;may&nbsp;be&nbsp;member&nbsp;data&nbsp;empty</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">cat</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Base</span><span class="oth">(</span><span class="wrd">_name</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Base()'&nbsp;allows&nbsp;to&nbsp;call&nbsp;parent&nbsp;constructor</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;cat&nbsp;constructor:&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">This.ObjectName</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">cat.ObjectHierarchy</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">Base.ObjectHierarchy</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&lt;-&nbsp;cat&quot;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Base.'&nbsp;allows&nbsp;to&nbsp;access&nbsp;to&nbsp;parent&nbsp;member&nbsp;function</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">cat.ObjectRealType</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="quo">&quot;cat&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">cat</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;cat&nbsp;destructor:&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">This.ObjectName</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">PrintInfo</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">root</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;parameter&nbsp;is&nbsp;a&nbsp;'root&nbsp;Ptr'&nbsp;or&nbsp;compatible&nbsp;(smart&nbsp;pointer)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p</span><span class="oth">-&gt;</span><span class="wrd">ObjectName</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p</span><span class="oth">-&gt;</span><span class="wrd">ObjectRealType</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">*</span><span class="wrd">p</span>&nbsp;<span class="key">Is</span>&nbsp;<span class="wrd">dog</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Is'&nbsp;allows&nbsp;to&nbsp;check&nbsp;compatibility&nbsp;with&nbsp;type&nbsp;symbol</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">dog</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">p</span><span class="oth">)-&gt;</span><span class="wrd">ObjectHierarchy</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ElseIf</span>&nbsp;<span class="oth">*</span><span class="wrd">p</span>&nbsp;<span class="key">Is</span>&nbsp;<span class="wrd">cat</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Is'&nbsp;allows&nbsp;to&nbsp;check&nbsp;compatibility&nbsp;with&nbsp;type&nbsp;symbol</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">cat</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">p</span><span class="oth">)-&gt;</span><span class="wrd">ObjectHierarchy</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ElseIf</span>&nbsp;<span class="oth">*</span><span class="wrd">p</span>&nbsp;<span class="key">Is</span>&nbsp;<span class="wrd">animal</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'Is'&nbsp;allows&nbsp;to&nbsp;check&nbsp;compatibility&nbsp;with&nbsp;type&nbsp;symbol</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">animal</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">p</span><span class="oth">)-&gt;</span><span class="wrd">ObjectHierarchy</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="wrd">Define_SmartPointer</span><span class="oth">(</span><span class="wrd">root</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;smart&nbsp;pointer&nbsp;definition</span><br />
+<br />
+<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;reference&nbsp;counter&nbsp;value:&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">SmartPointer_root.returnCount</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">SmartPointer_root</span>&nbsp;<span class="wrd">sp</span><span class="oth">(</span><span class="num">2</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">{</span><span class="key">New</span>&nbsp;<span class="wrd">animal</span><span class="oth">(</span><span class="quo">&quot;Mouse&quot;</span><span class="oth">),</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">dog</span><span class="oth">(</span><span class="quo">&quot;Buddy&quot;</span><span class="oth">),</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">cat</span><span class="oth">(</span><span class="quo">&quot;Tiger&quot;</span><span class="oth">)}</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;reference&nbsp;counter&nbsp;value:&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">SmartPointer_root.returnCount</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">sp</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">),</span>&nbsp;<span class="wrd">sp</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)-&gt;</span><span class="wrd">ObjectName</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Name:&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Object&nbsp;(real):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hierarchy:&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">PrintInfo</span><span class="oth">(</span><span class="wrd">sp</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;reference&nbsp;counter&nbsp;value:&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">SmartPointer_root.returnCount</span><span class="oth">()</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Example of output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+reference counter value: 0
+
+root constructor:           Mouse
+  animal constructor:       Mouse
+root constructor:           Buddy
+  animal constructor:       Buddy
+	dog constructor:        Buddy
+root constructor:           Tiger
+  animal constructor:       Tiger
+	cat constructor:        Tiger
+
+reference counter value: 3
+  11145960    Mouse
+  11151496    Buddy
+  11151616    Tiger
+
+Name:         Object (real):         Hierarchy:
+  Mouse         animal                 Object(forRTTI) <- root <- animal
+  Buddy         dog                    Object(forRTTI) <- root <- animal <- dog
+  Tiger         cat                    Object(forRTTI) <- root <- animal <- cat
+
+	cat destructor:         Tiger
+  animal destructor:        Tiger
+root destructor:            Tiger
+	dog destructor:         Buddy
+  animal destructor:        Buddy
+root destructor:            Buddy
+  animal destructor:        Mouse
+root destructor:            Mouse
+
+reference counter value: 0
+				</pre><br \>
+</div></div></div></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

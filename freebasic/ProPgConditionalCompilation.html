@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>Conditional Compilation</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Conditional Compilation</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<b>Conditional Compilation</b> allows to change the way code is generated using '<a href="CatPgPreProcess.html">Preprocessor commands</a>'.<br \>
+<br \>
+The '<tt><a href="KeyPgPpdefine.html">#define</a></tt>' command allows to define compilation constants, that is constants that describe the parameters of the platform for which the program is compiled.<br \>
+These constants make it possible to carry out conditional compilations, that is to say to modify the behavior of the program according to parameters defined during its compilation.<br \>
+<br \>
+The '<tt><a href="KeyPgPpdefine.html">#define</a></tt>' command is also used to replace identifiers of the program with other identifiers, for example to test several versions of the same function without modifying the entire program.<br \>
+<br \>
+<div class="fb_sect_title">Compilation constants</div><div class="fb_sect_cont"><br \>
+A clear distinction will be made between compilation constants defined with the '<tt><a href="KeyPgPpdefine.html">#define</a></tt>' directive of the preprocessor and the constants defined with the '<tt><a href="KeyPgConst.html">Const</a></tt>' keyword.<br \>
+Indeed, the literal constants do not reserve memory. These are immediate values, defined by the compiler.<br \>
+On the other hand, the '<tt><a href="KeyPgConst.html">Const</a></tt>' can still have a reserved memory space. This is for example the case when manipulating string literals.<br \>
+<br \>
+A literal constant declared with the '<tt><a href="KeyPgPpdefine.html">#define</a></tt>' directive of the preprocessor will always retain its value (provided that it is not redefined). These literal constants have no type, which can be very annoying and error-prone in code.<br \>
+Their use will be reserved for compilation constants only, and the '<tt><a href="KeyPgConst.html">Const</a></tt>' keyword will be preferred for all other constants of the program.<br \>
+<br \>
+The preprocessor sets a number of built-in constants automatically.<br \>
+These are the '<a href="CatPgDddefines.html">Intrinsic Defines</a>' (see their list).<br \>
+<br \>
+</div><div class="fb_sect_title">Conditional compilation</div><div class="fb_sect_cont"><br \>
+The definition of identifiers and compilation constants is widely used to perform so-called conditional compilation.<br \>
+Conditional compilation consists of replacing certain portions of source code with others, depending on the presence or value of compilation constants.<br \>
+This is achievable using conditional compilation directives.<br \>
+<br \>
+The most common of which are probably:<br \>
+<div class="fb_indent"><tt><a href="KeyPgPpifdef.html">#ifdef</a> <i>symbol</i></tt><br \>
+<div class="fb_indent"><tt>' Conditionally included statements</tt><br \>
+</div><tt><a href="KeyPgPpendif.html">#endif</a></tt><br \>
+<div class="fb_indent">the text between the <tt><a href="KeyPgPpifdef.html">#ifdef</a></tt> (ie, "if defined") and the <tt><a href="KeyPgPpendif.html">#endif</a></tt> is left as it is if the identifier <tt><i>symbol</i></tt> is known to the preprocessor. Otherwise, it is deleted (the identifier can be declared using just the <tt><a href="KeyPgPpdefine.html">#define</a></tt> command seen previously).<br \>
+<br \>
+</div></div>There are other conditional compilation directives like:<br \>
+<div class="fb_indent"><b>-</b> <tt><a href="KeyPgPpifndef.html">#ifndef</a> (if not defined ...)</tt><br \>
+<b>-</b> <tt><a href="KeyPgPpelse.html">#else</a></tt> / <tt><a href="KeyPgPpelseif.html">#elseif</a> (otherwise ... / otherwise, if ...)</tt><br \>
+<b>-</b> <tt><a href="KeyPgPpif.html">#if</a> (if ...)</tt><br \>
+<div class="fb_indent">the <tt><a href="KeyPgPpif.html">#if</a></tt> directive expects a constant expression as parameter (the text that follows is included in the file if and only if this expression is true).<br \>
+<br \>
+</div></div>Another common application of compilation directives is the protection of header files against multiple inclusions:<br \>
+<div class="fb_indent"><tt><a href="KeyPgPpifndef.html">#ifndef</a> <i>AlreadyThere</i></tt><br \>
+<div class="fb_indent"><tt><a href="KeyPgPpdefine.html">#define</a> <i>AlreadyThere</i></tt><br \>
+<tt>' Text to include only once at most.</tt><br \>
+</div><tt><a href="KeyPgPpendif.html">#endif</a></tt><br \>
+</div>This prevents the text from being included multiple times, as a result of multiple <tt><a href="KeyPgInclude.html">#include</a></tt> calls.<br \>
+Indeed, at the first call, <tt><i>AlreadyThere</i></tt> is not known to the preprocessor. It is therefore declared and the text is included.<br \>
+On any subsequent call, <tt><i>AlreadyThere</i></tt> exists, and the text is not included.<br \>
+This kind of writing is found in header files, for which in general we do not want a multiple inclusion to take place.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Example of conditional compilation using the Intrinsic define <tt><a href="KeyPgDdfbdebug.html">__FB_DEBUG__</a></tt> to debug a recursive function:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">recursiveFactorial</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;end&nbsp;condition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#if&nbsp;__FB_DEBUG__&nbsp;&lt;&gt;&nbsp;0<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;end&nbsp;of&nbsp;recursion&nbsp;and&nbsp;result:&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;recursion&nbsp;loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#if&nbsp;__FB_DEBUG__&nbsp;&lt;&gt;&nbsp;0<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;multiply&nbsp;by:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">recursiveFactorial</span><span class="oth">(</span><span class="wrd">n</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;recursive&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">recursiveFactorial</span><span class="oth">(</span><span class="num">5</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output after compiling without <tt><a href="CompilerOptg.html">-g</a></tt> option:<br \>
+<pre class="fb_pre">
+ 120		</pre>Output after compiling with <tt><a href="CompilerOptg.html">-g</a></tt> option:<br \>
+<pre class="fb_pre">
+multiply by: 5
+multiply by: 4
+multiply by: 3
+multiply by: 2
+multiply by: 1
+end of recursion and result: 120
+		</pre></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgPreprocessor.html">Preprocessor Overview</a><br \>
+<li> <a href="ProPgMacros.html">Macros</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

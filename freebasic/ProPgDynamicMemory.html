@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>Dynamic memory management with FreeBASIC</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Dynamic memory management with FreeBASIC</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Managing <b>Dynamic Memory</b> (Allocation / Deallocation) with <b>FreeBASIC</b><br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+FreeBASIC supports three basic types of memory allocation:<br \>
+<div class="fb_indent"><b>-</b> Static allocation occurs for static and global variables: Memory is allocated once when the program runs and persists throughout the life of the program.<br \>
+<b>-</b> Stack allocation occurs for procedure parameters and local variables: Memory is allocated when the corresponding block is entered, and released when the block is left, as many times as necessary.<br \>
+<b>-</b> Dynamic allocation is the subject of this page.<br \>
+<br \>
+</div>Static allocation and stack allocation have two things in common:<br \>
+<div class="fb_indent"><b>-</b> The size of the variable must be known at compile time.<br \>
+<b>-</b> Memory allocation and deallocation occur automatically (when the variable is instantiated then destroyed). The user can not anticipate the destruction of such a variable.<br \>
+<br \>
+</div>Most of the time, that is fine. However, there are situations where one or other of these constraints cause problems (when the memory needed depends on user input, the sizing can only be determined during run-time).<br \>
+<br \>
+If the size of everything must be declared at compile time, the best is try to estimate the maximum size of the variables needed and hope this will be enough.<br \>
+This is a bad solution for at least third reasons:<br \>
+<div class="fb_indent"><b>-</b> First, it leads to wasting memory if it is not fully used.<br \>
+<b>-</b> Second, most normal variables are allocated in a part of the memory called the stack. The amount of stack memory for a program is usually quite low (1 MB or 2 MB by default). If exceeding this number, the stack overflow will occur, and the program will abort.<br \>
+<b>-</b> Third, and most importantly, this can lead to artificial limitations and / or overflows. What happens if the required memory becomes greater than the reserved memory (stopping the program, emitting message to user, ...).<br \>
+<br \>
+</div>Fortunately, these problems are easily solved through the dynamic allocation of memory. Dynamic memory allocation is a way of running programs to request memory from the operating system when needed. This memory does not come from the program's limited stack memory, but it is rather allocated from a much larger memory pool managed by the operating system called heap. On modern machines, the heap can have a size of several gigabytes.<br \>
+<br \>
+<div class="fb_sect_title">Keywords for dynamic memory allocation</div><div class="fb_sect_cont"><br \>
+There are two sets of keyword for dynamic allocation / deallocation:<br \>
+<div class="fb_indent"><b>-</b> <tt><a href="KeyPgAllocate.html">Allocate</a></tt> / <tt><a href="KeyPgCallocate.html">CAllocate</a></tt> / <tt><a href="KeyPgReallocate.html">Reallocate</a></tt> / <tt><a href="KeyPgDeallocate.html">Deallocate</a></tt>: for raw memory allocation then deallocation, for simple pre-defined types or buffers (as numeric pre-defined types, user buffer, ...).<br \>
+<b>-</b> <tt><a href="KeyPgOpNew.html">New</a></tt> / <tt><a href="KeyPgOpDelete.html">Delete</a></tt>: for memory allocation + construction then destruction + deallocation, for object type (as var-len strings, UDTs, ...).<br \>
+<br \>
+</div>Mixing keywords between these two sets is very strongly discouraged when managing a same memory block.<br \>
+<br \>
+</div><div class="fb_sect_title">Dynamic memory allocation management by using Allocate / Callocate / Reallocate / Deallocate</div><div class="fb_sect_cont"><br \>
+For each keyword, see the detailed syntax, precise description and examples in the individual documentation pages.<br \>
+<br \>
+Additional functionalities and tips for use:<br \>
+<div class="fb_indent"><b>-</b> <tt><b>Allocate</b></tt> / <tt><b>CAllocate</b></tt> / <tt><b>Reallocate</b></tt> allows to know if memory allocation is successful (otherwise a nul pointer is returned).<br \>
+<b>-</b> Even if the allocated memory size is requested for 0 Byte, a non null pointer is returned and its value should be used to then release the allocation (except for <tt><b>Reallocate(pointer, 0)</b></tt> which behaves similar to <tt><b>Deallocate</b></tt>).<br \>
+<b>-</b> For memory deallocation, <tt><b>Deallocate</b></tt> can be called on any type of pointer (with the right value anyway).<br \>
+<b>-</b> If the user absolutely wants to use this type of allocation for an object (for example to be able to do reallocation), it's up to him to manually call if necessary the constructor and the destructor (by using member access operator) at the right way.<br \>
+<b>-</b> After deallocation, the pointer value becomes invalid (pointing to an invalid memory address), and its reuse (for dereferencing or calling <tt><b>Deallocate</b></tt> again) will result in undefined behavior.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Dynamic memory allocation management by using New / Delete</div><div class="fb_sect_cont"><br \>
+For each keyword, see the detailed syntax, precise description and examples in the individual documentation pages.<br \>
+<br \>
+Additional functionalities and tips for use:<br \>
+<div class="fb_indent"><b>-</b> Before, <tt><b>New</b></tt> did not signal if memory allocation was successful (program hangs). Problem solved from fbc rev 1.06, by returning a null pointer if <tt><b>New</b></tt> fails.<br \>
+<b>-</b> Even if the allocated memory size is requested for 0 Byte (<tt><b>New predefined_datatype[0]</b></tt>), a non null pointer is returned and its value should be used to then release the allocation.<br \>
+<b>-</b> For object destruction and memory deallocation, <tt><b>Delete</b></tt> must be called on a proper typed pointer (otherwise the object destructor will not be called or miscalled, and that may result in a memory leak or even a crash with <tt><b>Delete[]</b></tt>).<br \>
+<b>-</b> The user can also use this type of allocation for a simple pre-defined types (except for the fix-len strings), but this does not functionally add anything, except a simpler usage syntax for allocation.<br \>
+<b>-</b> After destruction + deallocation, the pointer value becomes invalid (pointing to an invalid memory address), and its reuse (for dereferencing or calling <tt><b>Delete</b></tt> again) will result in undefined behavior.<br \>
+<b>-</b> If used, the special <tt><b>Placement New</b></tt> (using memory already allocated) induces only object construction, so use <tt><b>Delete</b></tt> is forbidden (to avoid double request of deallocation). If necessary, the only destruction of the object must be manually do by user (calling the destructor by using member access operator).<br \>
+<br \>
+</div></div><div class="fb_sect_title">Variant by using Redim / Erase</div><div class="fb_sect_cont"><br \>
+FreeBASIC also supports dynamic arrays (variable-length arrays).<br \>
+The memory used by a dynamic array to store its elements is allocated at run-time in the heap. Dynamic arrays can contain simple types as well as complex objects.<br \>
+By using <tt><a href="KeyPgRedim.html">ReDim</a></tt>, the user does not need to call the constructor / destructor because <tt><b>ReDim</b></tt> does this automatically when adding / removing element. <tt><a href="KeyPgErase.html">Erase</a></tt> then destroys all the remaining elements to completely free the memory allocated to them.<br \>
+<br \>
+</div><div class="fb_sect_title">Use cases by comparing 4 methods</div><div class="fb_sect_cont"><br \>
+Usage example on a set of objects, by comparing 4 methods:<br \>
+<div class="fb_indent"><b>-</b> 3 then 4 objects: <tt><b>CAllocate</b></tt>, <tt><b>Reallocate</b></tt>, <tt><b>Deallocate</b></tt>, (+ .constructor + .destructor).<br \>
+<b>-</b> 3 objects: <tt><b>New</b></tt>, <tt><b>Delete</b></tt>.<br \>
+<b>-</b> 3 objects: <tt><b>Placement New</b></tt>, (+ .destructor).<br \>
+<b>-</b> 3 then 4 objects: <tt><b>ReDim</b></tt>, <tt><b>Erase</b></tt>.<br \>
+<tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">S</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&quot;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;induce&nbsp;an&nbsp;implicit&nbsp;constructor&nbsp;and&nbsp;destructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="com">'&nbsp;3&nbsp;then&nbsp;4&nbsp;objects:&nbsp;Callocate,&nbsp;Reallocate,&nbsp;Deallocate,&nbsp;(+&nbsp;.constructor&nbsp;+&nbsp;.destructor)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">CAllocate</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">UDT</span><span class="oth">))</span>&nbsp;&nbsp;<span class="com">''&nbsp;allocate&nbsp;cleared&nbsp;memory&nbsp;for&nbsp;3&nbsp;elements&nbsp;(string&nbsp;descriptors&nbsp;cleared,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;but&nbsp;maybe&nbsp;useless&nbsp;because&nbsp;of&nbsp;the&nbsp;constructor's&nbsp;call&nbsp;right&nbsp;behind)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p1</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="key">Constructor</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;the&nbsp;constructor&nbsp;on&nbsp;each&nbsp;element</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p1</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;add&nbsp;the&nbsp;element&nbsp;number&nbsp;to&nbsp;the&nbsp;string&nbsp;of&nbsp;each&nbsp;element</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p1</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;print&nbsp;each&nbsp;element&nbsp;string</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="wrd">p1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Reallocate</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="num">4</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">UDT</span><span class="oth">))</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;reallocate&nbsp;memory&nbsp;for&nbsp;one&nbsp;additional&nbsp;element</span><br />
+<span class="key">Clear</span>&nbsp;<span class="wrd">p1</span><span class="oth">[</span><span class="num">3</span><span class="oth">],</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">3</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Integer</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;clear&nbsp;the&nbsp;descriptor&nbsp;of&nbsp;the&nbsp;additional&nbsp;element,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;but&nbsp;maybe&nbsp;useless&nbsp;because&nbsp;of&nbsp;the&nbsp;constructor's&nbsp;call&nbsp;right&nbsp;behind</span><br />
+<span class="wrd">p1</span><span class="oth">[</span><span class="num">3</span><span class="oth">].</span><span class="key">Constructor</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;the&nbsp;constructor&nbsp;on&nbsp;the&nbsp;additional&nbsp;element</span><br />
+<span class="wrd">p1</span><span class="oth">[</span><span class="num">3</span><span class="oth">].</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="num">3</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;add&nbsp;the&nbsp;element&nbsp;number&nbsp;to&nbsp;the&nbsp;string&nbsp;of&nbsp;the&nbsp;additional&nbsp;element</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p1</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;print&nbsp;each&nbsp;element&nbsp;string</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p1</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="key">Destructor</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;the&nbsp;destructor&nbsp;on&nbsp;each&nbsp;element</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Deallocate</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;deallocate&nbsp;the&nbsp;memory</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="com">'&nbsp;3&nbsp;objects:&nbsp;New,&nbsp;Delete</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT</span><span class="oth">[</span><span class="num">3</span><span class="oth">]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;allocate&nbsp;memory&nbsp;and&nbsp;construct&nbsp;3&nbsp;elements</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p2</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;add&nbsp;the&nbsp;element&nbsp;number&nbsp;to&nbsp;the&nbsp;string&nbsp;of&nbsp;each&nbsp;element</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p2</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;print&nbsp;each&nbsp;element&nbsp;string</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">Delete</span>&nbsp;<span class="oth">[]</span>&nbsp;<span class="wrd">p2</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;destroy&nbsp;the&nbsp;3&nbsp;element&nbsp;and&nbsp;deallocate&nbsp;the&nbsp;memory</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="com">'&nbsp;3&nbsp;objects:&nbsp;Placement&nbsp;New,&nbsp;(+&nbsp;.destructor)</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Byte</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">UDT</span><span class="oth">)</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;allocate&nbsp;buffer&nbsp;for&nbsp;3&nbsp;elements</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">array</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span><span class="oth">(</span><span class="wrd">p</span><span class="oth">)</span>&nbsp;<span class="wrd">UDT</span><span class="oth">[</span><span class="num">3</span><span class="oth">]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;only&nbsp;construct&nbsp;the&nbsp;3&nbsp;elements&nbsp;in&nbsp;the&nbsp;buffer&nbsp;(placement&nbsp;New)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p3</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;add&nbsp;the&nbsp;element&nbsp;number&nbsp;to&nbsp;the&nbsp;string&nbsp;of&nbsp;each&nbsp;element</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p3</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;print&nbsp;each&nbsp;element&nbsp;string</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p3</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">].</span><span class="key">Destructor</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;the&nbsp;destructor&nbsp;on&nbsp;each&nbsp;element</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Erase</span>&nbsp;<span class="wrd">array</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;deallocate&nbsp;the&nbsp;buffer</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="com">'&nbsp;3&nbsp;then&nbsp;4&nbsp;objects:&nbsp;Redim,&nbsp;Erase</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">p4</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;define&nbsp;a&nbsp;dynamic&nbsp;array&nbsp;of&nbsp;3&nbsp;elements</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p4</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;add&nbsp;the&nbsp;element&nbsp;number&nbsp;to&nbsp;the&nbsp;string&nbsp;of&nbsp;each&nbsp;element</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p4</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;print&nbsp;each&nbsp;element&nbsp;string</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">p4</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;resize&nbsp;the&nbsp;dynamic&nbsp;array&nbsp;for&nbsp;one&nbsp;additional&nbsp;element</span><br />
+<span class="wrd">p4</span><span class="oth">(</span><span class="num">3</span><span class="oth">).</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="num">3</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;add&nbsp;the&nbsp;element&nbsp;number&nbsp;to&nbsp;the&nbsp;string&nbsp;of&nbsp;the&nbsp;additional&nbsp;element</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p4</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">S</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;print&nbsp;each&nbsp;element&nbsp;string</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">Erase</span>&nbsp;<span class="wrd">p4</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;erase&nbsp;the&nbsp;dynamic&nbsp;array</span><br />
+<span class="key">Print</span><br />
+<br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+ Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'FreeBASIC0'  'FreeBASIC1'  'FreeBASIC2'
+'FreeBASIC0'  'FreeBASIC1'  'FreeBASIC2'  'FreeBASIC3'
+
+'FreeBASIC0'  'FreeBASIC1'  'FreeBASIC2'
+
+'FreeBASIC0'  'FreeBASIC1'  'FreeBASIC2'
+
+'FreeBASIC0'  'FreeBASIC1'  'FreeBASIC2'
+'FreeBASIC0'  'FreeBASIC1'  'FreeBASIC2'  'FreeBASIC3'
+			</pre></div></div></div><div class="fb_sect_title">Specific dynamic image buffer allocation by using Imagecreate / Imagedestroy</div><div class="fb_sect_cont"><br \>
+<tt><a href="KeyPgImagecreate.html">ImageCreate</a></tt> allocates and initializes storage for an image.<br \>
+The resulting image buffer can be used in drawing procedures while in any screen mode, and across mode changes,  as long as the color depth of the image buffer matches that of the graphics screen.<br \>
+<tt><a href="KeyPgImageDestroy.html">ImageDestroy</a></tt> destroys and deallocates storage for an image.<br \>
+<br \>
+</div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgNewDelete.html">New and Delete</a><br \>
+<li> <a href="ProPgVarLenArrays.html">Variable-length Arrays</a><br \>
+<li> <a href="ProPgObjectLifetime.html">Dynamic Object and Data Lifetime</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

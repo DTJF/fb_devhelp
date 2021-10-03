@@ -1,0 +1,95 @@
+<html>
+<head>
+<title>Cva_Start</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Cva_Start</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Macro to initialize variadic argument list object variable<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<b>Cva_Start</b>( argument_list, last_param )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>argument_list</i></tt><br \>
+<div class="fb_indent"><tt><a href="KeyPgCvaList.html">Cva_List</a></tt> data type variable to initialize<br \>
+</div><tt><i>last_param</i></tt><br \>
+<div class="fb_indent">The last parameter in the procedures parameter list before the <a href="KeyPgDots.html">Ellipsis</a> <tt><a href="KeyPgDots.html">...</a></tt><br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+In a variadic procedure definition, <tt><i>argument_list</i></tt> is a variable having the <tt><a href="KeyPgCvaList.html">Cva_List</a></tt> type and must be initialized with <tt><b>Cva_Start</b></tt> to work with the variable length argument list passed to the procedure.<br \>
+<br \>
+<tt><i>last_param</i></tt> is the last parameter before the <a href="KeyPgDots.html">Ellipsis</a> <tt><a href="KeyPgDots.html">...</a></tt> in the variadic procedure definition.<br \>
+<br \>
+<tt><b>Cva_Start</b></tt> can only be used in variadic procedures.  A variadic procedure is declared or defined by specifying the <a href="KeyPgDots.html">Ellipsis</a> <tt><a href="KeyPgDots.html">...</a></tt> as the last parameter, and will accept a variable number of arguments when calling the procedure.<br \>
+<br \>
+<tt><b>Cva_Start</b></tt> is like a constructor for the variadic <tt><i>argument_list</i></tt> object and must eventually have a matching call to <tt><a href="KeyPgCvaEnd.html">Cva_End</a></tt>, which is like a destructor.  After <tt><a href="KeyPgCvaEnd.html">Cva_End</a></tt> for <tt><i>argument_list</i></tt> has been called, <tt><i>argument_list</i></tt> can be reused and reinitialized with another call to <tt><b>Cva_Start</b></tt>.  The <tt><b>Cva_Start</b></tt> and <tt><a href="KeyPgCvaEnd.html">Cva_End</a></tt> calls must both be called in pairs in the same procedure (for cross platform compatibility).<br \>
+<br \>
+<tt><a href="KeyPgCvaCopy.html">Cva_Copy</a></tt> is similar to <tt><b>Cva_Start</b></tt> except it initializes a variadic <tt><i>argument_list</i></tt> object from an already initialized variadic <tt><i>argument_list</i></tt> object, like a copy constructor.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;typical&nbsp;usage&nbsp;of&nbsp;iterating&nbsp;through&nbsp;all&nbsp;arguments</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">proc</span>&nbsp;<span class="key">cdecl</span><span class="oth">(</span><span class="wrd">count</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="oth">...</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Cva_List</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_Start</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Cva_Arg</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_End</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="wrd">proc</span><span class="oth">(</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="num">4000</span><span class="oth">,</span>&nbsp;<span class="num">300</span><span class="oth">,</span>&nbsp;<span class="num">20</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">)</span><br />
+</div></tt><br />
+<br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;example&nbsp;of&nbsp;using&nbsp;cva_start&nbsp;to&nbsp;get&nbsp;the&nbsp;first&nbsp;argument</span><br />
+<span class="com">''&nbsp;then&nbsp;restarting&nbsp;to&nbsp;get&nbsp;all&nbsp;the&nbsp;arguments</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">proc</span>&nbsp;<span class="key">cdecl</span><span class="oth">(</span><span class="wrd">count</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="oth">...</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Cva_List</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;get&nbsp;the&nbsp;first&nbsp;argument&nbsp;only</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_Start</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Cva_Arg</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_End</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;restart&nbsp;and&nbsp;get&nbsp;all&nbsp;the&nbsp;arguments</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_Start</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Cva_Arg</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_End</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="wrd">proc</span><span class="oth">(</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="num">4000</span><span class="oth">,</span>&nbsp;<span class="num">300</span><span class="oth">,</span>&nbsp;<span class="num">20</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">)</span><br />
+</div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Not available in the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect unless referenced with the alias <tt><b>__cva_start</b></tt>.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="KeyPgDots.html">... (Ellipsis)</a><br \>
+<li> <tt><a href="KeyPgCvaArg.html">Cva_Arg</a></tt><br \>
+<li> <tt><a href="KeyPgCvaCopy.html">Cva_Copy</a></tt><br \>
+<li> <tt><a href="KeyPgCvaEnd.html">Cva_End</a></tt><br \>
+<li> <tt><a href="KeyPgCvaList.html">Cva_List</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

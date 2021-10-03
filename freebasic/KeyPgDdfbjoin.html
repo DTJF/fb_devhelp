@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>__FB_JOIN__</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">__FB_JOIN__</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Intrinsic define (macro) performed by the compiler.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+__FB_JOIN__( arg1, arg2 )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>arg1</i></tt>, <tt><i>arg2</i></tt><br \>
+<div class="fb_indent">left (1) and right (2) arguments to join<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Joins two token arguments together as one, similar to token pasting operator (<tt><a href="KeyPgOpPpConcat.html">##</a></tt>) but more powerfull (will resolve arguments before joining).<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="def">#macro&nbsp;m&nbsp;(&nbsp;arg1,&nbsp;arg2&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#print&nbsp;arg1##arg2<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#print&nbsp;__FB_JOIN__(&nbsp;arg1,&nbsp;arg2&nbsp;)<br />
+#endmacro<br />
+</span><br />
+<span class="wrd">m</span><span class="oth">(</span><span class="wrd">Free</span><span class="oth">,</span>&nbsp;<span class="wrd">BASIC</span><span class="oth">)</span><br />
+<br />
+<span class="com">/'&nbsp;Compiler&nbsp;output:</span><br />
+<span class="com">FreeBASIC</span><br />
+<span class="com">FreeBASIC</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="def">#define&nbsp;PREFIX&nbsp;p<br />
+#define&nbsp;SUFFIX&nbsp;_T<br />
+</span><br />
+<span class="com">''&nbsp;this&nbsp;won't&nbsp;work&nbsp;-&nbsp;arguments&nbsp;not&nbsp;expanded</span><br />
+<span class="def">#define&nbsp;&nbsp;&nbsp;makename1(&nbsp;x&nbsp;)&nbsp;&nbsp;PREFIX##x##SUFFIX<br />
+</span><br />
+<span class="com">''&nbsp;this&nbsp;will&nbsp;work&nbsp;-&nbsp;can&nbsp;do&nbsp;this&nbsp;in&nbsp;older&nbsp;versions&nbsp;of&nbsp;fbc&nbsp;too</span><br />
+<span class="def">#define&nbsp;join(&nbsp;a,&nbsp;b&nbsp;)&nbsp;a##b<br />
+#define&nbsp;makename2(&nbsp;x&nbsp;)&nbsp;join(&nbsp;PREFIX,&nbsp;join(&nbsp;x,&nbsp;SUFFIX&nbsp;)&nbsp;)<br />
+</span><br />
+<span class="com">''&nbsp;built&nbsp;in&nbsp;__FB_JOIN__()&nbsp;--&nbsp;works&nbsp;pretty&nbsp;much&nbsp;like&nbsp;join()&nbsp;above</span><br />
+<span class="def">#define&nbsp;&nbsp;&nbsp;makename3(&nbsp;x&nbsp;)&nbsp;&nbsp;__FB_JOIN__(&nbsp;PREFIX,&nbsp;__FB_JOIN__(&nbsp;x,&nbsp;SUFFIX&nbsp;)&nbsp;)<br />
+</span><br />
+<span class="def">#macro&nbsp;dump(&nbsp;arg&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#print&nbsp;#arg<br />
+#endmacro<br />
+</span><br />
+<span class="wrd">dump</span><span class="oth">(</span>&nbsp;<span class="wrd">makename1</span><span class="oth">(</span><span class="wrd">text</span><span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+<span class="wrd">dump</span><span class="oth">(</span>&nbsp;<span class="wrd">makename2</span><span class="oth">(</span><span class="wrd">text</span><span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+<span class="wrd">dump</span><span class="oth">(</span>&nbsp;<span class="wrd">makename3</span><span class="oth">(</span><span class="wrd">text</span><span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="com">/'&nbsp;Compiler&nbsp;output:</span><br />
+<span class="com">PREFIXtextSUFFIX</span><br />
+<span class="com">ptext_T</span><br />
+<span class="com">ptext_T</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgOpPpConcat.html">Operator ## (Preprocessor Concatenate)</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

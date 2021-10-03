@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>FileSetEof</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">FileSetEof</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Sets the length of a open file bound to a file number<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgFunction.html">Function</a> <b>FileSetEof</b> ( <a href="KeyPgByval.html">ByVal</a> <i>filenum</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgLong.html">Long</a> ) <a href="KeyPgAs.html">As</a> <a href="KeyPgLong.html">Long</a><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+#include "file.bi"<br \>
+<i>result</i> = <b>FileSetEof</b>(<i>fnum</i>)<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>filenum</i></tt><br \>
+<div class="fb_indent">File number of bound file or device.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Return Value</div><div class="fb_sect_cont"><br \>
+Returns zero (0) for success or an error code if the end of file (file size) could not be set.<br \>
+<br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>FileSetEof</b></tt> Sets the end of file based on the current file position.  File position as in <tt><a href="KeyPgSeekset.html">Seek</a></tt> is one based.<br \>
+<br \>
+When the current file position is before the end of the file, the file is truncated.  File contents before the the current file position are kept, and file contents on or after the current file position are deleted.  When the current position is beyond the end of file, the file is extended with zero value bytes.  After <tt><b>FileSetEof</b></tt> completes, the current file position is at the end of the file.<br \>
+<br \>
+To set a file having a length of <i>N-bytes</i> where the file is opened for <tt>binary</tt>, <tt>output</tt>, or <tt>append</tt>, it is necessary to <tt><a href="KeyPgSeekset.html">Seek</a></tt> to position <i>N-bytes + 1</i>.  To set a file having a length of <i>N-records</i> where the file is opened for <tt>random</tt>, it is necessary to <tt><a href="KeyPgSeekset.html">Seek</a></tt> to position <i>N-records + 1</i>.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;file.bi&quot;<br />
+</span><br />
+<span class="com">''&nbsp;create&nbsp;a&nbsp;zero&nbsp;length&nbsp;file</span><br />
+<span class="key">Open</span>&nbsp;<span class="quo">&quot;file.dat&quot;</span>&nbsp;<span class="key">For</span>&nbsp;<span class="key">Binary</span>&nbsp;<span class="key">As</span>&nbsp;<span class="oth">#</span><span class="num">1</span><br />
+<span class="key">FileSetEof</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Close</span>&nbsp;<span class="oth">#</span><span class="num">1</span><br />
+<br />
+<span class="com">''&nbsp;open&nbsp;same&nbsp;file&nbsp;and&nbsp;extend&nbsp;to&nbsp;10000&nbsp;bytes&nbsp;size</span><br />
+<span class="key">Open</span>&nbsp;<span class="quo">&quot;file.dat&quot;</span>&nbsp;<span class="key">For</span>&nbsp;<span class="key">Binary</span>&nbsp;<span class="key">As</span>&nbsp;<span class="oth">#</span><span class="num">1</span><br />
+<span class="key">Seek</span>&nbsp;<span class="oth">#</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="oth">(</span><span class="num">10000</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+<span class="key">FileSetEof</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Close</span>&nbsp;<span class="oth">#</span><span class="num">1</span><br />
+<br />
+<span class="com">''&nbsp;open&nbsp;same&nbsp;file&nbsp;and&nbsp;truncate&nbsp;to&nbsp;5000&nbsp;bytes&nbsp;size</span><br />
+<span class="key">Open</span>&nbsp;<span class="quo">&quot;file.dat&quot;</span>&nbsp;<span class="key">For</span>&nbsp;<span class="key">Binary</span>&nbsp;<span class="key">As</span>&nbsp;<span class="oth">#</span><span class="num">1</span><br />
+<span class="key">Seek</span>&nbsp;<span class="oth">#</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="oth">(</span><span class="num">5000</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+<span class="key">FileSetEof</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Close</span>&nbsp;<span class="oth">#</span><span class="num">1</span><br />
+<br />
+<span class="com">''&nbsp;clean-up</span><br />
+<span class="key">Kill</span>&nbsp;<span class="quo">&quot;file.dat&quot;</span><br />
+</div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgEof.html">EOF</a></tt><br \>
+<li> <tt><a href="KeyPgLof.html">LOF</a></tt><br \>
+<li> <tt><a href="KeyPgSeekset.html">Seek</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

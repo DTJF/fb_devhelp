@@ -1,0 +1,232 @@
+<html>
+<head>
+<title>Mutual Exclusion</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Mutual Exclusion</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The built-in procedures that deal with mutexes for <b>Mutual Exclusion</b> (create, lock/unlock, and destroy the mutexes).<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+Mutual exclusion is the method of serializing access to shared resources. If programmer do not want a thread to be accessing a shared resource that is already in the process of being accessed by another thread, he can use a mutex.<br \>
+<br \>
+Logically a mutex is a lock with only one key:<br \>
+<div class="fb_indent"><b>-</b> If a thread wishes to access a shared resource, the thread must first gain the lock.<br \>
+<b>-</b> Once it has the lock it may do what it wants with the shared resource without concerns of other threads accessing the shared resource because other threads will have to wait.<br \>
+<b>-</b> Once the thread finishes using the shared resource, it unlocks the mutex, which allows other threads to access the shared resource.<br \>
+<br \>
+</div>A mutex is a lock that guarantees three things:<br \>
+<div class="fb_indent"><b>-</b> Atomicity - Locking a mutex is an atomic operation, meaning that the operating system (or threads library) assures you that if you locked a mutex, no other thread succeeded in locking this mutex at the same time.<br \>
+<b>-</b> Singularity - If a thread managed to lock a mutex, it is assured that no other thread will be able to lock the thread until the original thread releases the lock.<br \>
+<b>-</b> Non-Busy Wait - If a thread attempts to lock a thread that was locked by a second thread, the first thread will be suspended (and will not consume any CPU resources) until the lock is freed by the second thread. At this time, the first thread will wake up and continue execution, having the mutex locked by it.<br \>
+<br \>
+</div>This is a protocol that serializes access to a shared resource.<br \>
+Note that such a protocol must be enforced for resource a mutex is protecting across all threads that may touch the resource being protected (including the implicit main thread).<br \>
+<br \>
+Mutex capability can be fully used even with a detached thread (only its handler is no longer accessible by its identifier).<br \>
+<br \>
+<div class="fb_sect_title">Creating / Destructing a mutex</div><div class="fb_sect_cont"><br \>
+<tt><a href="KeyPgMutexCreate.html">MutexCreate</a></tt> creates a mutex, returning a handle identifier which is to be referred to when destroying the mutex.<br \>
+Mutexes created with <tt><a href="KeyPgMutexCreate.html">MutexCreate</a></tt> should be destroyed when no longer needed or before the end of the program with <tt><a href="KeyPgMutexDestroy.html">MutexDestroy</a></tt>.<br \>
+<br \>
+<u>Create</u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgFunction.html">Function</a> <a href="KeyPgMutexCreate.html">MutexCreate</a> ( ) <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><i>mutexid</i> = <a href="KeyPgMutexCreate.html">MutexCreate</a></tt><br \>
+</div><b>-</b> Return value:<br \>
+<div class="fb_indent">The <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle <tt><i>(mutexid)</i></tt> to the mutex created, or the null pointer (<tt>0</tt>) on failure.<br \>
+<br \>
+</div></div><u>Destroy</u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <a href="KeyPgMutexDestroy.html">MutexDestroy</a> ( <a href="KeyPgByval.html">ByVal</a> <i>mutexid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><a href="KeyPgMutexDestroy.html">MutexDestroy</a>( <i>mutexid</i> )</tt><br \>
+</div><b>-</b> Parameter:<br \>
+<div class="fb_indent"><tt><i>mutexid</i></tt><br \>
+<div class="fb_indent">The <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle of the mutex to be destroyed.<br \>
+<br \>
+</div></div></div><u>Description</u><br \>
+<div class="fb_indent">The call to <tt><a href="KeyPgMutexCreate.html">MutexCreate</a></tt> must be executed before creating any thread using it (and before its use in the thread that creates it).<br \>
+The call to <tt><a href="KeyPgMutexDestroy.html">MutexDestroy</a></tt> must be executed after any threads using the mutex are no longer in use (and after its last use in the thread that destroys it).<br \>
+<br \>
+</div></div><div class="fb_sect_title">Locking / Unlocking a mutex</div><div class="fb_sect_cont"><br \>
+<tt><a href="KeyPgMutexLock.html">MutexLock</a></tt>/<tt><a href="KeyPgMutexUnlock.html">MutexUnlock</a></tt> allow to lock/unlock a mutex by referring to its handle identifier get at its creation.<br \>
+<br \>
+<u>Lock</u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <a href="KeyPgMutexLock.html">MutexLock</a> ( <a href="KeyPgByval.html">ByVal</a> <i>mutexid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><a href="KeyPgMutexLock.html">MutexLock</a>( <i>mutexid</i> )</tt><br \>
+</div><b>-</b> Parameter:<br \>
+<div class="fb_indent"><tt><i>mutexid</i></tt><br \>
+<div class="fb_indent">The <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle of the mutex to be locked.<br \>
+<br \>
+</div></div></div><u>Unlock</u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <a href="KeyPgMutexUnlock.html">MutexUnlock</a> ( <a href="KeyPgByval.html">ByVal</a> <i>mutexid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><a href="KeyPgMutexUnlock.html">MutexUnlock</a>( <i>mutexid</i> )</tt><br \>
+</div><b>-</b> Parameter:<br \>
+<div class="fb_indent"><tt><i>mutexid</i></tt><br \>
+<div class="fb_indent">The <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle of the mutex to be unlocked.<br \>
+<br \>
+</div></div></div><u>Description</u><br \>
+<div class="fb_indent">The code between the lock and unlock calls to the mutex, is referred to as a critical section.<br \>
+Minimizing time spent in the critical section allows for greater concurrency because it potentially reduces the amount of time other threads must wait to gain the lock.<br \>
+Therefore, it is important for a thread programmer to minimize critical sections if possible. <br \>
+<br \>
+</div></div><div class="fb_sect_title">Pseudo-code section</div><div class="fb_sect_cont"><br \>
+By applying all proper above rules:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'  Principle of mutual exclusion between 2 threads
+'  (connecting lines join the sender(s) and receiver(s) impacted by each action occurring during the sequence)
+'
+'          Thread                                         Other Thread
+'      MUTEXLOCK(mutexID) <----------------.    .---> MUTEXLOCK(mutexID)
+'      Do_something_with_exclusion    .--- | ---'     Do_something_with_exclusion
+'      MUTEXUNLOCK(mutexID) ----------'    '--------- MUTEXUNLOCK(mutexID)
+		</pre></div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+The first example on the previous page (<tt><a href="ProPgMtThreads.html">Threads</a></tt>) is modified so that each thread no longer displays a single character ("M" or "C") but now a sequence of three characters ("[M]" from the main thread, "(C)" for the child thread).<br \>
+The tempo in each thread loop has been cut into three chunks to help interleave the display between threads.<br \>
+<br \>
+<ul><li> Using this example as is:<br \>
+</ul><div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">threadID</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;an&nbsp;'Any&nbsp;Ptr'&nbsp;thread-ID&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;[M]&quot;&quot;:&nbsp;from&nbsp;'Main'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;(C)&quot;&quot;:&nbsp;from&nbsp;'Child'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="wrd">threadID</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">thread</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;creation&nbsp;of&nbsp;the&nbsp;child&nbsp;thread&nbsp;from&nbsp;the&nbsp;main&nbsp;thread</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;main&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;[&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;M&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;]&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">threadID</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;waiting&nbsp;for&nbsp;the&nbsp;child&nbsp;thread&nbsp;termination</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Child'&nbsp;thread&nbsp;finished&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;sub&nbsp;executed&nbsp;by&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;(&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;C&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;)&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">250</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+"[M]": from 'Main' thread
+"(C)": from 'Child' thread
+
+[(CM])[M][(MC])[M][(MC])[M][(MC])[M][M(]C)[M](C)(C)(C)(C)(C)
+'Child' thread finished
+			</pre>The display highlights an interlace in the sequence (of three characters) outputted from each thread.<br \>
+In each thread, the code section displaying the three-character sequence should not be interrupted by the display of the other thread.<br \>
+These two sections of code must therefore be considered as critical sections to be protected by a block <i>[Mutexlock ... Mutexunlock]</i>.<br \>
+<br \>
+</div></div><ul><li> Using mutual exclusion with a mutex:<br \>
+</ul><div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;&nbsp;Principle&nbsp;of&nbsp;mutual&nbsp;exclusion</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Main&nbsp;thread&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;XOR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Child&nbsp;thread</span><br />
+<span class="com">'&nbsp;&nbsp;.....&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.....</span><br />
+<span class="com">'&nbsp;&nbsp;MUTEXLOCK(mutID)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MUTEXLOCK(mutID)</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do_something_with_exclusion&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do_something_with_exclusion</span><br />
+<span class="com">'&nbsp;&nbsp;MUTEXUNLOCK(mutID)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MUTEXUNLOCK(mutID)</span><br />
+<span class="com">'&nbsp;&nbsp;.....&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.....</span><br />
+<br />
+<br />
+<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">threadID</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;an&nbsp;'Any&nbsp;Ptr'&nbsp;thread-ID&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">mutID</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;a&nbsp;global&nbsp;'Any&nbsp;Ptr'&nbsp;mutex-ID</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">mutID</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">MutexCreate</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;creation&nbsp;of&nbsp;the&nbsp;mutex</span><br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;[M]&quot;&quot;:&nbsp;from&nbsp;'Main'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;(C)&quot;&quot;:&nbsp;from&nbsp;'Child'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="wrd">threadID</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">thread</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;creation&nbsp;of&nbsp;the&nbsp;child&nbsp;thread&nbsp;from&nbsp;the&nbsp;main&nbsp;thread</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;main&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;mutex&nbsp;locked&nbsp;at&nbsp;the&nbsp;beginning&nbsp;of&nbsp;the&nbsp;exclusive&nbsp;section</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;[&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;M&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;]&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;mutex&nbsp;unlocked&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;exclusive&nbsp;section</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">threadID</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;waiting&nbsp;for&nbsp;the&nbsp;child&nbsp;thread&nbsp;termination</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Child'&nbsp;thread&nbsp;finished&quot;</span><br />
+<br />
+<span class="key">MutexDestroy</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;destruction&nbsp;of&nbsp;the&nbsp;mutex</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;sub&nbsp;executed&nbsp;by&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;mutex&nbsp;locked&nbsp;at&nbsp;the&nbsp;beginning&nbsp;of&nbsp;the&nbsp;exclusive&nbsp;section</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;(&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;C&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;)&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;mutex&nbsp;unlocked&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;exclusive&nbsp;section</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">250</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+"[M]": from 'Main' thread
+"(C)": from 'Child' thread
+
+[M](C)[M][M](C)[M][M](C)[M][M](C)[M][M](C)[M](C)(C)(C)(C)(C)
+'Child' thread finished
+			</pre>So, display becomes coherent compared to each three-character sequence.<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgMutexCreate.html">MutexCreate</a></tt>, <tt><a href="KeyPgMutexDestroy.html">MutexDestroy</a></tt><br \>
+<li> <tt><a href="KeyPgMutexLock.html">MutexLock</a></tt>, <tt><a href="KeyPgMutexUnlock.html">MutexUnlock</a></tt><br \>
+<li> <a href="ProPgMultiThreading.html">Multi-Threading Overview</a><br \>
+<li> <a href="ProPgMtThreads.html">Threads</a><br \>
+<li> <a href="ProPgMtConditionalVariables.html">Conditional Variables</a><br \>
+<li> <a href="ProPgMtCriticalSections.html">Critical Sections</a><br \>
+<li> <a href="ProPgMtCriticalSectionsFAQ.html">Critical Sections FAQ</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

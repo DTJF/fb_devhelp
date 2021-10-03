@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>Assignments</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Assignments</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<b>Assignments</b> typically allow a variable to hold different values at different times during its life-span and scope.<br \>
+<br \>
+<div class="fb_sect_title">Single assignment statement</div><div class="fb_sect_cont"><br \>
+An assignment statement consists of a variable (simple or with indices, or even a byref function result) and an expression (constructed from variables, constants, operators, and parentheses):<br \>
+<div class="fb_indent"><b><tt>variable = expression</tt></b><br \>
+</div>Executing an assignment statement evaluates the expression on the right-hand side and assigns it to the variable on the left-hand side.<br \>
+<br \>
+For an assignment operation, it is necessary that the value of the expression is well-defined (it is a valid 'rvalue') and that the variable represents a modifiable entity (it is a valid modifiable (non-const) 'lvalue').<br \>
+For an assignment to be well formed, the type of the expression on the right-hand side should be compatible with the type of the variable on the left-hand side (in other words, it must be possible to cast the expression to the type of the variable).<br \>
+<br \>
+An example of a simple assignment is as follows:<br \>
+<div class="fb_indent"><b><tt>x = 0</tt></b><br \>
+</div>For the above example, the variable <b><tt>'x'</tt></b> must be declared as being of numeric type.<br \>
+After the assignment statement executes, the variable <b><tt>'x'</tt></b> will have the value zero (either as an integer or a floating-point value, depending on its type).<br \>
+<br \>
+In an assignment statement:<br \>
+<div class="fb_indent"><b>-</b> The expression is evaluated in the current state of the program.<br \>
+<b>-</b> The variable is assigned the computed value, replacing the prior value of that variable.<br \>
+</div>Because the right-hand side is evaluated first, it is possible to increment a variable by writing:<br \>
+<div class="fb_indent"><b><tt>x = x + 1</tt></b><br \>
+<br \>
+</div></div><div class="fb_sect_title">Compound assignment statement</div><div class="fb_sect_cont"><br \>
+Arithmetic operators may be used in compound arithmetic and assignment operations.<br \>
+<br \>
+For example, consider the following example of compound addition and assignment:<br \>
+<div class="fb_indent"><b><tt>x += 7</tt></b><br \>
+</div>The compound arithmetic and assignment statement above is equivalent to the following long form:<br \>
+<div class="fb_indent"><b><tt>x = x + 7</tt></b><br \>
+<br \>
+</div>More generally, the compound form (with operator op):<br \>
+<div class="fb_indent"><b><tt>x op= y</tt></b><br \>
+</div>is equivalent to:<br \>
+<div class="fb_indent"><b><tt>x = x op y</tt></b><br \>
+<br \>
+</div>The compound statement is legal whenever the long form is legal. This requires that the operation <b><tt>'x op y'</tt></b> must itself be well formed and that the result of the operation be assignable to <b><tt>'x'</tt></b>.<br \>
+<br \>
+</div><div class="fb_sect_title">Assignment versus equality</div><div class="fb_sect_cont"><br \>
+The use of the equals sign <b><tt>'='</tt></b> as an assignment operator has been frequently criticized, due to the conflict with equal as comparison for equality. This results both in confusion by novices in writing code, and confusion even by experienced programmers in reading code.<br \>
+Beginning programmers sometimes confuse assignment with the relational operator for equality, as <b><tt>'='</tt></b> means equality in mathematics, and is used for assignment in many languages. But assignment alters the value of a variable, while equality testing tests whether two expressions have the same value.<br \>
+<br \>
+In FreeBASIC, a single equals sign <b><tt>'='</tt></b> is generally used for both the assignment operator and the equality relational operator, with context determining which is meant.<br \>
+For this purpose (and for solving some cases of ambiguity of the parser), the alternative symbol <b><tt>'=&gt;'</tt></b> can be used for assignments in place of <b><tt>'='</tt></b> (same as already used commonly for the initializers inside declarations).<br \>
+<b>Note:</b> the <b><tt>'=&gt;'</tt></b> symbol has been chosen against <b><tt>'&lt;='</tt></b> (already the operator 'Less Than Or Equal') and <b><tt>':='</tt></b> (<b><tt>':'</tt></b> used as statement separator).<br \>
+<br \>
+Statements can even mix assignment and equality operators.<br \>
+For example:<br \>
+<div class="fb_indent"><b><tt>x = a = b</tt></b><br \>
+</div>is parsed as:<br \>
+<div class="fb_indent"><b><tt>x = ( a = b )</tt></b><br \>
+</div>The equality expression <b><tt>'a = b'</tt></b> above returns <b><tt>'-1'</tt></b> <tt>or</tt> <b><tt>'0'</tt></b>, or <b><tt>'true'</tt></b> <tt>or</tt> <b><tt>'false'</tt></b>, depending on the types of the variables <b><tt>'a'</tt></b> and <b><tt>'b'</tt></b>, but the values of these variables are not modified. Only the equality expression result is assigned to <b><tt>'x'</tt></b>.<br \>
+In the above assignment statement, using parentheses around the equality expression allows to highlight the global behavior.<br \>
+The alternative symbol <b><tt>'=&gt;'</tt></b> can also be used:<br \>
+<div class="fb_indent"><b><tt>x =&gt; a = b</tt></b><br \>
+(<b><tt>'=&gt;'</tt></b> can not be also used as symbol for equality operator)<br \>
+<br \>
+</div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Example illustrating the different cases:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">x</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span><span class="oth">,</span>&nbsp;<span class="wrd">z</span><br />
+<br />
+<span class="wrd">x</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">5</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;'x&nbsp;=&gt;&nbsp;5')</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">x</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(assignment&nbsp;expression&nbsp;is&nbsp;a&nbsp;constant)</span><br />
+<br />
+<span class="wrd">y</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">4</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;'y&nbsp;=&gt;&nbsp;x&nbsp;+&nbsp;4')</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">y</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(assignment&nbsp;expression&nbsp;is&nbsp;the&nbsp;sum&nbsp;of&nbsp;a&nbsp;variable&nbsp;and&nbsp;a&nbsp;constant)</span><br />
+<br />
+<span class="wrd">y</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;'y&nbsp;=&gt;&nbsp;y&nbsp;+&nbsp;3')</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">y</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;12&nbsp;&nbsp;&nbsp;&nbsp;(value&nbsp;of&nbsp;x&nbsp;is&nbsp;incremented&nbsp;by&nbsp;3)</span><br />
+<br />
+<span class="wrd">z</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;'z&nbsp;=&gt;&nbsp;3')</span><br />
+<span class="wrd">z</span>&nbsp;<span class="oth">*=</span>&nbsp;<span class="wrd">x</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;'z&nbsp;*=&gt;&nbsp;x')</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">z</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;&nbsp;(value&nbsp;of&nbsp;z&nbsp;is&nbsp;multiplied&nbsp;by&nbsp;value&nbsp;of&nbsp;x)</span><br />
+<br />
+<span class="key">If</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(value&nbsp;of&nbsp;x&nbsp;is&nbsp;not&nbsp;modified)</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">x</span><br />
+<span class="key">Else</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">x</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span>&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12</span><br />
+<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<br />
+<span class="wrd">x</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">z</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;'x&nbsp;=&gt;&nbsp;y&nbsp;=&nbsp;z')&nbsp;&nbsp;&nbsp;&nbsp;(value&nbsp;of&nbsp;y&nbsp;is&nbsp;not&nbsp;modified)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">x</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span><span class="oth">,</span>&nbsp;<span class="wrd">z</span>&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12&nbsp;&nbsp;&nbsp;&nbsp;15</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgOpAssignment.html">Operator =[&gt;] (Assignment)</a></tt><br \>
+<li> <tt><a href="KeyPgOpEqual.html">Operator = (Equal)</a></tt><br \>
+<li> <a href="CatPgOperators.html">Operator List</a><br \>
+<li> <a href="OpPrecedence.html">Operator Precedence</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

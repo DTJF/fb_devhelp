@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>Cva_List</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Cva_List</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Variadic argument list object type<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDim.html">Dim</a> <i>variable</i> <a href="KeyPgAs.html">As</a> <b>Cva_List</b><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>Cva_List</b></tt> is a built in data type for working with the variable length argument list in a variadic procedure.<br \>
+<br \>
+Use <tt><a href="KeyPgCvaStart.html">Cva_Start</a></tt> to initialize the <tt><b>Cva_List</b></tt> variable (constructor).<br \>
+Use <tt><a href="KeyPgCvaCopy.html">Cva_Copy</a></tt> to copy a <tt><b>Cva_List</b></tt> variable (copy constructor).<br \>
+Use <tt><a href="KeyPgCvaArg.html">Cva_Arg</a></tt> to obtain the value of the next argument.<br \>
+Use <tt><a href="KeyPgCvaEnd.html">Cva_End</a></tt> when finished with a <tt><b>Cva_List</b></tt> variable (destructor).<br \>
+<br \>
+The exact type and size of <tt><b>Cva_List</b></tt> varies depending on the target platform.  This builtin type provides a layer of abstraction over the underlying mechanism for obtaining the values passed to a variadic procedure.<br \>
+<br \>
+fbc will select a default <tt><b>Cva_List</b></tt> type depending on <a href="CompilerOpttarget.html">-target</a>, <a href="CompilerOptarch.html">-arch</a>, and <a href="CompilerOptgen.html">-gen</a> command line options, as described in the following code.<br \>
+<tt><div class="freebasic">
+<span class="def">#if&nbsp;(__FB_BACKEND__&nbsp;=&nbsp;&quot;gcc&quot;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#if&nbsp;defined(&nbsp;__FB_64BIT__&nbsp;)&nbsp;<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#if&nbsp;defined(&nbsp;__FB_ARM__&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="wrd">__va_list</span>&nbsp;<span class="key">Alias</span>&nbsp;<span class="quo">&quot;__va_list&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">__stack</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">__gr_top</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">__vr_top</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span>&nbsp;<span class="wrd">__gr_offs</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span>&nbsp;<span class="wrd">__vr_offs</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="key">Cva_List</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">__va_list</span>&nbsp;<span class="key">Alias</span>&nbsp;<span class="quo">&quot;__builtin_va_list&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#elseif&nbsp;defined(&nbsp;__FB_WIN32__&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="key">Cva_List</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Alias</span>&nbsp;<span class="quo">&quot;__builtin_va_list&quot;</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#else<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="wrd">__va_list_tag</span>&nbsp;<span class="key">Alias</span>&nbsp;<span class="quo">&quot;__va_list_tag&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">ULong</span>&nbsp;<span class="wrd">gp_offset</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">ULong</span>&nbsp;<span class="wrd">fp_offset</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">overflow_arg_area</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">reg_save_area</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Type</span>&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="key">Cva_List</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">__va_list_tag</span>&nbsp;<span class="key">Alias</span>&nbsp;<span class="quo">&quot;__builtin_va_list[]&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif&nbsp;&nbsp;&nbsp;&nbsp;<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#else<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="key">Cva_List</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Alias</span>&nbsp;<span class="quo">&quot;__builtin_va_list&quot;</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+#else<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="key">Cva_List</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Alias</span>&nbsp;<span class="quo">&quot;char&quot;</span>&nbsp;<span class="key">Ptr</span><br />
+<span class="def">#endif<br />
+</span></div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="key">Function</span>&nbsp;<span class="wrd">average</span>&nbsp;<span class="key">cdecl</span><span class="oth">(</span><span class="wrd">count</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="oth">...</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">sum</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Cva_List</span>&nbsp;<span class="com">''&nbsp;argument&nbsp;list&nbsp;object</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_Start</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="com">''&nbsp;constructor</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">sum</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="key">Cva_Arg</span><span class="oth">(</span><span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="key">Double</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_End</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="com">''&nbsp;destructor</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">sum</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="wrd">count</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">average</span><span class="oth">(</span><span class="num">4</span><span class="oth">,</span>&nbsp;<span class="num">3.4</span>&nbsp;<span class="oth">,</span><span class="num">5.0</span><span class="oth">,</span>&nbsp;<span class="num">3.2</span><span class="oth">,</span>&nbsp;<span class="num">4.1</span><span class="oth">)</span>&nbsp;<span class="com">''&nbsp;all&nbsp;passed&nbsp;variable&nbsp;arguments&nbsp;must&nbsp;be&nbsp;of&nbsp;type&nbsp;double</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">average</span><span class="oth">(</span><span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">65.2</span><span class="oth">,</span>&nbsp;<span class="num">454.65481</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;all&nbsp;passed&nbsp;variable&nbsp;arguments&nbsp;must&nbsp;be&nbsp;of&nbsp;type&nbsp;double</span><br />
+</div></tt><br />
+<br \>
+The output would look like:<br \>
+<pre class="fb_pre">
+ 3.925
+ 259.927405
+</pre><br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;pass&nbsp;the&nbsp;args&nbsp;list&nbsp;to&nbsp;a&nbsp;function&nbsp;taking&nbsp;an&nbsp;cva_list&nbsp;type&nbsp;argument</span><br />
+<span class="def">#include&nbsp;&quot;crt/stdio.bi&quot;<br />
+</span><br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">myprintf</span>&nbsp;<span class="key">cdecl</span><span class="oth">(</span>&nbsp;<span class="wrd">fmt</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="oth">...</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Cva_List</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_Start</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">fmt</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">vprintf</span><span class="oth">(</span>&nbsp;<span class="wrd">fmt</span><span class="oth">,</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_End</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;bar&quot;</span><br />
+<br />
+<span class="wrd">myprintf</span><span class="oth">(</span>&nbsp;<span class="oth">!</span><span class="quo">&quot;integer=%i,&nbsp;longint=%lli&nbsp;float=%f\n&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="wrd">ll</span>&nbsp;<span class="key">Shl</span>&nbsp;<span class="num">32</span><span class="oth">,</span>&nbsp;<span class="num">3.3</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="wrd">myprintf</span><span class="oth">(</span>&nbsp;<span class="oth">!</span><span class="quo">&quot;string=%s,&nbsp;string=%s\n&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;foo&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">)</span><br />
+</div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Platform Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> The exact type and size of <tt><b>Cva_List</b></tt> depends on <a href="CompilerOpttarget.html">-target</a>, <a href="CompilerOptarch.html">-arch</a>, <a href="CompilerOptgen.html">-gen</a> command line options.<br \>
+<li> In <tt><a href="CompilerOptgen.html">-gen gas</a></tt>, <tt><b>Cva_List</b></tt> is a pointer<br \>
+<li> In <tt><a href="CompilerOptgen.html">-gen gcc</a></tt>, <tt><b>Cva_List</b></tt> is a pointer, a struct, or a struct array.  The <tt><b>Cva_List</b></tt> type is replaced by <tt>"__builtin_va_list"</tt> in gcc.<br \>
+<li> On 32-bit targets, gas backend: <tt>type <b>Cva_List</b> as any alias "char" ptr</tt>.<br \>
+<li> On 32-bit targets, gcc backend: <tt>type <b>Cva_List</b> as any alias "__builtin_va_list" ptr</tt><br \>
+<li> On Windows 64-bit, gcc backend: <tt>type <b>Cva_List</b> as any alias "__builtin_va_list" ptr</tt><br \>
+<li> On Linux x86_64, gcc backend: <tt>type <b>Cva_List</b> as __va_list_tag alias "__builtin_va_list[]"</tt><br \>
+<li> On arm64, gcc backend: <tt>type <b>Cva_List</b> as __va_list alias "__builtin_va_list"</tt><br \>
+<br \>
+</ul></div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Not available in the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect unless referenced with the alias <tt><b>__cva_list</b></tt>.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="KeyPgDots.html">... (Ellipsis)</a><br \>
+<li> <tt><a href="KeyPgCvaArg.html">Cva_Arg</a></tt><br \>
+<li> <tt><a href="KeyPgCvaStart.html">Cva_Start</a></tt><br \>
+<li> <tt><a href="KeyPgCvaCopy.html">Cva_Copy</a></tt><br \>
+<li> <tt><a href="KeyPgCvaEnd.html">Cva_End</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

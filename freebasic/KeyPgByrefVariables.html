@@ -1,0 +1,211 @@
+<html>
+<head>
+<title>Byref (Variables)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Byref (Variables)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Declares a reference<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><br \>
+<div class="fb_indent"><tt>(<a href="KeyPgDim.html">Dim</a> | <a href="KeyPgStatic.html">Static</a>) [<a href="KeyPgShared.html">Shared</a>] <b>ByRef</b> <i>name1</i> As <a href="DataType.html">DataType</a> = <i>variable1</i> [, <b>ByRef</b> <i>name2</i> As <a href="DataType.html">DataType</a> = <i>variable2</i>, ...]</tt><br \>
+</div><i>or</i><br \>
+<div class="fb_indent"><tt>(<a href="KeyPgDim.html">Dim</a> | <a href="KeyPgStatic.html">Static</a>) [<a href="KeyPgShared.html">Shared</a>] <b>ByRef</b> As <a href="DataType.html">DataType</a> <i>name1</i> = <i>variable1</i> [, <i>name2</i> = <i>variable2</i>, ...]</tt><br \>
+</div><i>or</i><br \>
+<div class="fb_indent"><tt>[<a href="KeyPgStatic.html">Static</a>] <a href="KeyPgVar.html">Var</a> [<a href="KeyPgShared.html">Shared</a>] <b>ByRef</b> <i>name1</i> = <i>variable1</i> [, <b>ByRef</b> <i>name2</i> = <i>variable2</i>, ...]</tt><br \>
+<br \>
+</div></div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>name</i></tt><br \>
+<div class="fb_indent">reference name<br \>
+</div><tt><i>variable</i></tt><br \>
+<div class="fb_indent">variable name to refer<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Declares a reference (by name) to a variable.<br \>
+<br \>
+A reference is an entity that is a way to access data located in memory. A reference is not the data itself but only information about its location. A reference can be thought of as a pointer that is implicitly dereferenced. In many cases, it can be used as an alternative to pointer.<br \>
+<br \>
+A reference must always be initialized with a variable when it is created.<br \>
+<a href="DataType.html">DataType</a> must be the same type as that of the variable, or a compatible type (for example one from the types of its Bases in case of inheritance):<br \>
+<ul><ul><li> Only when the two types are identical (or using the third syntax with <tt><b>Var</b></tt>), a reference can be considered as an alias of the variable. One can do the same operations through such a reference as one can do with the original variable.<br \>
+<li> Otherwise (types compatible but not identical), one cannot do all same operations than with the original variable:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">For example, a base type reference referring to a derived type object allows to activate polymorphism when a virtual method is called on it, similarly to a base type pointer referring to a derived type object. One can do the same operations through such a reference as one can do with a dereferenced pointer of same type (but for both not the same operations as using directly the derived type instance).<br \>
+<br \>
+</div></div></div>A reference can be reassigned to refer to another variable (of compatible type) by doing:<br \>
+<div class="fb_indent">@<i>refname</i> = @<i>othervariable</i><br \>
+<br \>
+</div>NOTE: The arrays of references and the non-static reference fields for UDT are not supported yet.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;Comparison&nbsp;between:</span><br />
+<span class="com">''&nbsp;&nbsp;&nbsp;-&nbsp;a&nbsp;copy&nbsp;('ci')&nbsp;of&nbsp;a&nbsp;variable&nbsp;('i')</span><br />
+<span class="com">''&nbsp;&nbsp;&nbsp;-&nbsp;a&nbsp;reference&nbsp;('ri')&nbsp;to&nbsp;a&nbsp;variable&nbsp;('i')</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">12</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">@</span><span class="wrd">i</span><span class="oth">,</span>&nbsp;<span class="wrd">i</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">ci</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">i</span>&nbsp;&nbsp;<span class="com">''&nbsp;or&nbsp;Var&nbsp;ci&nbsp;=&nbsp;i</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">@</span><span class="wrd">ci</span><span class="oth">,</span>&nbsp;<span class="wrd">ci</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">ri</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">i</span>&nbsp;&nbsp;<span class="com">''&nbsp;or&nbsp;Var&nbsp;Byref&nbsp;ri&nbsp;=&nbsp;i</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">@</span><span class="wrd">ri</span><span class="oth">,</span>&nbsp;<span class="wrd">ri</span><br />
+<br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">i</span><span class="oth">,</span>&nbsp;<span class="wrd">ci</span><span class="oth">,</span>&nbsp;<span class="wrd">ri</span><br />
+<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">34</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">i</span><span class="oth">,</span>&nbsp;<span class="wrd">ci</span><span class="oth">,</span>&nbsp;<span class="wrd">ri</span><br />
+<span class="wrd">ci</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">56</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">i</span><span class="oth">,</span>&nbsp;<span class="wrd">ci</span><span class="oth">,</span>&nbsp;<span class="wrd">ri</span><br />
+<span class="wrd">ri</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">78</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">i</span><span class="oth">,</span>&nbsp;<span class="wrd">ci</span><span class="oth">,</span>&nbsp;<span class="wrd">ri</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">''&nbsp;Use&nbsp;reference&nbsp;allows&nbsp;to&nbsp;simplify&nbsp;expressions&nbsp;compared&nbsp;to&nbsp;pointer</span><br />
+<span class="com">''&nbsp;(avoid&nbsp;to&nbsp;use&nbsp;operator&nbsp;'@'&nbsp;and&nbsp;especially&nbsp;'*')</span><br />
+<br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">fp</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">256</span>&nbsp;<span class="wrd">z</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="oth">@</span><span class="wrd">z</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pz</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">fp</span><span class="oth">()</span><br />
+<span class="oth">*</span><span class="wrd">pz</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&nbsp;Zstring&nbsp;Ptr&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="wrd">pz</span><br />
+<span class="oth">*</span><span class="wrd">pz</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="quo">&quot;&nbsp;1.3.0&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="wrd">pz</span><br />
+<br />
+<br />
+<span class="key">Print</span><br />
+<br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">fr</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">256</span>&nbsp;<span class="wrd">z</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">z</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="wrd">rz</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">fr</span><span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;or&nbsp;Var&nbsp;Byref&nbsp;rz&nbsp;=&nbsp;fr()</span><br />
+<span class="wrd">rz</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&nbsp;Zstring&nbsp;Ref&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">rz</span><br />
+<span class="wrd">rz</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="quo">&quot;&nbsp;1.4.0&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">rz</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">''&nbsp;It&nbsp;is&nbsp;possible&nbsp;to&nbsp;reassign&nbsp;a&nbsp;reference.</span><br />
+<span class="com">''&nbsp;An&nbsp;example&nbsp;with&nbsp;an&nbsp;UDT&nbsp;to&nbsp;control&nbsp;the&nbsp;successive&nbsp;constructions&nbsp;&amp;&nbsp;destructions&nbsp;of&nbsp;objects&nbsp;handled&nbsp;with&nbsp;one&nbsp;only&nbsp;reference.</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">nb</span><br />
+&nbsp;&nbsp;<span class="wrd">nb</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;<span class="wrd">This.I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">nb</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT.Constructor()&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT.Destructor()&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<br />
+<span class="key">Var</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">ru</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">UDT</span>&nbsp;&nbsp;<span class="com">''&nbsp;or&nbsp;Dim&nbsp;Byref&nbsp;As&nbsp;UDT&nbsp;ru&nbsp;=&nbsp;*New&nbsp;UDT</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">ru.I</span><br />
+<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru</span><br />
+<br />
+<span class="key">Print</span><br />
+<br />
+<span class="oth">@</span><span class="wrd">ru</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">ru.I</span><br />
+<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">''&nbsp;Polymorphism&nbsp;(by&nbsp;using&nbsp;inheritance&nbsp;and&nbsp;virtuality)&nbsp;can&nbsp;be&nbsp;activated&nbsp;through&nbsp;any&nbsp;of&nbsp;the&nbsp;3&nbsp;following&nbsp;kinds&nbsp;of&nbsp;entities:</span><br />
+<span class="com">''&nbsp;&nbsp;&nbsp;-&nbsp;base-type&nbsp;pointers&nbsp;referring&nbsp;to&nbsp;derived-type&nbsp;objects,</span><br />
+<span class="com">''&nbsp;&nbsp;&nbsp;-&nbsp;dereferenced&nbsp;base-type&nbsp;pointers&nbsp;referring&nbsp;to&nbsp;derived-type&nbsp;objects,</span><br />
+<span class="com">''&nbsp;&nbsp;&nbsp;-&nbsp;base-type&nbsp;references&nbsp;referring&nbsp;to&nbsp;derived-type&nbsp;objects.</span><br />
+<span class="com">'</span><br />
+<span class="com">''&nbsp;If&nbsp;in&nbsp;the&nbsp;first&nbsp;line&nbsp;of&nbsp;the&nbsp;below&nbsp;code,&nbsp;FALSE&nbsp;is&nbsp;put&nbsp;instead&nbsp;TRUE,&nbsp;the&nbsp;polymorphism&nbsp;by&nbsp;virtuality&nbsp;is&nbsp;no&nbsp;more&nbsp;activated.</span><br />
+<br />
+<br />
+<span class="def">#define&nbsp;virtuality&nbsp;True<br />
+</span><br />
+<span class="key">Type</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="key">Object</span><br />
+&nbsp;&nbsp;<span class="def">#if&nbsp;virtuality&nbsp;=&nbsp;True<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">hello</span><span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="def">#else<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">Hello</span><span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="def">#endif<br />
+</span><span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">myBase.hello</span><span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myBase.hello()&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">myBase</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">hello</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">myDerived.hello</span><span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;myDerived.hello()&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="wrd">mb</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pmb</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">mb</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="wrd">rmb</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">mb</span>&nbsp;&nbsp;<span class="com">''&nbsp;or&nbsp;Var&nbsp;Byref&nbsp;rmb&nbsp;=&nbsp;mb</span><br />
+<span class="wrd">pmb</span><span class="oth">-&gt;</span><span class="wrd">hello</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;pmb&nbsp;is&nbsp;a&nbsp;base-type&nbsp;pointer&nbsp;referring&nbsp;to&nbsp;a&nbsp;base-type&nbsp;object</span><br />
+<span class="oth">(*</span><span class="wrd">pmb</span><span class="oth">).</span><span class="wrd">hello</span><span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;*pmb&nbsp;is&nbsp;a&nbsp;dereferenced&nbsp;base-type&nbsp;pointer&nbsp;referring&nbsp;to&nbsp;a&nbsp;base-type&nbsp;object</span><br />
+<span class="wrd">rmb.hello</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;rmb&nbsp;is&nbsp;a&nbsp;base-type&nbsp;reference&nbsp;referring&nbsp;to&nbsp;a&nbsp;base-type&nbsp;object</span><br />
+<br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myDerived</span>&nbsp;<span class="wrd">md</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pmd</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">md</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">myBase</span>&nbsp;<span class="wrd">rmd</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">md</span>&nbsp;&nbsp;<span class="com">''&nbsp;only&nbsp;syntax&nbsp;because&nbsp;the&nbsp;reference&nbsp;data-type&nbsp;must&nbsp;be&nbsp;different&nbsp;from&nbsp;the&nbsp;one&nbsp;of&nbsp;object</span><br />
+<span class="wrd">pmd</span><span class="oth">-&gt;</span><span class="wrd">hello</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;pmd&nbsp;is&nbsp;a&nbsp;base-type&nbsp;pointer&nbsp;referring&nbsp;to&nbsp;a&nbsp;derived-type&nbsp;object</span><br />
+<span class="oth">(*</span><span class="wrd">pmd</span><span class="oth">).</span><span class="wrd">hello</span><span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;*pmd&nbsp;is&nbsp;a&nbsp;dereferenced&nbsp;base-type&nbsp;pointer&nbsp;referring&nbsp;to&nbsp;a&nbsp;derived-type&nbsp;object</span><br />
+<span class="wrd">rmd.hello</span><span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;rmd&nbsp;is&nbsp;a&nbsp;base-type&nbsp;reference&nbsp;referring&nbsp;to&nbsp;a&nbsp;derived-type&nbsp;object</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Only supported in <i><a href="CompilerOptlang.html">-lang fb</a></i>, <i><a href="CompilerOptlang.html">-lang fblite</a></i> and <i><a href="CompilerOptlang.html">-lang deprecated</a></i> dialects.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgDim.html">Dim</a></tt><br \>
+<li> <tt><a href="KeyPgStatic.html">Static</a></tt><br \>
+<li> <tt><a href="KeyPgVar.html">Var</a></tt><br \>
+<li> <tt><a href="KeyPgShared.html">Shared</a></tt><br \>
+<li> <tt><a href="KeyPgByref.html">Byref (Parameters)</a></tt><br \>
+<li> <tt><a href="KeyPgByrefFunction.html">Byref (Function Results)</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

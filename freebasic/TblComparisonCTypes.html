@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Comparison of integer data types: FreeBASIC vs. C/C++ (using GCC)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Comparison of integer data types: FreeBASIC vs. C/C++ (using GCC)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<br \>
+<div class="fb_table"><table><tr><td></td><td> C int</td><td> C long long [int]</td><td> C long [int]</td><td> FB Long</td><td> FB LongInt</td><td> FB Integer</td></tr><tr><td> 32bit win32</td><td> 32</td><td> 64</td><td> 32 (ILP32)</td><td> 32</td><td> 64</td><td> 32</td></tr><tr><td> 32bit linux-x86</td><td> 32</td><td> 64</td><td> 32 (ILP32)</td><td> 32</td><td> 64</td><td> 32</td></tr><tr><td> 64bit win64</td><td> 32</td><td> 64</td><td> 32 (LLP64)</td><td> 32</td><td> 64</td><td> 64</td></tr><tr><td> 64bit linux-x86_64</td><td> 32</td><td> 64</td><td> 64 (LP64)</td><td> 32</td><td> 64</td><td> 64 </td></tr></table></div><br \>
+<br \>
+Some public symbols (like namespaces, and user defined type member procedures) will have data type information encoded in to the public name (also known as name mangling or name decoration).  Specific mapping of data types between FreeBASIC and gcc is required when linking <tt>fbc</tt> compiled object modules with <tt>gcc</tt> compiled object modules.  <br \>
+<div class="fb_table"><table><tr><td>Target</td><td> fbc data type</td><td> c data type</td><td> bits</td></tr><tr><td> all</td><td> byte</td><td> signed char</td><td> 8</td></tr><tr><td> all</td><td> ubyte</td><td> unsigned char</td><td> 8</td></tr><tr><td> all</td><td> short</td><td> [signed] short [int]</td><td> 16</td></tr><tr><td> all</td><td> ushort</td><td> unsigned short [int]</td><td> 16</td></tr><tr><td> all</td><td> long</td><td> [signed] int</td><td> 32</td></tr><tr><td> all</td><td> ulong</td><td> unsigned int</td><td> 32</td></tr><tr><td> x86</td><td> integer</td><td> [signed] long [int]</td><td> 32</td></tr><tr><td> x86</td><td> uinteger</td><td> unsigned long [int]</td><td> 32</td></tr><tr><td> win64</td><td> long alias &quot;long&quot;</td><td> [signed] long [int]</td><td> 32</td></tr><tr><td> win64</td><td> ulong alias &quot;long&quot;</td><td> unsigned long [int]</td><td> 32</td></tr><tr><td> win64</td><td> integer</td><td> INTEGER</td><td> 64</td></tr><tr><td> win64</td><td> uinteger</td><td> UINTEGER</td><td> 64</td></tr><tr><td> linux-x86_64</td><td> integer</td><td> [signed] long [int]</td><td> 64</td></tr><tr><td> linux-x86_64</td><td> uinteger</td><td> unsigned long [int]</td><td> 64</td></tr><tr><td> all</td><td> longint</td><td> [signed] long long [int]</td><td> 64</td></tr><tr><td> all</td><td> ulongint</td><td> unsigned long long [int]</td><td>  64 </td></tr></table></div><br \>
+<br \>
+<div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="DevBindingCreation.html">Creating FB bindings for C libraries</a> - How to translate C data types to FB<br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

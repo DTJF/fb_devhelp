@@ -1,0 +1,298 @@
+<html>
+<head>
+<title>Inheritance Polymorphism</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Inheritance Polymorphism</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The <b>Inheritance Polymorphism</b> is the ability of calling from the base-type the member procedures of derived-types without worrying about the real type of the processed objects.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+Inheritance polymorphism (sub-type polymorphism) is the concept of providing a single interface to entities that can have different types.<br \>
+More precisely, a same interface is implemented by member procedures having the same identifier in each type belonging to the same inheritance hierarchy.<br \>
+<br \>
+Thanks to the 'abstract'/'virtual' procedures, one can write a code using only the base-type that will automatically call the derived-type procedures.<br \>
+It is then possible to call the procedure of an object without worrying about its intrinsic type.<br \>
+<br \>
+By using the same procedure name for several different types, the polymorphism allows a much more generic programming (abstraction).<br \>
+The coder does not have to know, when calling a base procedure, the precise type of object on which the procedure will apply. He just needs to know that this type will implement the procedure.<br \>
+<br \>
+For example a procedure <i>'moving()'</i> will perform the appropriate movement according to the real derived-type of the instance referenced at the time of the call. This will allow the program to say <i>'instance.moving()'</i> without having to worry about the real derived-type of <i>'instance'</i>.<br \>
+<br \>
+<div class="fb_sect_title">Inheritance polymorphism operating</div><div class="fb_sect_cont"><br \>
+The ability to redefine a procedure in a derived-type inheriting from a base-type is called specialization.<br \>
+It is then possible to call the procedure of an object without worrying about its intrinsic type: it is the inheritance polymorphism.<br \>
+<br \>
+This makes it possible to abstract the details of the specialized types of an object family, by masking them by a common interface which is the base-type.<br \>
+<br \>
+<u>Designation of objects using pointers or references of base-type</u><br \>
+<div class="fb_indent">Considering a collection of objects whose instantiate types are derived-types from a base-type, then all these objects can be manipulated in an uniform way by considering them as objects of the base-type.<br \>
+Better, certain behaviors can be specialized according to the instantiate type of each object. In other words, the use of distinct objects of the same inheritance hierarchy is homogeneous even if the behavior of these objects remains specific.<br \>
+<br \>
+Thus, a base-type pointer or reference, pointing to an instance of a derived-type, can be used to manipulate such an object.	<br \>
+<br \>
+</div><u>Overriding the abstract/virtual procedures in the base-type by specialized procedures in derived-types</u><br \>
+<div class="fb_indent">To can declare abstract/virtual procedures in a type, this type must 'Extends' (directly or indirectly) the built-in 'Object' type.<br \>
+<br \>
+A derived-type can override an abstract/virtual procedure declared in its base-type, by declaring a procedure with the same identifier and signature, meaning same number and type of parameters, same calling convention, and if any, same return type (or a return of a derived-type for return by reference or by pointer):<br \>
+<div class="fb_indent"><b>-</b> Normally a base-type reference/pointer can access only a procedure in the same type or in a type upper in hierarchy (static binding at compile-time), even if this reference/pointer refers to an object of instantiate type derived from the base-type.<br \>
+<b>-</b> But when the base-type procedure is abstract/virtual, this tells the running program to resolve the override procedure the most derived relating to the real object type (dynamic binding at run-time).<br \>
+<br \>
+</div><b>Restriction:</b><br \>
+<div class="fb_indent">Polymorphism is not directly compatible with:<br \>
+<div class="fb_indent"><b>-</b> any operators 'New[]' or 'Delete[]' (the array versions for  statement/expression/overload operators) because the use of a sub-type pointer (instead of the real type) fails for accessing the other elements (except the first),<br \>
+<b>-</b> even the overload operator 'Delete' is not directly compatible because it can not be declared virtual (being static).<br \>
+<br \>
+</div>Instead of having to call such an operator 'Delete([])' statement on derived-type pointer, the safest way is to simply call (on base-type pointer) an overridden user virtual member procedure that will automatically launch the operator 'Delete([])' statement at derived-type level.<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">Inheritance polymorphism learning, through example: 'Graph type collection'</div><div class="fb_sect_cont"><br \>
+In the below proposed example, the polymorphic part is broken down to better bring out all the elements necessary for the mechanics of polymorphism.<br \>
+<br \>
+The generic base-type chosen is any 'Graphic Form' defined by two graphic points and a color (abstraction).<br \>
+The specialized derived-types are a  'Graphic Line', a 'Graphic Box', and a 'Graphic Circle' (all defined by two graphic points and a color):<br \>
+<div class="fb_indent"><b>-</b> The 'Graphic Line' connects the point 1 and the point 2.<br \>
+<b>-</b> The 'Graphic Box' has as opposite vertices the point 1 (at the top and on the left) and the point 2 (in bottom and on the right).<br \>
+<b>-</b> The 'Graphic Circle' has as center the point 1 and go through point 2.<br \>
+<br \>
+The abstract procedure declared in the generic base-type, and which must be defined in each specialized derived-type, is the graphic drawing of the specialized form in a graphic window.<br \>
+The two graphic points and the color being generic data, they so induce three generic data fields in the generic base-type, included by composition.<br \>
+A 'graphic point' type is also defined with encapsulation of the x/y coordinate values (declared private), in order to control their validity (depending on the defined graphic screen size) by means of properties (but public these ones).<br \>
+<br \>
+Notations:<br \>
+<div class="fb_indent"><b>-</b> Generic base-type name: <i>'GraphicForm2P'</i><br \>
+<b>-</b> Specialized derived-type names: <i>'GraphicLine2P'</i>, <i>'GraphicBox2P'</i>, <i>'GraphicCircle2P'</i><br \>
+<b>-</b> Virtual procedure name: <i>'drawGraphicForm2P()'</i><br \>
+<b>-</b> Additional type name (include by composition within the generic type): <i>'GraphicPoint'</i><br \>
+<br \>
+</div></div><ul><li> <i>'GraphicPoint'</i> type declaration (additional type for composition within generic base-type):<br \>
+</ul><div class="fb_indent"><div class="fb_indent"><b>-</b> The two coordinates (<i>'_x'</i> and <i>'_y'</i>) are private as well as the two static internal functions (<i>'xValid'</i> and <i>'yValid'</i>) to return the validity of each coordinate passed as argument, compared to the graphic window size.<br \>
+<b>-</b> For each coordinate, there are two public properties (<i>'x'</i> or <i>'y'</i>) as user interface: a getter, and a setter which tests the validity of the given value.<br \>
+<b>-</b> The public non default constructor calls also the setters to initialize the two coordinates.<br \>
+<pre class="fb_pre">
+Type GraphicPoint
+	Public:  '' user interface
+		Declare Constructor ()
+		Declare Constructor (Byval x0 As Integer = 0, Byval y0 As Integer = 0)
+		Declare Property x () As Integer          '' x-coordinate getter
+		Declare Property x (Byval x0 As Integer)  '' x-coordinate setter (control if inside open graphic window)
+		Declare Property y () As Integer          '' y-coordinate getter
+		Declare Property y (Byval y0 As Integer)  '' y-coordinate setter (control if inside open graphic window)
+	Private:  '' hidden members
+		Dim As Integer _x, _y
+		Declare Static Function xValid (Byval x0 As Integer) As Integer  '' x-coordinate inside open graphic window?
+		Declare Static Function yValid (Byval y0 As Integer) As Integer  '' y-coordinate inside open graphic window?
+End Type
+</pre></div></div><ul><li> <i>'GraphicForm2P'</i> type declaration (generic base-type):<br \>
+</ul><div class="fb_indent"><div class="fb_indent"><b>-</b> Two public graphic point variables (<i>'pt1'</i> and <i>'pt2'</i>) and a public color variable (<i>'col'</i>) are included within the base type by composition.<br \>
+<b>-</b> A public abstract procedure (<i>'drawGraphicForm2P()'</i>) is declared (but without any body defining it).<br \>
+<b>-</b> Although the base type is non-instantiable, a protected constructor is still defined to initialize the data fields, but called from each derived type constructor only.<br \>
+<b>-</b> A virtual destructor (with an empty body) is declared, for getting compatibility with a derived type declaring its own destructor (not the case here). This base type destructor is public to be able to be called on a base type pointer or reference.<br \>
+<pre class="fb_pre">
+Type GraphicForm2P Extends Object  '' abstract graphic form defined by two points
+	Public:  '' user interface
+		Dim As GraphicPoint pt1, pt2
+		Dim As Integer col
+		Declare Abstract Sub drawGraphicForm2P ()  '' request procedure implementation for instantiable derived type
+		Declare Virtual Destructor ()              '' for polymorphic compatibility with any derived type
+	Protected:  '' hidden members
+		Declare Constructor ()
+		Declare Constructor (Byref p1 As GraphicPoint = Type(0, 0), Byref p2 As GraphicPoint = Type(0, 0), Byval col0 As Integer = 0)
+End Type
+</pre></div></div><ul><li> <i>'GraphicLine2P'</i>, <i>'GraphicBox2P'</i>, <i>'GraphicCircle2P'</i> type declarations (specialized derived-types):<br \>
+</ul><div class="fb_indent"><div class="fb_indent"><b>-</b> For each derived type, the same public procedure (<i>'drawGraphicForm2P()'</i>) is declared, but its body is specialized for each derived type.<br \>
+<b>-</b> For each derived type, a public constructor is declared and defined to initialize the base data fields (by calling the base constructor). No destructor because nothing specific to destroy from this derived type.<br \>
+<pre class="fb_pre">
+Type GraphicLine2P Extends GraphicForm2P  '' graphic line from point 1 to point 2
+	Public:  '' user interface
+		Declare Constructor (Byref p1 As GraphicPoint = Type(0, 0), Byref p2 As GraphicPoint = Type(0, 0), Byval col0 As Integer = 0)
+		Declare Sub drawGraphicForm2P () Override  '' overridden procedure
+End Type
+</pre><pre class="fb_pre">
+Type GraphicBox2P Extends GraphicForm2P  '' graphic box from point 1 to point 2
+	Public:  '' user interface
+		Declare Constructor (Byref p1 As GraphicPoint = Type(0, 0), Byref p2 As GraphicPoint = Type(0, 0), Byval col0 As Integer = 0)
+		Declare Sub drawGraphicForm2P () Override  '' overridden procedure
+End Type
+</pre><pre class="fb_pre">
+Type GraphicCircle2P Extends GraphicForm2P  '' graph circle centered on point1 and passing by point 2
+	Public:  '' user interface
+		Declare Constructor (Byref p1 As GraphicPoint = Type(0, 0), Byref p2 As GraphicPoint = Type(0, 0), Byval col0 As Integer = 0)
+		Declare Sub drawGraphicForm2P () Override  '' overridden procedure
+End Type
+</pre></div></div><ul><li> Full code of example:<br \>
+</ul><div class="fb_indent"><div class="fb_indent"><b>-</b> Three graphic points (used by the six forms) are constructed.<br \>
+<b>-</b> To be able to trigger polymorphism, a base type-pointer array (<i>'pgf'</i>) is declared then initialized with instances of different derived types, in order to constitute a collection of objects from different types (but all having a common base type).<br \>
+<b>-</b> So, the same compiled code line, put in a loop, processes all instances from different types (<i>'pgf(I)-&gt;drawGraphicForm2P()'</i> or <i>'Delete pgf(I)'</i>), because the polymorphism mechanic allows to call each specialized procedure at run-time. <br \>
+<tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">GraphicPoint</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span>&nbsp;&nbsp;<span class="com">''&nbsp;user&nbsp;interface</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">x0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">y0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;x-coordinate&nbsp;getter</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">x0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;x-coordinate&nbsp;setter&nbsp;(control&nbsp;if&nbsp;inside&nbsp;open&nbsp;graphic&nbsp;window)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;y-coordinate&nbsp;getter</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">y0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;y-coordinate&nbsp;setter&nbsp;(control&nbsp;if&nbsp;inside&nbsp;open&nbsp;graphic&nbsp;window)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span>&nbsp;&nbsp;<span class="com">''&nbsp;hidden&nbsp;members</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">_x</span><span class="oth">,</span>&nbsp;<span class="wrd">_y</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">xValid</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">x0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">''&nbsp;x-coordinate&nbsp;inside&nbsp;open&nbsp;graphic&nbsp;window?</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">yValid</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">y0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">''&nbsp;y-coordinate&nbsp;inside&nbsp;open&nbsp;graphic&nbsp;window?</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">x0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">y0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.x</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">x0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.y</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">GraphicPoint.x</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This._x</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">GraphicPoint.x</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">x0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">GraphicPoint.xValid</span><span class="oth">(</span><span class="wrd">x0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="wrd">This._x</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">x0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">GraphicPoint.y</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This._y</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">GraphicPoint.y</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">y0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">GraphicPoint.yValid</span><span class="oth">(</span><span class="wrd">y0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="wrd">This._y</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">y0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">GraphicPoint.xValid</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">x0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">ScreenPtr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Return</span>&nbsp;<span class="num">0</span>&nbsp;&nbsp;<span class="com">''&nbsp;no&nbsp;open&nbsp;graphic&nbsp;window</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span>&nbsp;<span class="wrd">w</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ScreenInfo</span><span class="oth">(</span><span class="wrd">w</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">x0</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">x0</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="wrd">w</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Return</span>&nbsp;<span class="oth">-</span><span class="num">1</span>&nbsp;<span class="key">Else</span>&nbsp;<span class="key">Return</span>&nbsp;<span class="num">0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">GraphicPoint.yValid</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">y0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">ScreenPtr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Return</span>&nbsp;<span class="num">0</span>&nbsp;&nbsp;<span class="com">''&nbsp;no&nbsp;open&nbsp;graphic&nbsp;window</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span>&nbsp;<span class="wrd">h</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ScreenInfo</span><span class="oth">(</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="wrd">h</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">y0</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">y0</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="wrd">h</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span>&nbsp;<span class="key">Return</span>&nbsp;<span class="oth">-</span><span class="num">1</span>&nbsp;<span class="key">Else</span>&nbsp;<span class="key">Return</span>&nbsp;<span class="num">0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">GraphicForm2P</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="key">Object</span>&nbsp;&nbsp;<span class="com">''&nbsp;abstract&nbsp;graphic&nbsp;form&nbsp;defined&nbsp;by&nbsp;two&nbsp;points</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span>&nbsp;&nbsp;<span class="com">''&nbsp;user&nbsp;interface</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="wrd">pt1</span><span class="oth">,</span>&nbsp;<span class="wrd">pt2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">col</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Abstract</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">drawGraphicForm2P</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;request&nbsp;procedure&nbsp;implementation&nbsp;for&nbsp;instantiable&nbsp;derived&nbsp;type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Virtual</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;for&nbsp;polymorphic&nbsp;compatibility&nbsp;with&nbsp;any&nbsp;derived&nbsp;type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Protected</span><span class="oth">:</span>&nbsp;&nbsp;<span class="com">''&nbsp;hidden&nbsp;members</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">col0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Virtual</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="wrd">GraphicForm2P</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">GraphicForm2P</span>&nbsp;<span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;implementation&nbsp;not&nbsp;absolutely&nbsp;necessary</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">GraphicForm2P</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">col0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.pt1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.pt2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.col</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">col0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">GraphicLine2P</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">GraphicForm2P</span>&nbsp;&nbsp;<span class="com">''&nbsp;graphic&nbsp;line&nbsp;from&nbsp;point&nbsp;1&nbsp;to&nbsp;point&nbsp;2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span>&nbsp;&nbsp;<span class="com">''&nbsp;user&nbsp;interface</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">col0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">drawGraphicForm2P</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;<span class="com">''&nbsp;overridden&nbsp;procedure</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">GraphicLine2P</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">col0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Base</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="wrd">p2</span><span class="oth">,</span>&nbsp;<span class="wrd">col0</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;the&nbsp;base&nbsp;type&nbsp;constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">GraphicLine2P.drawGraphicForm2P</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">ScreenPtr</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;<span class="com">''&nbsp;open&nbsp;graphic&nbsp;window</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Line</span>&nbsp;<span class="oth">(</span><span class="wrd">This.pt1.x</span><span class="oth">,</span>&nbsp;<span class="wrd">This.pt1.y</span><span class="oth">)-(</span><span class="wrd">This.pt2.x</span><span class="oth">,</span>&nbsp;<span class="wrd">This.pt2.y</span><span class="oth">),</span>&nbsp;<span class="wrd">This.col</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">GraphicBox2P</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">GraphicForm2P</span>&nbsp;&nbsp;<span class="com">''&nbsp;graphic&nbsp;box&nbsp;from&nbsp;point&nbsp;1&nbsp;to&nbsp;point&nbsp;2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span>&nbsp;&nbsp;<span class="com">''&nbsp;user&nbsp;interface</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">col0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">drawGraphicForm2P</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;<span class="com">''&nbsp;overridden&nbsp;procedure</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">GraphicBox2P</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">col0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Base</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="wrd">p2</span><span class="oth">,</span>&nbsp;<span class="wrd">col0</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;the&nbsp;base&nbsp;type&nbsp;constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">GraphicBox2P.drawGraphicForm2P</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">ScreenPtr</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;<span class="com">''&nbsp;open&nbsp;graphic&nbsp;window</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Line</span>&nbsp;<span class="oth">(</span><span class="wrd">This.pt1.x</span><span class="oth">,</span>&nbsp;<span class="wrd">This.pt1.y</span><span class="oth">)-(</span><span class="wrd">This.pt2.x</span><span class="oth">,</span>&nbsp;<span class="wrd">This.pt2.y</span><span class="oth">),</span>&nbsp;<span class="wrd">This.col</span><span class="oth">,</span>&nbsp;<span class="wrd">B</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">GraphicCircle2P</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">GraphicForm2P</span>&nbsp;&nbsp;<span class="com">''&nbsp;graph&nbsp;circle&nbsp;centered&nbsp;on&nbsp;point1&nbsp;and&nbsp;passing&nbsp;by&nbsp;point&nbsp;2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span>&nbsp;&nbsp;<span class="com">''&nbsp;user&nbsp;interface</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">col0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">drawGraphicForm2P</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">Override</span>&nbsp;&nbsp;<span class="com">''&nbsp;overridden&nbsp;procedure</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">GraphicCircle2P</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">(</span><span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">),</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">col0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Base</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="wrd">p2</span><span class="oth">,</span>&nbsp;<span class="wrd">col0</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;the&nbsp;base&nbsp;type&nbsp;constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">GraphicCircle2P.drawGraphicForm2P</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">ScreenPtr</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;<span class="com">''&nbsp;open&nbsp;graphic&nbsp;window</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">r</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Sqr</span><span class="oth">((</span><span class="wrd">This.pt2.x</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">This.pt1.x</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="oth">(</span><span class="wrd">This.pt2.x</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">This.pt1.x</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="oth">(</span><span class="wrd">This.pt2.y</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">This.pt1.y</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="oth">(</span><span class="wrd">This.pt2.y</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">This.pt1.y</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Circle</span>&nbsp;<span class="oth">(</span><span class="wrd">This.pt1.x</span><span class="oth">,</span>&nbsp;<span class="wrd">This.pt1.y</span><span class="oth">),</span>&nbsp;<span class="wrd">r</span><span class="oth">,</span>&nbsp;<span class="wrd">This.col</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Screen</span>&nbsp;<span class="num">12</span>&nbsp;&nbsp;<span class="com">''&nbsp;open&nbsp;graphic&nbsp;window</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">GraphicPoint</span><span class="oth">(</span><span class="num">320</span><span class="oth">,</span>&nbsp;<span class="num">240</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;construct&nbsp;graphic&nbsp;point&nbsp;1</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">GraphicPoint</span><span class="oth">(</span><span class="num">500</span><span class="oth">,</span>&nbsp;<span class="num">350</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;construct&nbsp;graphic&nbsp;point&nbsp;2</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicPoint</span>&nbsp;<span class="wrd">p3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">GraphicPoint</span><span class="oth">(</span><span class="num">280</span><span class="oth">,</span>&nbsp;<span class="num">170</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;construct&nbsp;graphic&nbsp;point&nbsp;2</span><br />
+<br />
+<span class="com">''&nbsp;array&nbsp;of&nbsp;base&nbsp;type&nbsp;pointer&nbsp;referring&nbsp;to&nbsp;instances&nbsp;of&nbsp;different&nbsp;derived&nbsp;types</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">GraphicForm2P</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pgf</span>&nbsp;<span class="oth">(...)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">{</span><span class="key">New</span>&nbsp;<span class="wrd">GraphicLine2P</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="wrd">p2</span><span class="oth">,</span>&nbsp;<span class="num">14</span><span class="oth">),</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">GraphicBox2P</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="wrd">p2</span><span class="oth">,</span>&nbsp;<span class="num">13</span><span class="oth">),</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">GraphicCircle2P</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="wrd">p2</span><span class="oth">,</span>&nbsp;<span class="num">12</span><span class="oth">),</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">GraphicLine2P</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="wrd">p3</span><span class="oth">,</span>&nbsp;<span class="num">11</span><span class="oth">),</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">GraphicBox2P</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="wrd">p3</span><span class="oth">,</span>&nbsp;<span class="num">10</span><span class="oth">),</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">GraphicCircle2P</span><span class="oth">(</span><span class="wrd">p1</span><span class="oth">,</span>&nbsp;<span class="wrd">p3</span><span class="oth">,</span>&nbsp;<span class="num">09</span><span class="oth">)}</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">pgf</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">pgf</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pgf</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)-&gt;</span><span class="wrd">drawGraphicForm2P</span><span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;accessing&nbsp;dedicated&nbsp;overridden&nbsp;procedure&nbsp;by&nbsp;polymorphism</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">pgf</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">pgf</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">pgf</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;accessing&nbsp;dedicated&nbsp;overridden&nbsp;destructor&nbsp;(if&nbsp;necessary)&nbsp;by&nbsp;polymorphism</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+See the graphics output by running this code.<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgType.html">Type (Udt)</a></tt>, <tt><a href="KeyPgExtends.html">Extends</a></tt>, <tt><a href="KeyPgObject.html">Object</a></tt>, <tt><a href="KeyPgOpIs.html">Operator Is (Rtti)</a></tt><br \>
+<li> <tt><a href="KeyPgVirtual.html">Virtual</a></tt>, <tt><a href="KeyPgAbstract.html">Abstract</a></tt>, <tt><a href="KeyPgOverride.html">Override</a></tt><br \>
+<li> <tt><a href="KeyPgPtr.html">Pointer</a></tt>, <tt><a href="KeyPgByrefVariables.html">Reference</a></tt><br \>
+<li> <a href="ProPgCompoAggregInherit.html">Composition, Aggregation, Inheritance</a><br \>
+<li> <a href="ProPgObjectRtti.html">OBJECT built-in and RTTI info</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

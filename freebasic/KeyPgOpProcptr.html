@@ -1,0 +1,101 @@
+<html>
+<head>
+<title>Operator Procptr (Procedure Pointer)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Operator Procptr (Procedure Pointer)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Returns the address of a procedure<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgOperator.html">Operator</a> <b>ProcPtr</b> ( <a href="KeyPgByref.html">ByRef</a> <i>identifier</i> <a href="KeyPgAs.html">As</a> <i>proctype</i> [, <i>proctype</i> ] ) <a href="KeyPgAs.html">As</a> <i>proctype</i> <a href="KeyPgPtr.html">Ptr</a><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+<i>result</i> = <b>ProcPtr</b> ( <i>identifier</i> [, <i>proctype</i> ] )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>identifier</i></tt><br \>
+<div class="fb_indent">A procedure identifier.<br \>
+</div><tt><i>proctype</i></tt><br \>
+<div class="fb_indent">The type of procedure (sub/function).<br \>
+Its use as a second argument (the optional) is only supported for fbc version &gt;= 1.09.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Return Value</div><div class="fb_sect_cont"><br \>
+Returns the address of the procedure.<br \>
+<br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+This operator returns the address of a <tt><a href="KeyPgSub.html">Sub</a></tt> or <tt><a href="KeyPgFunction.html">Function</a></tt> procedure.<br \>
+<br \>
+When using the two arguments <tt>PROCPTR( <i>identifier</i>, <i>type</i> )</tt> syntax, this allows of getting procedure pointer for based on sub/function type.<br \>
+This makes it possible to explicitly specify the 'type' of the sub/function, to resolve procedure overloads or make a check for compatible sub/function on non-overloaded procedures.<br \>
+<br \>
+<tt><a href="KeyPgOpAt.html">Operator @ (Address Of)</a></tt>, when used with procedures, behaves the same as <tt><b>ProcPtr</b></tt> without its optional argument (the second).<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">'&nbsp;This&nbsp;example&nbsp;uses&nbsp;ProcPtr&nbsp;to&nbsp;demonstrate&nbsp;function&nbsp;pointers</span><br />
+<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">Subtract</span><span class="oth">(</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="key">Add</span><span class="oth">(</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">myFunction</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span><span class="oth">(</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<br />
+<span class="com">'&nbsp;myFunction&nbsp;will&nbsp;now&nbsp;be&nbsp;assigned&nbsp;to&nbsp;Add</span><br />
+<span class="wrd">myFunction</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ProcPtr</span><span class="oth">(</span>&nbsp;<span class="key">Add</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">myFunction</span><span class="oth">(</span><span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">3</span><span class="oth">)</span><br />
+<br />
+<span class="com">'&nbsp;myFunction&nbsp;will&nbsp;now&nbsp;be&nbsp;assigned&nbsp;to&nbsp;Subtract.&nbsp;&nbsp;Notice&nbsp;the&nbsp;different&nbsp;output.</span><br />
+<span class="wrd">myFunction</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ProcPtr</span><span class="oth">(</span>&nbsp;<span class="wrd">Subtract</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">myFunction</span><span class="oth">(</span><span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">3</span><span class="oth">)</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="key">Add</span><span class="oth">(</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">y</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">Subtract</span><span class="oth">(</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">y</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="key">Sub</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="key">Overload</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">s</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">'-----&nbsp;Previously&nbsp;(fbc&nbsp;version&nbsp;&lt;&nbsp;1.09)&nbsp;was&nbsp;only&nbsp;possible&nbsp;with:</span><br />
+<br />
+<span class="com">'Dim&nbsp;s1&nbsp;As&nbsp;Sub()</span><br />
+<span class="com">'s1&nbsp;=&nbsp;Procptr(&nbsp;s&nbsp;)</span><br />
+<br />
+<span class="com">'Dim&nbsp;s2&nbsp;As&nbsp;Sub(&nbsp;Byval&nbsp;i&nbsp;As&nbsp;Integer)</span><br />
+<span class="com">'s2&nbsp;=&nbsp;Procptr(&nbsp;s&nbsp;)</span><br />
+<br />
+<span class="com">'-----&nbsp;Now&nbsp;(fbc&nbsp;version&nbsp;&gt;=&nbsp;1.09)&nbsp;is&nbsp;possible&nbsp;with:</span><br />
+<br />
+<span class="key">Var</span>&nbsp;<span class="wrd">s1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ProcPtr</span><span class="oth">(</span>&nbsp;<span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="key">Sub</span><span class="oth">()</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Var</span>&nbsp;<span class="wrd">s2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ProcPtr</span><span class="oth">(</span>&nbsp;<span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="key">Sub</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Not available in the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect unless referenced with the alias <tt><b>__Procptr</b></tt>.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgSub.html">Sub</a></tt><br \>
+<li> <tt><a href="KeyPgOpVarptr.html">VarPtr</a></tt><br \>
+<li> <tt><a href="KeyPgOpStrptr.html">StrPtr</a></tt><br \>
+<li> <a href="ProPgPointers.html">Pointers</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

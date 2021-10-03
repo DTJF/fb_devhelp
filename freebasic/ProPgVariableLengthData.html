@@ -1,0 +1,270 @@
+<html>
+<head>
+<title>Variable-length member data</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Variable-length member data</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Management of <b>variable-length strings/arrays</b> as <b>members</b> of a Type.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+In FreeBASIC, Type data structures must ultimately be fixed-size, such that the compiler knows how much memory to allocate for objects of that Type.<br \>
+Nevertheless, Types may contain variable-length string or array data members.<br \>
+<br \>
+However, the string's/array's data will not be embedded in the Type directly. Instead, the Type will only contain a string/array descriptor structure, which FreeBASIC uses behind the scenes to manage the variable-length string/array data.<br \>
+For sizing the structure of the array descriptor in the Type, a variable-length array data member must be always declared by using Any(S) in place of the array bounds, in order to fix the amount of dimensions based on the number of Anys specified. A variable-length array data member can also be pre-sized in its declaration by using syntax with <tt>ReDim</tt>.<br \>
+<br \>
+Variable-length array fields are considered as pseudo-objects when they are declared in a Type (variable-length strings are real objects).<br \>
+So the implicit copy constructor and the implicit let operator of the Type themselves support [re]sizing and copying such strings/arrays, or their erasing.<br \>
+<br \>
+<div class="fb_sect_title">Implicit string/array sizing and copying by the compiler code</div><div class="fb_sect_cont"><br \>
+When the compiler build a default copy-constructor and a default copy-assignment operator for such a Type (having string/array members), it also includes all code for sizing the destination string/array and copying the data from the source string/array, if needed.<br \>
+<br \>
+Example:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="key">Any</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u1</span><span class="oth">,</span>&nbsp;<span class="wrd">u2</span><br />
+<br />
+<span class="wrd">u1.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&quot;</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="wrd">u1.array</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">9</span><span class="oth">)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u1.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u1.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u1.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;<br />
+<span class="wrd">u2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u2.s</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u2.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u2.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">u2.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u3.s</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u3.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u3.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">u3.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+FreeBASIC
+ 1 2 3 4 5 6 7 8 9
+
+FreeBASIC
+ 1 2 3 4 5 6 7 8 9
+			</pre></div></div></div><div class="fb_sect_title">Implicit string/array sizing and copying by the compiler code broken by an explicit copy-constructor and copy-assignment operator</div><div class="fb_sect_cont"><br \>
+If the user want to specify his own copy-constructor and copy-assignment operator (to initialize additional complex field members for example), the above automatic string/array sizing and copying by compiler code is broken.<br \>
+<br \>
+Example:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="key">Any</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'user&nbsp;fields</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'code&nbsp;for&nbsp;user&nbsp;fields&nbsp;in&nbsp;constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'code&nbsp;for&nbsp;user&nbsp;fields&nbsp;in&nbsp;copy-constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDT.Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'code&nbsp;for&nbsp;user&nbsp;fields&nbsp;in&nbsp;copy-assignement&nbsp;operator</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u1</span><span class="oth">,</span>&nbsp;<span class="wrd">u2</span><br />
+<br />
+<span class="wrd">u1.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&quot;</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="wrd">u1.array</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">9</span><span class="oth">)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u1.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u1.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u1.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;<br />
+<span class="wrd">u2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u2.s</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u2.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u2.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">u2.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u3.s</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u3.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u3.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">u3.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output (blank):<br \>
+<div class="fb_indent"><pre class="fb_pre">
+			</pre></div></div></div><div class="fb_sect_title">String/Array sizing and copying explicitly set in the user copy-constructor and copy-assignment operator</div><div class="fb_sect_cont"><br \>
+The variable-length array cannot be processed as a true object like a variable-length string, because for example there is no implicit assignment.<br \>
+Referring to the above example, <tt>This.array() = u.array()</tt> is disallowed, while <tt>This.s = u.s</tt> is allowed.<br \>
+The user must code explicitly the sizing and the copying of the array member (for the array data copy, a C run-time function <tt>memcpy()</tt> is used to optimize the execution time).<br \>
+<br \>
+Example:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;crt/string.bi&quot;&nbsp;&nbsp;''&nbsp;C&nbsp;run-time&nbsp;header&nbsp;for&nbsp;'memcpy()'<br />
+</span><br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="key">Any</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'user&nbsp;fields</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'code&nbsp;for&nbsp;user&nbsp;fields&nbsp;in&nbsp;constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u.s</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;<span class="com">''&nbsp;explicit&nbsp;array&nbsp;sizing&nbsp;and&nbsp;copying</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="wrd">This.array</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">memcpy</span><span class="oth">(@</span><span class="wrd">This.array</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">This.array</span><span class="oth">)),</span>&nbsp;<span class="oth">@</span><span class="wrd">u.array</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)),</span>&nbsp;<span class="oth">(</span><span class="key">UBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(@</span><span class="wrd">u.array</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">))))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'code&nbsp;for&nbsp;user&nbsp;fields&nbsp;in&nbsp;copy-constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDT.Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">@</span><span class="key">This</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="oth">@</span><span class="wrd">u</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;<span class="com">''&nbsp;not&nbsp;self-assignment</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u.s</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;<span class="com">''&nbsp;explicit&nbsp;array&nbsp;sizing&nbsp;and&nbsp;copying</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="wrd">This.array</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">memcpy</span><span class="oth">(@</span><span class="wrd">This.array</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">This.array</span><span class="oth">)),</span>&nbsp;<span class="oth">@</span><span class="wrd">u.array</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)),</span>&nbsp;<span class="oth">(</span><span class="key">UBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(@</span><span class="wrd">u.array</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">u.array</span><span class="oth">))))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'code&nbsp;for&nbsp;user&nbsp;fields&nbsp;in&nbsp;copy-assignement&nbsp;operator</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u1</span><span class="oth">,</span>&nbsp;<span class="wrd">u2</span><br />
+<br />
+<span class="wrd">u1.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&quot;</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="wrd">u1.array</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">9</span><span class="oth">)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u1.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u1.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u1.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;<br />
+<span class="wrd">u2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u2.s</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u2.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u2.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">u2.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u3.s</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u3.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u3.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">u3.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+FreeBASIC
+ 1 2 3 4 5 6 7 8 9
+
+FreeBASIC
+ 1 2 3 4 5 6 7 8 9
+			</pre></div></div></div><div class="fb_sect_title">Using an extra base Type containing the variable-length string and array</div><div class="fb_sect_cont"><br \>
+Another elegant possibility is to keep this sizing/copying, automatically coded by the compiler, but by simply calling it explicitly.<br \>
+For this, an elegant solution for the member array is to no longer put it at the level of the Type itself, but rather in another specific Type which is inherited (seen from the outside, it is exactly the same). This is not necessary for the member string, but including also allows to save one code line each time.<br \>
+<br \>
+Example:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="key">Any</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">UDT0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'user&nbsp;fields</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'code&nbsp;for&nbsp;user&nbsp;fields&nbsp;in&nbsp;constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Base</span><span class="oth">(</span><span class="wrd">u</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;inherited&nbsp;string&nbsp;copying&nbsp;plus&nbsp;array&nbsp;sizing&nbsp;and&nbsp;copying&nbsp;from&nbsp;Base&nbsp;implicit&nbsp;copy-constructor&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'code&nbsp;for&nbsp;user&nbsp;fields&nbsp;in&nbsp;copy-constructor</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDT.Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">UDT0</span><span class="oth">,</span>&nbsp;<span class="key">This</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u</span>&nbsp;&nbsp;<span class="com">''&nbsp;inherited&nbsp;string&nbsp;copying&nbsp;plus&nbsp;array&nbsp;sizing&nbsp;and&nbsp;copying&nbsp;from&nbsp;Base&nbsp;implicit&nbsp;copy-assignement&nbsp;operator&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'code&nbsp;for&nbsp;user&nbsp;fields&nbsp;in&nbsp;copy-assignement&nbsp;operator</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u1</span><span class="oth">,</span>&nbsp;<span class="wrd">u2</span><br />
+<br />
+<span class="wrd">u1.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&quot;</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="wrd">u1.array</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">9</span><span class="oth">)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u1.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u1.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">u1.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;<br />
+<span class="wrd">u2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u2.s</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u2.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u2.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">u2.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u3.s</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">u3.array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">u3.array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">u3.array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">);</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+FreeBASIC
+ 1 2 3 4 5 6 7 8 9
+
+FreeBASIC
+ 1 2 3 4 5 6 7 8 9
+			</pre></div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgCtorsAssignDtors.html">Constructors, '=' Assignment-Operators, and Destructors (advanced, part #1)</a><br \>
+<li> <a href="ProPgCtorsAssignDtors2.html">Constructors, '=' Assignment-Operators, and Destructors (advanced, part #2)</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

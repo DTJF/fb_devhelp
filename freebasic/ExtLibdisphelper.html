@@ -1,0 +1,126 @@
+<html>
+<head>
+<title>disphelper</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">disphelper</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Disphelper is a COM helper library that can be used in plain C. No MFC or ATL is required. It allows you to call COM objects with an easy printf style syntax.<br \>
+<br \>
+Website: http://disphelper.sourceforge.net/<br \>
+Platforms supported: Win32, Linux (using WINE)<br \>
+Headers to include: disphelper/disphelper.bi<br \>
+Header version: from 2005<br \>
+<br \>
+<div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;HTTP&nbsp;GET&nbsp;example,&nbsp;using&nbsp;MSXML2</span><br />
+<br />
+<span class="def">#define&nbsp;UNICODE<br />
+#include&nbsp;&quot;disphelper/disphelper.bi&quot;<br />
+</span><br />
+<span class="wrd">DISPATCH_OBJ</span><span class="oth">(</span><span class="wrd">objHTTP</span><span class="oth">)</span><br />
+<br />
+<span class="wrd">dhInitialize</span><span class="oth">(</span><span class="key">True</span><span class="oth">)</span><br />
+<span class="wrd">dhToggleExceptions</span><span class="oth">(</span><span class="key">True</span><span class="oth">)</span><br />
+<br />
+<span class="wrd">dhCreateObject</span><span class="oth">(</span><span class="quo">&quot;MSXML2.XMLHTTP.4.0&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">NULL</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">objHTTP</span><span class="oth">)</span><br />
+<br />
+<span class="wrd">dhCallMethod</span><span class="oth">(</span><span class="wrd">objHTTP</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;.Open(%s,&nbsp;%s,&nbsp;%b)&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;GET&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;http://sourceforge.net&quot;</span><span class="oth">,</span>&nbsp;<span class="key">False</span><span class="oth">)</span><br />
+<span class="wrd">dhCallMethod</span><span class="oth">(</span><span class="wrd">objHTTP</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;.Send&quot;</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">szResponse</span><br />
+<span class="wrd">dhGetValue</span><span class="oth">(</span><span class="quo">&quot;%s&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">szResponse</span><span class="oth">,</span>&nbsp;<span class="wrd">objHTTP</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;.ResponseText&quot;</span><span class="oth">)</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Response:&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="oth">*</span><span class="wrd">szResponse</span><br />
+<span class="wrd">dhFreeString</span><span class="oth">(</span><span class="wrd">szResponse</span><span class="oth">)</span><br />
+<br />
+<span class="wrd">SAFE_RELEASE</span><span class="oth">(</span><span class="wrd">objHTTP</span><span class="oth">)</span><br />
+<span class="wrd">dhUninitialize</span><span class="oth">(</span><span class="key">True</span><span class="oth">)</span><br />
+</div></tt><br />
+<br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;IExplorer&nbsp;example</span><br />
+<br />
+<span class="def">#define&nbsp;UNICODE<br />
+#include&nbsp;&quot;disphelper/disphelper.bi&quot;<br />
+</span><br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">navigate</span><span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">url</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">DISPATCH_OBJ</span><span class="oth">(</span><span class="wrd">ieApp</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhInitialize</span><span class="oth">(</span><span class="key">True</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhToggleExceptions</span><span class="oth">(</span><span class="key">True</span><span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhCreateObject</span><span class="oth">(</span><span class="quo">&quot;InternetExplorer.Application&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">NULL</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">ieApp</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhPutValue</span><span class="oth">(</span><span class="wrd">ieApp</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Visible&nbsp;=&nbsp;%b&quot;</span><span class="oth">,</span>&nbsp;<span class="key">True</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhCallMethod</span><span class="oth">(</span><span class="wrd">ieApp</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;.Navigate(%s)&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">url</span><span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">SAFE_RELEASE</span><span class="oth">(</span><span class="wrd">ieApp</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhUninitialize</span><span class="oth">(</span><span class="key">True</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">navigate</span><span class="oth">(</span><span class="quo">&quot;www.freebasic.net&quot;</span><span class="oth">)</span><br />
+</div></tt><br />
+<br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;VB&nbsp;Script&nbsp;example</span><br />
+<br />
+<span class="def">#define&nbsp;UNICODE<br />
+#include&nbsp;&quot;disphelper/disphelper.bi&quot;<br />
+</span><br />
+<span class="com">''&nbsp;This&nbsp;function&nbsp;runs&nbsp;a&nbsp;script&nbsp;using&nbsp;the&nbsp;MSScriptControl.</span><br />
+<span class="com">''&nbsp;Optionally&nbsp;returns&nbsp;a&nbsp;result.</span><br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">RunScript</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">(</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">result_identifier</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">LPWSTR</span><span class="oth">,</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">result</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">LPVOID</span><span class="oth">,</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">script</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">LPWSTR</span><span class="oth">,</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">language</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">LPWSTR</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">DISPATCH_OBJ</span><span class="oth">(</span><span class="wrd">control</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">SUCCEEDED</span><span class="oth">(</span><span class="wrd">dhCreateObject</span><span class="oth">(</span><span class="quo">&quot;MSScriptControl.ScriptControl&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">NULL</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">control</span><span class="oth">)))</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">SUCCEEDED</span><span class="oth">(</span><span class="wrd">dhPutValue</span><span class="oth">(</span><span class="wrd">control</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;.Language&nbsp;=&nbsp;%T&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">language</span><span class="oth">)))</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhPutValue</span><span class="oth">(</span><span class="wrd">control</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;.AllowUI&nbsp;=&nbsp;%b&quot;</span><span class="oth">,</span>&nbsp;<span class="key">True</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhPutValue</span><span class="oth">(</span><span class="wrd">control</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;.UseSafeSubset&nbsp;=&nbsp;%b&quot;</span><span class="oth">,</span>&nbsp;<span class="key">False</span><span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">result</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhGetValue</span><span class="oth">(</span><span class="wrd">result_identifier</span><span class="oth">,</span>&nbsp;<span class="wrd">result</span><span class="oth">,</span>&nbsp;<span class="wrd">control</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;.Eval(%T)&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">script</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhCallMethod</span><span class="oth">(</span><span class="wrd">control</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;.Eval(%T)&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">script</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">SAFE_RELEASE</span><span class="oth">(</span><span class="wrd">control</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhInitialize</span><span class="oth">(</span><span class="key">True</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhToggleExceptions</span><span class="oth">(</span><span class="key">True</span><span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;VBScript&nbsp;sample</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">RunScript</span><span class="oth">(</span><span class="wrd">NULL</span><span class="oth">,</span>&nbsp;<span class="wrd">NULL</span><span class="oth">,</span>&nbsp;<span class="oth">!</span><span class="quo">&quot;MsgBox(\&quot;</span><span class="key">This</span>&nbsp;<span class="key">Is</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="wrd">VBScript</span>&nbsp;<span class="wrd">test.</span><span class="oth">\</span><span class="quo">&quot;&nbsp;&amp;&nbsp;vbcrlf&nbsp;&amp;&nbsp;\&quot;</span><span class="wrd">It</span>&nbsp;<span class="wrd">worked!</span><span class="oth">\</span><span class="quo">&quot;,64&nbsp;Or&nbsp;3)&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;VBScript&quot;</span><span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;JScript&nbsp;sample</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">result</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">RunScript</span><span class="oth">(</span><span class="quo">&quot;%d&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">result</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Math.round(Math.pow(5,&nbsp;2)&nbsp;*&nbsp;Math.PI)&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;JScript&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Result&nbsp;=&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">result</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Press&nbsp;any&nbsp;key&nbsp;to&nbsp;exit...&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dhUninitialize</span><span class="oth">(</span><span class="key">True</span><span class="oth">)</span><br />
+</div></tt><br />
+<br \>
+</div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

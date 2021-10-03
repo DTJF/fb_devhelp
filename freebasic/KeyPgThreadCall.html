@@ -1,0 +1,101 @@
+<html>
+<head>
+<title>ThreadCall</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">ThreadCall</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Starts a user-defined procedure with parameters in a separate execution thread<br \>
+<br \>
+<i><b>Threadcall</b> uses <a href="ExtLibFfi.html">LibFFI</a> internally: people who write programs using this functionality should be careful to follow LibFFI's license, which can be found at http://github.com/atgreen/libffi/blob/master/LICENSE.</i><br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgFunction.html">Function</a> <b>ThreadCall</b> <i>subname</i>([<i>paramlist</i>]) <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+<i>threadid</i> = <b>ThreadCall</b> <i>subname</i>([<i>paramlist</i>])<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>subname</i></tt><br \>
+<div class="fb_indent">The name of a subroutine<br \>
+</div><tt><i>paramlist</i></tt><br \>
+<div class="fb_indent">A list of parameters to pass to the subroutine, as with a normal sub call.	<br \>
+<br \>
+</div></div><div class="fb_sect_title">Return Value</div><div class="fb_sect_cont"><br \>
+<b>Threadcall</b> returns an <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle to the thread created, or the null pointer (<tt>0</tt>) on failure.<br \>
+<br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Like <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt>, <b>Threadcall</b> creates a thread which runs at the same time as the code calling it.  By placing "<b>Threadcall</b>" before almost any normal call to sub, the sub is called inside of a new thread and returns a pointer to that thread.<br \>
+<br \>
+Using <b>Threadcall</b> is simpler method of creating threads, and allows data to be passed to the thread without global variables or pointers which are not type safe.  However, <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> is more efficient and should be used for programs creating a large number of threads.<br \>
+<br \>
+While most subroutines are supported, the following types of subroutines may not be called:<br \>
+<ul><ul><li> Subroutines using <a href="KeyPgVaArg.html">Variable Arguments</a>.<br \>
+<li> Subroutines with unions which are passed as arguments.<br \>
+<li> Subroutines with user types containing unions, arrays, strings, or bitfields which are passed as arguments.<br \>
+<br \>
+</ul></ul>When using <b>Threadcall</b>, parenthesis around the parameter list are required unless the subroutine has no parameters.<br \>
+<br \>
+<b>Warning:</b><br \>
+<div class="fb_indent"><b>-</b> Presently when <b>Threadcall</b> involves to pass parameters to the thread, there is no guarantee that the corresponding data are still maintained after the end of the <b>Threadcall</b> statement and this until the thread is launched.<br \>
+<b>-</b> That can cause bad behavior:<br \>
+<div class="fb_indent">- see example below where the not displayed parameter <tt><i>id</i></tt> seems to be the consequence of a prematurely destroyed string argument (visible for a fbc version &gt;= 1.00),<br \>
+- replace <tt><i>id As String</i></tt> with <tt><i>id As Zstring</i></tt> in the parameters declaration seems to workaround the problem when passing this parameter.<br \>
+</div><b>-</b> Therefore it is more advisable for the moment to use <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> (100% safe) instead.	<br \>
+<br \>
+</div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;Threading&nbsp;using&nbsp;&quot;ThreadCall&quot;</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span><span class="oth">(</span>&nbsp;<span class="wrd">id</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="wrd">tlock</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span>&nbsp;<span class="wrd">tlock</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;thread&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">id</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Locate</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="num">20</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;/&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span>&nbsp;<span class="wrd">tlock</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">tlock</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">MutexCreate</span><span class="oth">()</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCall</span>&nbsp;<span class="wrd">thread</span><span class="oth">(</span><span class="quo">&quot;A&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">tlock</span><span class="oth">,</span>&nbsp;<span class="num">6</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCall</span>&nbsp;<span class="wrd">thread</span><span class="oth">(</span><span class="quo">&quot;B&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">tlock</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">)</span><br />
+<span class="key">ThreadWait</span>&nbsp;<span class="wrd">a</span><br />
+<span class="key">ThreadWait</span>&nbsp;<span class="wrd">b</span><br />
+<span class="key">MutexDestroy</span>&nbsp;<span class="wrd">tlock</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;All&nbsp;done&nbsp;(and&nbsp;without&nbsp;Dim&nbsp;Shared!)&quot;</span><br />
+</div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Threading is not allowed in the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Platform Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> <b>Threadcall</b> is not available with the DOS version / target of FreeBASIC, because multithreading is not supported by DOS kernel nor the used extender.<br \>
+<li> In Linux the threads are always started in the order they are created, this can't be assumed in Win32. It's an OS, not a FreeBASIC issue. <br \>
+<li> In Linux, the <tt><a href="KeyPgStdcall.html">stdcall</a></tt> and <tt><a href="KeyPgPascal.html">pascal</a></tt> calling conventions are not supported<br \>
+<li> In Windows, the <tt><a href="KeyPgPascal.html">pascal</a></tt> calling convention is not supported.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt><br \>
+<li> <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt><br \>
+<li> <tt><a href="KeyPgMutexCreate.html">MutexCreate</a></tt><br \>
+<li> <tt><a href="KeyPgMutexLock.html">MutexLock</a></tt><br \>
+<li> <tt><a href="KeyPgMutexUnlock.html">MutexUnlock</a></tt><br \>
+<li> <tt><a href="KeyPgMutexDestroy.html">MutexDestroy</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

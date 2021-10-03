@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>Alias (Modifier)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Alias (Modifier)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Modifies the data type name mangling (decoration) of a public symbol<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+... <a href="KeyPgAs.html">As</a> [ <a href="KeyPgConstQualifier.html">Const</a> ] <i><a href="DataType.html">datatype</a></i> <b>alias "<i>modifier</i>"</b> [ <a href="KeyPgConstQualifier.html">Const</a> [ <a href="KeyPgPtr.html">Ptr</a> ... ] ]<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDim.html">Dim</a> <i>variable</i> <a href="KeyPgAs.html">As</a> <i><a href="DataType.html">datatype</a></i> <b>alias "<i>modifier</i>"</b><br \>
+<a href="KeyPgTypeAlias.html">Type</a> <i>name</i> <a href="KeyPgAs.html">As</a> <i><a href="DataType.html">datatype</a></i> <b>alias "<i>modifier</i>"</b><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <i>name</i> ( <i>param</i> <a href="KeyPgAs.html">As</a> <i><a href="DataType.html">datatype</a></i> <b>alias "<i>modifier</i>"</b>, ... )<br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgFunction.html">Function</a> <i>name</i> ( <i>param</i> <a href="KeyPgAs.html">As</a> <i><a href="DataType.html">datatype</a></i> <b>alias "<i>modifier</i>"</b>, ... ) <a href="KeyPgAs.html">As</a> <a href="DataType.html">datatype</a> <b>alias "<i>modifier</i>"</b><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>datatype</i></tt><br \>
+<div class="fb_indent">Standard data type or user defined data type to modify<br \>
+</div><tt><i>modifier</i></tt><br \>
+<div class="fb_indent">One of the supported modifiers as described in Description section following<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt>Alias "<i>modifier</i>"</tt>, when specified following a data type, gives an alternate meaning to the data type, which may be needed for linking with languages other than FreeBASIC.<br \>
+<br \>
+Public symbol names are mangled (decorated) to encode information about the data type that is used for the symbol.  When linking with the c language, the special meaning of the <tt>alias</tt> modifier is meaningless, since the extra information is not encoded in to the public name.  When linking with the c++ language, typically more information is encoded in to the public symbol, and the <tt>alias</tt> modifier may be required.  The public name is written to the compiled object file, and used by the linker to match symbol names from one object module to another.<br \>
+<br \>
+The same rules for mapping data types is used regardless of which backend (gas or gcc) code emitter is used,  And the intent is that FB's compiled code can link consistently with it's own object modules and object modules (or libraries) compiled from other languages.<br \>
+<br \>
+<u>Supported Modifiers</u><br \>
+<br \>
+<div class="fb_indent"><tt><a href="KeyPgLong.html">Long</a> alias "long"</tt><br \>
+<tt><a href="KeyPgUlong.html">ULong</a> alias "long"</tt><br \>
+<div class="fb_indent">On Win 64-bit targets, used to map FB's 32-bit <tt><a href="KeyPgLong.html">Long</a></tt> and <tt><a href="KeyPgUlong.html">ULong</a></tt> types to c/c++'s 32-bit <tt>long [int]</tt> type, instead of the 32-bit <tt>int</tt> type.<br \>
+<br \>
+</div><tt><a href="KeyPgAny.html">Any</a> alias "char" <a href="KeyPgPtr.html">Ptr</a></tt><br \>
+<div class="fb_indent">Maps <tt>any ptr</tt> to c/c++'s <tt>char *</tt>.  In c/c++, <tt>char</tt>, <tt>signed char</tt>, and <tt>unsigned char</tt>, are three distinct types.<br \>
+</div></div><ul><ul><ul><li> <tt><a href="KeyPgByte.html">Byte</a> <a href="KeyPgPtr.html">Ptr</a></tt> maps to <tt>signed char *</tt><br \>
+<li> <tt><a href="KeyPgByte.html">UByte</a> <a href="KeyPgPtr.html">Ptr</a></tt> maps to <tt>unsigned char *</tt><br \>
+<li> On some platforms the variable argument list <tt>va_list</tt> type is a typed as a <tt>char *</tt>, but FB does not have an equivalent type, therefore <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> is used instead.  Linking with names encoded with this type will fail since, normally, FB encodes <tt>void *</tt> data type instead of <tt>char *</tt>.<br \>
+<li> <tt>alias "char"</tt> keeps the <tt>any ptr</tt> behaviour in FB but then encodes the public name as <tt>char *</tt> for linking.<br \>
+</ul></ul></ul><div class="fb_indent"><tt>any alias "__builtin_va_list" ptr</tt><br \>
+<div class="fb_indent">Maps the data type to gcc's __builtin_va_list type<br \>
+</div></div><ul><ul><ul><li> expected that gcc's built-in type is a pointer type<br \>
+<li> used on dos, win32, win64, linux-x86, targets<br \>
+<li> see <tt><a href="KeyPgCvaList.html">Cvalist</a></tt> for default usage in the <tt>cva_list</tt> data type<br \>
+</ul></ul></ul><div class="fb_indent"><tt>alias "__builtin_va_list"</tt><br \>
+<div class="fb_indent">Maps the data type to gcc's __builtin_va_list type<br \>
+</div></div><ul><ul><ul><li> expected that gcc's built-in type is a <tt>struct</tt> type<br \>
+<li> used on aarch64 target<br \>
+<li> see <tt><a href="KeyPgCvaList.html">Cvalist</a></tt> for default usage in the <tt>cva_list</tt> data type<br \>
+</ul></ul></ul><div class="fb_indent"><tt>alias "__builtin_va_list[]"</tt><br \>
+<div class="fb_indent">Maps the data type to gcc's __builtin_va_list type<br \>
+</div></div><ul><ul><ul><li> expected that gcc's built-in type is a <tt>struct</tt> array type<br \>
+<li> used on linux-x86_64 target<br \>
+<li> see <tt><a href="KeyPgCvaList.html">Cvalist</a></tt> for default usage in the <tt>cva_list</tt> data type<br \>
+<br \>
+</ul></ul></ul><u>Data Type Mapping Details</u><br \>
+<br \>
+<i>On all targets, FB to c/c++:</i><br \>
+Several of FB's data types are consistently mapped across all targets:<br \>
+<ul><ul><li> 8-bit <tt><a href="KeyPgByte.html">Byte</a></tt> maps to <tt>signed char</tt><br \>
+<li> 8-bit <tt><a href="KeyPgUbyte.html">UByte</a></tt> maps to <tt>unsigned char</tt><br \>
+<li> 16-bit <tt><a href="KeyPgShort.html">Short</a></tt> maps to <tt>[signed] short [int]</tt><br \>
+<li> 16-bit <tt><a href="KeyPgUshort.html">UShort</a></tt> maps to <tt>unsigned short [int]</tt><br \>
+<li> 32-bit <tt><a href="KeyPgLong.html">Long</a></tt> maps to <tt>int</tt><br \>
+<li> 32-bit <tt><a href="KeyPgUlong.html">ULong</a></tt> maps to <tt>unsigned int</tt><br \>
+<li> 64-bit <tt><a href="KeyPgLongint.html">LongInt</a></tt> maps to <tt>long long [int]</tt><br \>
+<li> 64-bit <tt><a href="KeyPgUlongint.html">ULongInt</a></tt> maps to <tt>unsigned long long [int]</tt><br \>
+<br \>
+</ul></ul><i>On Dos/Win/Linux 32-bit targets, FB to c/c++:</i><br \>
+<tt><a href="KeyPgInteger.html">Integer</a></tt> on 32-bit targets is 32-bits wide<br \>
+<ul><ul><li> 32-bit <tt><a href="KeyPgInteger.html">Integer</a></tt> maps to <tt>long [int]</tt><br \>
+<li> 32-bit <tt><a href="KeyPgUinteger.html">UInteger</a></tt> maps to <tt>unsigned long [int]</tt><br \>
+<br \>
+</ul></ul><i>On Linux 64-bit targets, FB to c/c++:</i><br \>
+<tt><a href="KeyPgInteger.html">Integer</a></tt> on 64-bit targets is 64-bits wide<br \>
+<ul><ul><li> 64-bit <tt><a href="KeyPgInteger.html">Integer</a></tt> maps to <tt>long [int]</tt><br \>
+<li> 64-bit <tt><a href="KeyPgUinteger.html">UInteger</a></tt> maps to <tt>unsigned long [int]</tt><br \>
+<br \>
+</ul></ul><i>On Win 64-bit targets, FB to c/c++:</i><br \>
+<tt><a href="KeyPgInteger.html">Integer</a></tt> on 64-bit targets is 64-bits wide.  However, on Win target, c/c++'s <tt>long int</tt> type is 32-bit, not 64-bit, and we can't use the <tt>long long int</tt> mangling because it's already used by FB's <tt><a href="KeyPgLongint.html">LongInt</a></tt> type.  Reusing the same mangling (decoration) for two different data types would cause function overloading to fail or have duplicate definitions.  To preserve FB's behaviour that <tt>Integer</tt> on 64-bit targets is always 64-bits, we mangle (decorate) the symbol with a custom datatype and keep the size at 64-bit.<br \>
+<ul><ul><li> 64-bit <tt><a href="KeyPgInteger.html">Integer</a></tt> maps to custom <tt>INTEGER</tt><br \>
+<li> 64-bit <tt><a href="KeyPgUinteger.html">UInteger</a></tt> maps to custom <tt>UINTEGER</tt><br \>
+</ul></ul><div class="fb_indent">To create a data type in FB that will map to c/c++'s <tt>long [int]</tt> 32-bit on win, we must use <tt>alias</tt> modifier.<br \>
+</div><ul><ul><li> 32-bit <tt><a href="KeyPgLong.html">Long</a> alias "long"</tt>  maps to <tt>long [int]</tt><br \>
+<li> 32-bit <tt><a href="KeyPgUlong.html">ULong</a> alias "long"</tt>  maps to <tt>unsigned long [int]</tt><br \>
+<br \>
+</ul></ul><div class="fb_indent">For example <tt>extern c++ : declare sub proc( byval as long <b>alias "long"</b> ) : end extern</tt>.  This allows FreeBASIC to call external c++ procedures (on win-64) requiring a 32-bit <tt>long int</tt> type.  Usage of <tt>Alias</tt> in this way affects win-64 targets only, and is ignored on all other targets.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+See example at <tt><a href="KeyPgAlias.html">Alias (Name)</a></tt>.<br \>
+<br \>
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> In QB, <tt>Alias</tt> only worked with <tt><a href="KeyPgDeclare.html">Declare</a></tt>.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgAlias.html">Alias (Name)</a></tt><br \>
+<li> <tt><a href="KeyPgDeclare.html">Declare</a></tt><br \>
+<li> <tt><a href="KeyPgExport.html">Export</a></tt><br \>
+<li> <tt><a href="KeyPgTypeAlias.html">Type (Alias)</a></tt><br \>
+<br \>
+</ul><br \>
+</div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

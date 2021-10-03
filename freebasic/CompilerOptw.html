@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>Compiler Option: -w</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Compiler Option: -w</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Set minimum warning level.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<div class="fb_indent"><b>-w</b> <i>level</i> | <b>all</b> | <b>none</b> | <b>param</b> | <b>Escape</b> | <b>pedantic</b> | <b>Next</b> | <b>funcptr</b> | <b>constness</b> | <b>suffix</b><br \>
+</div></tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<div class="fb_indent"><tt><i>level</i></tt><br \>
+<div class="fb_indent">Warning messages only with a level equal or greater to this value will be output.  <br \>
+</div><tt><b>all</b></tt><br \>
+<div class="fb_indent">Equivalent to specifying a <tt><i>level</i></tt> of negative one (<tt>-1</tt>).<br \>
+</div><tt><b>none</b></tt><br \>
+<div class="fb_indent">Suppresses all warnings.<br \>
+</div><tt><b>param</b></tt><br \>
+<div class="fb_indent">Warn when procedure parameters aren't specified with either <tt><a href="KeyPgByval.html">ByVal</a></tt> or <tt><a href="KeyPgByref.html">ByRef</a></tt>.<br \>
+</div><tt><b>Escape</b></tt><br \>
+<div class="fb_indent">Warn when string literals contain any number of escape characters (<tt>\</tt>).<br \>
+</div><tt><b>pedantic</b></tt><br \>
+<div class="fb_indent">Equivalent to specifying the <tt><b>param</b></tt> and <tt><b>Escape</b></tt> arguments, plus length checking of parameters passed <tt><a href="KeyPgByval.html">ByVal</a></tt> and of any <tt><a href="KeyPgCptr.html">CPtr</a></tt> converting to pointer only, plus warning on useless suffixes in '-lang fb'.<br \>
+</div><tt><b>Next</b></tt><br \>
+<div class="fb_indent">Warn when <tt><a href="KeyPgNext.html">Next</a></tt> is followed by an identifier.<br \>
+</div><tt><b>funcptr</b></tt><br \>
+<div class="fb_indent">Warn on mismatched procedure pointers, including conversions in <tt><a href="KeyPgCast.html">Cast</a></tt> and <tt><a href="KeyPgCptr.html">CPtr</a></tt> expressions.  Implies '-w all'. Experimental.  Behaviour may change in future versions.<br \>
+</div><tt><b>constness</b></tt><br \>
+<div class="fb_indent">Warn when <tt><a href="KeyPgConstQualifier.html">Const (Qualifier)</a></tt> is discarded in an assignment. Implies '-w funcptr' and '-w all'.  Behaviour may change in future versions.<br \>
+</div><tt><b>suffix</b></tt><br \>
+<div class="fb_indent">Warn on useless suffixes in '-lang fb'.<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<div class="fb_indent">The <tt>-w</tt> compiler option determines which compiler warnings, if any, are output. Each possible warning is associated with a warning level, starting from negative one (<tt>-1</tt>) and increasing with the potential problems that may occur.<br \>
+<br \>
+The <tt><b>param</b></tt>, <tt><b>Escape</b></tt>, <tt><b>pedantic</b></tt>, <tt><b>Next</b></tt>, <tt><b>funcptr</b></tt>, and <tt><b>constness</b></tt> arguments provide additional warnings not ordinarily output, even by default.<br \>
+<br \>
+The default, if the <tt><b>-w</b></tt> option is not specified, is as if <tt><b>-w 0</b></tt> was used. The <tt><b>-w</b></tt> option can be specified multiple times.  Warning messages having a level of <tt>-1</tt> are not shown by default.<br \>
+<br \>
+<tt>-w none</tt>, or a significantly high <tt><i>level</i></tt> value will have the effect of suppressing all warning messages.<br \>
+<br \>
+<tt>fbc</tt> does not issue warning or error if the warning name itself is not valid.  For example <tt>-w flarg</tt>, is not a recognized name for a warning.  The compiler silently ignores this to allow command lines with warnings added in new versions of <tt>fbc</tt> to also be used with older versions of <tt>fbc</tt> without complaint.<br \>
+<br \>
+For fbc version &gt;= 1.08: Warning level for all warnings is increased by 1. Default warning level is 1 (previously, default warning level was 0 and some warnings had level of -1).<br \>
+<br \>
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="CompilerCmdLine.html">Using the Command Line</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

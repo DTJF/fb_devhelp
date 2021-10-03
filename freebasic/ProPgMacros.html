@@ -1,0 +1,251 @@
+<html>
+<head>
+<title>Macros</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Macros</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<b>Macros</b> are named code segments that are substituted to their names each time they are encountered in a program.<br \>
+<br \>
+Macros offer a powerful way to extend the language and create reusable code.<br \>
+One reason macros are used is performance.<br \>
+They are a way of eliminating procedure call overhead because they are always expanded in-line.<br \>
+There is no alternative for this in FreeBASIC because it does not support inline procedures.<br \>
+<br \>
+<div class="fb_sect_title">Macros definition</div><div class="fb_sect_cont"><br \>
+The preprocessor can, during the text replacement mechanism, use parameters supplied to the identifier to be replaced.<br \>
+These parameters are then replaced without modification in the replacement text.<br \>
+The replacement text is then called macro.<br \>
+<br \>
+The syntax to define a macro is as follows (see '<a href="CatPgPreProcess.html">Preprocessor commands</a>'):<br \>
+<div class="fb_indent"><b>-</b> one-line macro:<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><a href="KeyPgPpdefine.html">#define</a> <i>identifier</i>([<i>parameters</i>]) <i>body</i></tt><br \>
+<div class="fb_indent"><tt><i>parameters</i></tt> turn a define into a function-like macro, allowing text arguments to be passed to the macro.<br \>
+<tt><i>identifier</i></tt> should be followed by the opening parentheses (<b><tt>(</tt></b>) immediately without any white-space in between, otherwise the compiler will treat it as part of the <tt><i>body</i></tt>.<br \>
+</div></div></div><b>-</b> multi-line macro:<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><a href="KeyPgPpmacro.html">#macro</a> <i>identifier</i>([<i>parameters</i>])</tt><br \>
+<div class="fb_indent"><tt><i>body</i></tt><br \>
+</div><tt><a href="KeyPgPpmacro.html">#endmacro</a></tt><br \>
+<div class="fb_indent"><tt><b>#macro</b></tt> is the multi-line version of <tt><a href="KeyPgPpdefine.html">#define</a></tt>.<br \>
+<br \>
+</div></div></div></div>The <tt><a href="KeyPgOpPpStringize.html"># Stringize</a></tt> operator can be used on macro parameters to turn them into string literals, and the <tt><a href="KeyPgOpPpConcat.html">## Concatenate</a></tt> operator can be used to merge tokens together.<br \>
+(see '<a href="CatPgOpPrepro.html">Preprocessor Operators</a>')<br \>
+<br \>
+Defines and macros are <i>scoped</i> (they are only visible in the scope they were defined in).<br \>
+Namespaces on the other hand do not have any effect on the visibility of the defines and macros.<br \>
+<br \>
+The mechanism of macros allows to do the equivalent of general procedures, which work for all types.<br \>
+However, care must be taken that parameters passed to a macro are evaluated by it each time they are used in the macro definition. This can cause performance issues or, worse, cause unwanted edge effects.<br \>
+<br \>
+Parentheses should always be placed around the parameters of the macro:<br \>
+<div class="fb_indent"><b>-</b> Indeed, these parameters can be compound expressions, which must be computed completely before being used in the macro.<br \>
+<b>-</b> Parentheses force this calculation.<br \>
+<b>-</b> If they are not set, priority rules can generate a logic error in the macro itself.<br \>
+</div>Similarly, macros that return a value should be surrounded by parentheses, in order to force their complete evaluation before using them in another expression.<br \>
+<br \>
+Example of incorrect and correct macros:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#define&nbsp;MUL1(x,&nbsp;y)&nbsp;x&nbsp;*&nbsp;y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;incorect&nbsp;macro&nbsp;&nbsp;(parameters&nbsp;must&nbsp;be&nbsp;enclosed&nbsp;in&nbsp;parentheses)<br />
+#define&nbsp;MUL2(x,&nbsp;y)&nbsp;(&nbsp;x&nbsp;)&nbsp;*&nbsp;(&nbsp;y&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;incorrect&nbsp;macro&nbsp;(and&nbsp;returned&nbsp;result&nbsp;must&nbsp;also&nbsp;be&nbsp;in&nbsp;parentheses)<br />
+#define&nbsp;MUL3(x,&nbsp;y)&nbsp;(&nbsp;(&nbsp;x&nbsp;)&nbsp;*&nbsp;(&nbsp;y&nbsp;)&nbsp;)&nbsp;&nbsp;''&nbsp;correct&nbsp;macro<br />
+</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">MUL1</span><span class="oth">(</span><span class="num">5</span><span class="oth">-</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">+</span><span class="num">2</span><span class="oth">)^</span><span class="num">2</span>&nbsp;&nbsp;<span class="com">''&nbsp;6&nbsp;&nbsp;(incorrect&nbsp;result)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">MUL2</span><span class="oth">(</span><span class="num">5</span><span class="oth">-</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">+</span><span class="num">2</span><span class="oth">)^</span><span class="num">2</span>&nbsp;&nbsp;<span class="com">''&nbsp;18&nbsp;(incorrect&nbsp;result)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">MUL3</span><span class="oth">(</span><span class="num">5</span><span class="oth">-</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">+</span><span class="num">2</span><span class="oth">)^</span><span class="num">2</span>&nbsp;&nbsp;<span class="com">''&nbsp;36&nbsp;(correct&nbsp;result)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Thus, the parentheses ensure a consistent behavior of the macro (parentheses can add to macro definitions, but they are absolutely necessary).<br \>
+<br \>
+</div></div><div class="fb_sect_title">Macros debug</div><div class="fb_sect_cont"><br \>
+Using macros can be extremely unsafe and they hide a lot of pitfalls which are very hard to find.<br \>
+Procedures give type checking and scoping, but macros just substitute the passed argument.<br \>
+Another disadvantage of the macro is the size of the program. The reason is, the pre-processor will replace all the macros in the program by its real definition prior to the compilation process of the program.<br \>
+<br \>
+Looking only at the source code file, the only way to find out what the problem is to look at the definition of the macro and try to understand what happened.<br \>
+The most common error when using macros is the unbalanced open parentheses (inducing error at compile-time).<br \>
+Another is to forget putting parentheses around arguments (or returned result if exists) in macro definitions. That can cause some pretty nasty side effects because of operator precedence (inducing error at compile-time or bug at run-time).<br \>
+<br \>
+When the compiler detects an error inside a macro (after expanding), it provides a rustic error message containing only:<br \>
+<div class="fb_indent"><b>-</b> the line number where is the call of the macro,<br \>
+<b>-</b> the error type,<br \>
+<b>-</b> the text of the call (of the macro).<br \>
+<br \>
+</div>When the error is not obvious (type of error reported blurred), the only solution (with only the call line number) is presently to iteratively execute the following 5 steps until correction successful:<br \>
+<div class="fb_indent"><b><tt>Do</tt></b><br \>
+<div class="fb_indent"><b><tt>1.</tt></b> call fbc on the source file, but with the '-pp' compile option (fbc command emitting only the pre-processed input file, without compiling),<br \>
+<b><tt>2.</tt></b> recover the pre-processed file,<br \>
+<b><tt>3.</tt></b> edit and compile directly from this pre-processed file,<br \>
+<b><tt>4.</tt></b> analyze the error, understand it, correct it, and compile again the pre-processed file thus modified,<br \>
+<b><tt>5.</tt></b> postpone the equivalent correction in the concerned macro body of the original source file.<br \>
+</div><b><tt>Loop</tt></b><br \>
+<br \>
+</div>Example of error on a short code:<br \>
+<ul><ul><li> Source file (*.bas):<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#macro&nbsp;FIRST(array,&nbsp;Operator)<br />
+</span>&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">)</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="quo">&quot;,&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">index</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="key">UBound</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">))</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="def">#macro&nbsp;Second(array)<br />
+</span>&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">#</span><span class="wrd">array</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;:&quot;</span><br />
+&nbsp;&nbsp;<span class="wrd">FIRST</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">,</span>&nbsp;<span class="oth">+)</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">test1</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="oth">...</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">=&gt;</span>&nbsp;<span class="oth">{</span><span class="quo">&quot;First&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Second&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Third&quot;</span><span class="oth">}</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">test2</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="oth">...)</span>&nbsp;<span class="oth">=&gt;</span>&nbsp;<span class="oth">{</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">,</span><span class="num">3</span><span class="oth">}</span><br />
+<br />
+<span class="key">Second</span><span class="oth">(</span><span class="wrd">test1</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<span class="key">Second</span><span class="oth">(</span><span class="wrd">test2</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<b>Compiler output:</b><br \>
+<div class="fb_indent">...\FBIDETEMP.bas(18) error 20: Type mismatch, found '+' in 'SECOND(test2)'<br \>
+<br \>
+</div></div></div></div><ul><ul><li> Pre-processed file (*.pp.bas):<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">test1</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="oth">...</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">=&gt;</span>&nbsp;<span class="oth">{</span><span class="quo">&quot;First&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Second&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Third&quot;</span><span class="oth">}</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">test2</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="oth">...)</span>&nbsp;<span class="oth">=&gt;</span>&nbsp;<span class="oth">{</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">,</span><span class="num">3</span><span class="oth">}</span><br />
+<br />
+&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">$&quot;test1&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;:&quot;</span><br />
+&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">test1</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">test1</span><span class="oth">)</span>&nbsp;<span class="oth">-</span><span class="num">1</span><br />
+&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">test1</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;,&quot;</span><span class="oth">;</span><br />
+&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">index</span><br />
+&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">test1</span><span class="oth">(</span><span class="key">UBound</span><span class="oth">(</span><span class="wrd">test1</span><span class="oth">))</span><br />
+<span class="key">Print</span><br />
+&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">$&quot;test2&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;:&quot;</span><br />
+&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">test2</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">test2</span><span class="oth">)</span>&nbsp;<span class="oth">-</span><span class="num">1</span><br />
+&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">test2</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;,&quot;</span><span class="oth">;</span><br />
+&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">index</span><br />
+&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">test2</span><span class="oth">(</span><span class="key">UBound</span><span class="oth">(</span><span class="wrd">test2</span><span class="oth">))</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<b>Compiler output:</b><br \>
+<div class="fb_indent">...\FBIDETEMP.bas(14) error 20: Type mismatch, found '+' in 'Print " " + test2(index) + ",";'<br \>
+<br \>
+</div></div></div></div><ul><ul><li> Example macro correction in source code (*.bas):<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#macro&nbsp;FIRST(array,&nbsp;Operator)<br />
+</span>&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">)</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="quo">&quot;,&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">index</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="key">UBound</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">))</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="def">#macro&nbsp;Second(array)<br />
+</span>&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">#</span><span class="wrd">array</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;:&quot;</span><br />
+&nbsp;&nbsp;<span class="wrd">FIRST</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">,</span>&nbsp;<span class="oth">&amp;)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''corrected&nbsp;line&nbsp;(&quot;&amp;&quot;&nbsp;instead&nbsp;of&nbsp;&quot;+&quot;)</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">test1</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="oth">...</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">=&gt;</span>&nbsp;<span class="oth">{</span><span class="quo">&quot;First&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Second&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Third&quot;</span><span class="oth">}</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">test2</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="oth">...)</span>&nbsp;<span class="oth">=&gt;</span>&nbsp;<span class="oth">{</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">,</span><span class="num">3</span><span class="oth">}</span><br />
+<br />
+<span class="key">Second</span><span class="oth">(</span><span class="wrd">test1</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<span class="key">Second</span><span class="oth">(</span><span class="wrd">test2</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+test1:
+ First, Second,Third
+
+test2:
+ 1, 2, 3
+					</pre></div></div></div><b>Note:</b> Another solution could be a more detailed error message from compiler, relating to the call of the macro (proposal of improved error message already filled in in a feature request).<br \>
+<br \>
+</div></div><div class="fb_sect_title">Variadic macros</div><div class="fb_sect_cont"><br \>
+Using an ellipsis <tt>"..."</tt> (3 dots) behind the last parameter in a <tt>#macro</tt> or <tt>#define</tt> declaration allows creation of a variadic macro:<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><a href="KeyPgPpmacro.html">#macro</a> <i>identifier</i>([<i>parameters</i>,] <i>variadic_parameter...</i>)</tt><br \>
+<div class="fb_indent"><tt><i>body</i></tt><br \>
+</div><tt><a href="KeyPgPpmacro.html">#endmacro</a></tt><br \>
+</div>or:<br \>
+<div class="fb_indent"><tt><a href="KeyPgPpdefine.html">#define</a> <i>identifier</i>([<i>parameters</i>,] <i>variadic_parameter...</i>) <i>body</i></tt><br \>
+<br \>
+</div></div>So, it is possible to pass any number of arguments through the <tt><i>variadic_parameter</i></tt>, which can be used in the body as if it was a normal macro parameter.<br \>
+During macro expansion each occurrence of the <tt><i>variadic_parameter</i></tt> in the macro replacement list is replaced by the passed arguments. The <tt><i>variadic_parameter</i></tt> will expand to the full list of arguments passed to it, including commas, and can also be completely empty.<br \>
+<br \>
+No direct means is provided to access individual arguments in the variable argument list, nor to find out how many were passed.<br \>
+To distinguish between the different arguments passed by the <tt><i>variadic_parameter</i></tt>, one can first convert the <tt><i>variadic_parameter</i></tt> to a string literal using the <tt><a href="KeyPgOpPpStringize.html"># Stringize</a></tt> operator, then differentiate in this string literal (<tt><i>#variadic_parameter</i></tt>) each passed argument by locating the separators (usually a comma).<br \>
+<br \>
+</div><div class="fb_sect_title">Examples</div><div class="fb_sect_cont"><br \>
+Example with one-line and multi-line macros:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#define&nbsp;MIN(x,&nbsp;y)&nbsp;IIf(&nbsp;(&nbsp;x&nbsp;)&nbsp;&lt;&nbsp;(&nbsp;y&nbsp;),&nbsp;x,&nbsp;y&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;maximum&nbsp;function-like&nbsp;macro<br />
+#define&nbsp;MAX(x,&nbsp;y)&nbsp;IIf(&nbsp;(&nbsp;x&nbsp;)&nbsp;&gt;&nbsp;(&nbsp;y&nbsp;),&nbsp;x,&nbsp;y&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;minimum&nbsp;function-like&nbsp;macro<br />
+#define&nbsp;MUL(x,&nbsp;y)&nbsp;(&nbsp;(&nbsp;x&nbsp;)&nbsp;*&nbsp;(&nbsp;y&nbsp;)&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;multiply&nbsp;function-like&nbsp;macro<br />
+</span><br />
+<span class="def">#macro&nbsp;REV_STR(str_dest,&nbsp;str_src)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;reverse-string&nbsp;sub-like&nbsp;macro<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">str_src</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Step</span>&nbsp;<span class="oth">-</span><span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">str_dest</span>&nbsp;<span class="oth">&amp;=</span>&nbsp;<span class="key">Mid</span><span class="oth">(</span><span class="wrd">str_src</span><span class="oth">,</span>&nbsp;<span class="wrd">i</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">MIN</span><span class="oth">(</span><span class="num">5</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;2</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">MAX</span><span class="oth">(</span><span class="num">5</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;3</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">MUL</span><span class="oth">(</span><span class="num">5</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">2</span><span class="oth">)^</span><span class="num">2</span>&nbsp;&nbsp;<span class="com">''&nbsp;36</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+<span class="wrd">REV_STR</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;CISABeerF&quot;</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;FreeBASIC</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">s</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Example with variadic macro:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;macro&nbsp;with&nbsp;a&nbsp;variadic&nbsp;parameter&nbsp;which&nbsp;can&nbsp;contain&nbsp;several&nbsp;sub-parameters:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;To&nbsp;distinguish&nbsp;between&nbsp;the&nbsp;different&nbsp;arguments&nbsp;passed&nbsp;by&nbsp;variadic_parameter,</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;you&nbsp;can&nbsp;first&nbsp;convert&nbsp;variadic_parameter&nbsp;to&nbsp;a&nbsp;string&nbsp;using&nbsp;the&nbsp;Operator&nbsp;#&nbsp;(Preprocessor&nbsp;Stringize),</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;then&nbsp;differentiate&nbsp;in&nbsp;this&nbsp;string&nbsp;(#variadic_parameter)&nbsp;each&nbsp;passed&nbsp;argument&nbsp;by&nbsp;locating&nbsp;the&nbsp;separators&nbsp;(usually&nbsp;a&nbsp;comma).</span><br />
+<br />
+<span class="def">#macro&nbsp;average(result,&nbsp;arg...)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">#</span><span class="wrd">arg</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">n</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">InStr</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;,&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="key">Val</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">/=</span>&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">result</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="key">Val</span><span class="oth">(</span><span class="key">Left</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">n</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Mid</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">result</span><br />
+<span class="wrd">average</span><span class="oth">(</span><span class="wrd">result</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="num">5</span><span class="oth">,</span>&nbsp;<span class="num">6</span><span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">result</span><br />
+<br />
+<span class="com">'&nbsp;Output&nbsp;:&nbsp;3.5</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgPreprocessor.html">Preprocessor Overview</a><br \>
+<li> <a href="ProPgConditionalCompilation.html">Conditional Compilation</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

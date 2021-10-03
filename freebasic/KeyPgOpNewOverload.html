@@ -1,0 +1,376 @@
+<html>
+<head>
+<title>Operator New Overload</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Operator New Overload</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Member operator to overload dynamic memory allocation process part provided by <tt><a href="KeyPgOpNew.html">Operator New Expression</a></tt> when applying to a UDT (User Defined Type).<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgOperator.html">Operator</a> <b>New</b> ( <i>size</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgUinteger.html">UInteger</a> ) <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgOperator.html">Operator</a> <b>new[]</b> ( <i>size</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgUinteger.html">UInteger</a> ) <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>size</i></tt> <br \>
+<div class="fb_indent">Number of bytes to allocate.<br \>
+</div></div><div class="fb_sect_title">Return Value</div><div class="fb_sect_cont"><br \>
+A pointer of type <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> to the start of the newly allocated memory.<br \>
+<br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+The member operator <tt><b>New Overload</b></tt> overloads the dynamic memory allocation process part provided by the <tt><a href="KeyPgOpNew.html">New Expression</a></tt> operator when applying to a UDT (User Defined Type). So the user can define its own dynamic memory allocation process part.<br \>
+But after that, the UDT instance construction process part provided by the <tt><a href="KeyPgOpNew.html">New Expression</a></tt> operator is not modified.<br \>
+<br \>
+<tt><b>New[] Overload</b></tt> operator is the (one-dimensional) array-version of the <tt><b>New Overload</b></tt> operator and overloads the dynamic memory allocation process provided by the  <tt><b>New[] Expression</b></tt> operator when applying to a UDT (User Defined Type).<br \>
+<br \>
+Memory allocated with <tt><b>New Overload</b></tt> operator must be freed by also defining a <tt><a href="KeyPgOpDeleteOverload.html">Delete Overload</a></tt> operator. Memory allocated with <tt><b>New[] Overload</b></tt> operator must be freed by also defining a <tt><b>Delete[] Overload</b></tt> operator, the array-version of <tt><a href="KeyPgOpDeleteOverload.html">Delete Overload</a></tt> operator. You cannot mix and match the different versions of the operators.<br \>
+<br \>
+Member operators <tt><b>New Overload</b></tt>, and <tt><b>New[] Overload</b></tt> are always static, even if not explicitly declared (<tt><a href="KeyPgStaticMember.html">Static</a></tt> keyword is unnecessary but allowed). Thus, they do not have an implicit <tt><a href="KeyPgThis.html">This</a></tt> instance argument passed to them (because instance not yet been constructed).<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Dynamic allocation displayer for UDT, by using the member operators "New([]) Overload" and "Delete([]) Overload" (very simple example, only for syntax usage):<br \>
+<ul><ul><li> displaying of memory allocations: addresses, sizes,<br \>
+<li> displaying of memory deallocations: addresses.<br \>
+</ul></ul><br \>
+<tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDTdisplayer</span><br />
+&nbsp;&nbsp;<span class="com">''&nbsp;user&nbsp;UDT&nbsp;fields:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Byte</span>&nbsp;<span class="wrd">b</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">1024</span><span class="oth">*</span><span class="num">1024</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="com">''&nbsp;display&nbsp;fields:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">New</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">buf</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">New</span><span class="oth">[]</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Delete</span><span class="oth">[]</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">buf</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">allocation</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">N</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">deallocation</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">D</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDTdisplayer.New</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">UDTdisplayer.allocation</span><span class="oth">(</span><span class="quo">&quot;New&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">size</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDTdisplayer.Delete</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">buf</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="wrd">UDTdisplayer.deallocation</span><span class="oth">(</span><span class="quo">&quot;Delete&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">buf</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDTdisplayer.New</span><span class="oth">[]</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">UDTdisplayer.allocation</span><span class="oth">(</span><span class="quo">&quot;New[]&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">size</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDTdisplayer.Delete</span><span class="oth">[]</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">buf</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="wrd">UDTdisplayer.deallocation</span><span class="oth">(</span><span class="quo">&quot;Delete[]&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">buf</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">UDTdisplayer.allocation</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">N</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Allocate</span><span class="oth">(</span><span class="wrd">size</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;memory&nbsp;allocation&nbsp;for&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;bytes&nbsp;from&nbsp;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">N</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&nbsp;at&nbsp;address:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">p</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">UDTdisplayer.deallocation</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">D</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;memory&nbsp;deallocation&nbsp;from&nbsp;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">D</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&nbsp;at&nbsp;address&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;<span class="key">Deallocate</span>&nbsp;<span class="wrd">p</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTdisplayer</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDTdisplayer</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTdisplayer</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDTdisplayer</span><span class="oth">[</span><span class="num">3</span><span class="oth">]</span><br />
+<span class="key">Delete</span>&nbsp;<span class="wrd">pu1</span><br />
+<span class="key">Delete</span><span class="oth">[]</span>&nbsp;<span class="wrd">pu2</span><br />
+<br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+<br \>
+<div class="fb_indent">Output example:<br \>
+<pre class="fb_pre">
+memory allocation for 1048576 bytes from 'New' at address: 32677920
+memory allocation for 3145728 bytes from 'New[]' at address: 33775648
+memory deallocation from 'Delete' at address 32677920
+memory deallocation from 'Delete[]' at address 33775648
+</pre><br \>
+</div>Aligned memory allocator:<br \>
+<ul><ul><li> by using the member operators "New Overload" and "Delete Overload", any created User object is aligned to a multiple of "ALIGN" bytes (256 bytes in this example),<br \>
+<li> the real pointer of the allocated memory is saved just above the User pointer, in the padding block.<br \>
+</ul></ul><br \>
+<tt><div class="freebasic">
+<span class="key">Const</span>&nbsp;<span class="wrd">ALIGN</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">256</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Byte</span>&nbsp;<span class="wrd">a</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">1024</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">1024</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="com">''&nbsp;10&nbsp;megabyte&nbsp;fixed&nbsp;array</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">New</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">buffer</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDT.New</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;Overloaded&nbsp;New&nbsp;operator,&nbsp;with&nbsp;parameter&nbsp;size&nbsp;=&nbsp;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">size</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">pOrig</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">CAllocate</span><span class="oth">(</span><span class="wrd">ALIGN</span><span class="oth">-</span><span class="num">1</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">size</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">pMin</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pOrig</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;<br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pMin</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">ALIGN</span><span class="oth">-</span><span class="num">1</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="oth">(</span><span class="key">CUInt</span><span class="oth">(</span><span class="wrd">pMin</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">ALIGN</span><span class="oth">-</span><span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">Mod</span>&nbsp;<span class="wrd">ALIGN</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">p</span><span class="oth">)[-</span><span class="num">1</span><span class="oth">]</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pOrig</span><br />
+&nbsp;&nbsp;<span class="key">Operator</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;real&nbsp;pointer&nbsp;=&nbsp;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">pOrig</span><span class="oth">),</span>&nbsp;<span class="quo">&quot;return&nbsp;pointer&nbsp;=&nbsp;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">p</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDT.Delete</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">buffer</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;Overloaded&nbsp;Delete&nbsp;operator,&nbsp;with&nbsp;parameter&nbsp;buffer&nbsp;=&nbsp;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">buffer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">pOrig</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">buffer</span><span class="oth">)[-</span><span class="num">1</span><span class="oth">]</span><br />
+&nbsp;&nbsp;<span class="key">Deallocate</span><span class="oth">(</span><span class="wrd">pOrig</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;real&nbsp;pointer&nbsp;=&nbsp;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">pOrig</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;Constructor,&nbsp;@This&nbsp;=&nbsp;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(@</span><span class="key">This</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;Destructor,&nbsp;@This&nbsp;=&nbsp;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(@</span><span class="key">This</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Dim&nbsp;As&nbsp;UDT&nbsp;Ptr&nbsp;p&nbsp;=&nbsp;New&nbsp;UDT'&quot;</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;p&nbsp;=&nbsp;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">p</span><span class="oth">)</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Delete&nbsp;p'&quot;</span><br />
+<span class="key">Delete</span>&nbsp;<span class="wrd">p</span><br />
+<br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+<br \>
+<div class="fb_indent">Output example:<br \>
+<pre class="fb_pre">
+'Dim As UDT Ptr p = New UDT'
+  Overloaded New operator, with parameter size = &hA00000
+  real pointer = &h420020   return pointer = &h420100
+  Constructor, @This = &h420100
+  p = &h420100
+'Delete p'
+  Destructor, @This = &h420100
+  Overloaded Delete operator, with parameter buffer = &h420100
+  real pointer = &h420020
+</pre><br \>
+</div>Dynamic allocation manager for UDT, by using the member operators "New[] Overload" and "Delete[] Overload":<br \>
+<ul><ul><li> monitoring of memory allocations/deallocations: addresses, sizes and total memory used,<br \>
+<li> detection of abnormal deallocation requests,<br \>
+<li> detection of a failed allocation (Allocate() returning null pointer),<br \>
+<li> detection of total allocated memory size exceeding a threshold,<br \>
+<li> the last two detection cases induces an automatic memory freeing before forcing the program to end.<br \>
+</ul></ul>The principle is to manage a dynamic list of successful allocations, but not yet freed, containing the allocated addresses with their requested sizes:<br \>
+<br \>
+<tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDTmanager</span><br />
+&nbsp;&nbsp;<span class="com">''&nbsp;user&nbsp;UDT&nbsp;fields:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Byte</span>&nbsp;<span class="wrd">b</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">1024</span><span class="oth">*</span><span class="num">1024</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="com">''&nbsp;manager&nbsp;fields:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">New</span><span class="oth">[]</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Delete</span><span class="oth">[]</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">buf</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">maxmemory</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">address</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">bytes</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="wrd">upbound</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">printLine</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">text</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">sign</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">endProgram</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">UDTmanager.maxmemory</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">3</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">1024</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">1024</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">1024</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">UDTmanager.upbound</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">UDTmanager.printLine</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">text</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">sign</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">total</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDTmanager.upbound</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="key">OrElse</span>&nbsp;<span class="key">Sgn</span><span class="oth">(</span><span class="wrd">sign</span><span class="oth">)</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">total</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">text</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;&amp;h&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">),</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">2</span><span class="oth">),</span><br />
+&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">sign</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;&nbsp;+####.##&nbsp;MB&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Sgn</span><span class="oth">(</span><span class="wrd">sign</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">1024</span><span class="oth">)</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">1024</span><span class="oth">;</span><br />
+&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;(&nbsp;####.##&nbsp;MB)&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">1024</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">1024</span><span class="oth">;</span><br />
+&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;<span class="key">Print</span><span class="oth">,</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;###.##&nbsp;GB&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">total</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">1024</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">1024</span>&nbsp;<span class="oth">/</span>&nbsp;<span class="num">1024</span><br />
+&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">total</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">UDTmanager.endProgram</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Do</span>&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">UDTmanager.upbound</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Deallocate</span>&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="wrd">UDTmanager.upbound</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.printLine</span><span class="oth">(</span><span class="quo">&quot;memory&nbsp;deallocation&nbsp;forced&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">UDTmanager.upbound</span><span class="oth">,</span>&nbsp;<span class="oth">-</span><span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.upbound</span>&nbsp;<span class="oth">-=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="wrd">UDTmanager.upbound</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="wrd">UDTmanager.upbound</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Loop</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;end&nbsp;program&nbsp;forced&quot;</span><br />
+&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;<span class="key">Sleep</span><br />
+&nbsp;&nbsp;<span class="key">End</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDTmanager.New</span><span class="oth">[]</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">size</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Allocate</span><span class="oth">(</span><span class="wrd">size</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.upbound</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="wrd">UDTmanager.upbound</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="wrd">UDTmanager.upbound</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="wrd">UDTmanager.upbound</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="wrd">UDTmanager.upbound</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">size</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">UDTmanager.printLine</span><span class="oth">(</span><span class="quo">&quot;memory&nbsp;allocation&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">UDTmanager.upbound</span><span class="oth">,</span>&nbsp;<span class="oth">+</span><span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="wrd">UDTmanager.maxmemory</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">size</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.printLine</span><span class="oth">(</span><span class="quo">&quot;memory&nbsp;allocation&nbsp;exceeded&quot;</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.endProgram</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">size</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.printLine</span><span class="oth">(</span><span class="quo">&quot;memory&nbsp;allocation&nbsp;failed&quot;</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.endProgram</span><span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDTmanager.Delete</span><span class="oth">[]</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">buf</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">found</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDTmanager.upbound</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">buf</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Deallocate</span>&nbsp;<span class="wrd">buf</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.printLine</span><span class="oth">(</span><span class="quo">&quot;memory&nbsp;deallocation&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">I</span><span class="oth">,</span>&nbsp;<span class="oth">-</span><span class="num">1</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">UDTmanager.upbound</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="wrd">J</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="wrd">J</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="wrd">J</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="wrd">J</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.upbound</span>&nbsp;<span class="oth">-=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="wrd">UDTmanager.upbound</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="wrd">UDTmanager.upbound</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">found</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">For</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">found</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.address</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">buf</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.bytes</span><span class="oth">(</span><span class="num">0</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">UDTmanager.printLine</span><span class="oth">(</span><span class="quo">&quot;deallocation&nbsp;not&nbsp;matching&quot;</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Message&quot;</span><span class="oth">,,</span>&nbsp;<span class="quo">&quot;Address&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Space</span><span class="oth">(</span><span class="key">SizeOf</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)),</span>&nbsp;<span class="quo">&quot;Size&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Total&quot;</span><br />
+<span class="key">Print</span><br />
+<span class="key">Randomize</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTmanager</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDTmanager</span><span class="oth">[</span><span class="key">CUInt</span><span class="oth">(</span><span class="key">Rnd</span><span class="oth">()</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">256</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)]</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTmanager</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDTmanager</span><span class="oth">[</span><span class="key">CUInt</span><span class="oth">(</span><span class="key">Rnd</span><span class="oth">()</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">256</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)]</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTmanager</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">UDTmanager</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">)</span><br />
+<span class="key">Delete</span><span class="oth">[]</span>&nbsp;<span class="wrd">pu2</span><br />
+<span class="key">Delete</span><span class="oth">[]</span>&nbsp;<span class="wrd">pu3</span><br />
+<span class="key">Delete</span><span class="oth">[]</span>&nbsp;<span class="wrd">pu2</span><br />
+<span class="key">Delete</span><span class="oth">[]</span>&nbsp;<span class="wrd">pu1</span><br />
+<span class="key">Do</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTmanager</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDTmanager</span><span class="oth">[</span><span class="key">CUInt</span><span class="oth">(</span><span class="key">Rnd</span><span class="oth">()</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">512</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)]</span><br />
+<span class="key">Loop</span><br />
+</div></tt><br />
+<br \>
+<div class="fb_indent">Output for fbc 32-bit (maximum dynamic data &lt; 2 GB).<br \>
+Here, program is stopped because of memory allocation failed:<br \>
+<pre class="fb_pre">
+Message                     Address       Size          Total
+
+memory allocation           &h020E0020       +99.00 MB    0.10 GB
+memory allocation           &h083F3020        +3.00 MB    0.10 GB
+memory deallocation         &h083F3020        -3.00 MB    0.10 GB
+deallocation not matching   &h00000001    (    0.00 MB)   0.10 GB
+deallocation not matching   &h083F3020    (    0.00 MB)   0.10 GB
+memory deallocation         &h020E0020       -99.00 MB    0.00 GB
+memory allocation           &h020ED020      +103.00 MB    0.10 GB
+memory allocation           &h087F2020      +106.00 MB    0.20 GB
+memory allocation           &h0F20D020      +230.00 MB    0.43 GB
+memory allocation           &h1D812020      +137.00 MB    0.56 GB
+memory allocation           &h2612C020      +377.00 MB    0.93 GB
+memory allocation           &h3DA30020      +275.00 MB    1.20 GB
+memory allocation           &h4ED40020      +220.00 MB    1.41 GB
+memory allocation           &h5C958020      +229.00 MB    1.64 GB
+
+memory allocation failed    &h00000000    (  142.00 MB)   1.64 GB
+memory deallocation forced  &h5C958020      -229.00 MB    1.41 GB
+memory deallocation forced  &h4ED40020      -220.00 MB    1.20 GB
+memory deallocation forced  &h3DA30020      -275.00 MB    0.93 GB
+memory deallocation forced  &h2612C020      -377.00 MB    0.56 GB
+memory deallocation forced  &h1D812020      -137.00 MB    0.43 GB
+memory deallocation forced  &h0F20D020      -230.00 MB    0.20 GB
+memory deallocation forced  &h087F2020      -106.00 MB    0.10 GB
+memory deallocation forced  &h020ED020      -103.00 MB    0.00 GB
+end program forced
+</pre>Output for fbc 64-bit (maximum dynamic data &lt; virtual memory).<br \>
+Here, program is stopped because of total allocated memory size &gt; 3 GB (adjustable threshold):<br \>
+<pre class="fb_pre">
+Message                     Address                     Size          Total
+
+memory allocation           &h0000000001EA5040            +105.00 MB    0.10 GB
+memory allocation           &h00000000087BC040             +93.00 MB    0.19 GB
+memory deallocation         &h00000000087BC040             -93.00 MB    0.10 GB
+deallocation not matching   &h0000000000000001          (    0.00 MB)   0.10 GB
+deallocation not matching   &h00000000087BC040          (    0.00 MB)   0.10 GB
+memory deallocation         &h0000000001EA5040            -105.00 MB    0.00 GB
+memory allocation           &h0000000001EA1040            +155.00 MB    0.15 GB
+memory allocation           &h000000000B9BF040            +165.00 MB    0.31 GB
+memory allocation           &h0000000015ED8040            +382.00 MB    0.69 GB
+memory allocation           &h000000002DCE7040            +458.00 MB    1.13 GB
+memory allocation           &h000000004A6FB040            +255.00 MB    1.38 GB
+memory allocation           &h000000005A607040             +96.00 MB    1.48 GB
+memory allocation           &h000000006061B040            +426.00 MB    1.89 GB
+memory allocation           &h000000007FFF9040            +221.00 MB    2.11 GB
+memory allocation           &h000000008DD03040            +119.00 MB    2.22 GB
+memory allocation           &h0000000095413040            +147.00 MB    2.37 GB
+memory allocation           &h000000009E727040            +217.00 MB    2.58 GB
+memory allocation           &h00000000AC03C040            +334.00 MB    2.91 GB
+memory allocation           &h00000000C0E4B040            +280.00 MB    3.18 GB
+
+memory allocation exceeded  &h00000000C0E4B040          (  280.00 MB)   3.18 GB
+memory deallocation forced  &h00000000C0E4B040            -280.00 MB    2.91 GB
+memory deallocation forced  &h00000000AC03C040            -334.00 MB    2.58 GB
+memory deallocation forced  &h000000009E727040            -217.00 MB    2.37 GB
+memory deallocation forced  &h0000000095413040            -147.00 MB    2.22 GB
+memory deallocation forced  &h000000008DD03040            -119.00 MB    2.11 GB
+memory deallocation forced  &h000000007FFF9040            -221.00 MB    1.89 GB
+memory deallocation forced  &h000000006061B040            -426.00 MB    1.48 GB
+memory deallocation forced  &h000000005A607040             -96.00 MB    1.38 GB
+memory deallocation forced  &h000000004A6FB040            -255.00 MB    1.13 GB
+memory deallocation forced  &h000000002DCE7040            -458.00 MB    0.69 GB
+memory deallocation forced  &h0000000015ED8040            -382.00 MB    0.31 GB
+memory deallocation forced  &h000000000B9BF040            -165.00 MB    0.15 GB
+memory deallocation forced  &h0000000001EA1040            -155.00 MB    0.00 GB
+end program forced
+</pre></div></div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Only available in the <i><a href="CompilerOptlang.html">-lang fb</a></i> dialect.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgOpNew.html">New Expression</a></tt><br \>
+<li> <tt><a href="KeyPgOpDeleteOverload.html">Delete Overload</a></tt><br \>
+<li> <tt><a href="KeyPgAllocate.html">Allocate</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

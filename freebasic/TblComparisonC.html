@@ -1,0 +1,233 @@
+<html>
+<head>
+<title>Comparison of C/C++ and FreeBASIC</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Comparison of C/C++ and FreeBASIC</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<br \>
+<table class="fb_box"><tr><td><b>C/C++</b></td><td><b>FreeBASIC</b></td></tr></table><br \>
+<br \>
+<b>variable declaration</b><br \>
+<table class="fb_box"><tr><td><tt>int a;<br \>
+int a, b, c;</tt></td><td><tt>dim a as long<br \>
+dim as long a, b, c</tt></td></tr></table><br \>
+<br \>
+<b>uninitialized variable</b><br \>
+<table class="fb_box"><tr><td><tt>int a;</tt></td><td><tt>dim a as long = any</tt></td></tr></table><br \>
+<b>zero-initialized variable</b><br \>
+<table class="fb_box"><tr><td><tt>int a = 0;</tt></td><td><tt>dim a as long</tt></td></tr></table><br \>
+<b>initialized variable</b><br \>
+<table class="fb_box"><tr><td><tt>int a = 123;</tt></td><td><tt>dim a as long = 123</tt></td></tr></table><br \>
+<b>array</b><br \>
+<table class="fb_box"><tr><td><tt>int a[4];<br \>
+a[0] = 1;</tt></td><td><tt>dim a(0 to 3) as long<br \>
+a(0) = 1</tt></td></tr></table><br \>
+<br \>
+<b>pointer</b><br \>
+<table class="fb_box"><tr><td><tt>int a;<br \>
+int *p;<br \>
+p = &a;<br \>
+*p = 123;</tt></td><td><tt>dim a as long<br \>
+dim p as long ptr<br \>
+p = @a<br \>
+*p = 123</tt></td></tr></table><br \>
+<br \>
+<br \>
+<br \>
+<b>structure, user-defined type</b><br \>
+<table class="fb_box"><tr><td><tt>struct UDT {<br \>
+<div class="fb_indent">int myfield;<br \>
+</div>}</tt></td><td><tt>type UDT<br \>
+<div class="fb_indent">myfield as long<br \>
+</div>end type</tt></td></tr></table><br \>
+<br \>
+<br \>
+<b>typedef, type alias</b><br \>
+<table class="fb_box"><tr><td><tt>typedef int myint;</tt></td><td><tt>type myint as long</tt></td></tr></table><br \>
+<b>struct pointer</b><br \>
+<table class="fb_box"><tr><td><tt>struct UDT x;<br \>
+struct UDT *p;<br \>
+p = &x;<br \>
+p-&gt;myfield = 123;</tt></td><td><tt>dim x as UDT<br \>
+dim p as UDT ptr<br \>
+p = @x<br \>
+p-&gt;myfield = 123</tt></td></tr></table><br \>
+<br \>
+<br \>
+<br \>
+<b>function declaration</b><br \>
+<table class="fb_box"><tr><td><tt>int foo( void );</tt></td><td><tt>declare function foo( ) as long</tt></td></tr></table><br \>
+<b>function body</b><br \>
+<table class="fb_box"><tr><td><tt>int foo( void ) {<br \>
+<div class="fb_indent">return 123;<br \>
+</div>}</tt></td><td><tt>function foo( ) as long<br \>
+<div class="fb_indent">return 123<br \>
+</div>end function</tt></td></tr></table><br \>
+<br \>
+<br \>
+<b>sub declaration</b><br \>
+<table class="fb_box"><tr><td><tt>void foo( void );</tt></td><td><tt>declare sub foo( )</tt></td></tr></table><br \>
+<b>sub body</b><br \>
+<table class="fb_box"><tr><td><tt>void foo( void ) {<br \>
+}</tt></td><td><tt>sub foo( )<br \>
+end sub</tt></td></tr></table><br \>
+<br \>
+<b>byval parameters</b><br \>
+<table class="fb_box"><tr><td><tt>void foo( int param );<br \>
+foo( a );</tt></td><td><tt>declare sub foo( byval param as long )<br \>
+foo( a )</tt></td></tr></table><br \>
+<br \>
+<b>byval pointers to parameters</b><br \>
+<table class="fb_box"><tr><td><tt>void foo( int *param );<br \>
+foo( &a );</tt></td><td><tt>declare sub foo( byval param as long ptr )<br \>
+foo( @a )</tt></td></tr></table><br \>
+<br \>
+<b>byref parameters</b><br \>
+<table class="fb_box"><tr><td><tt>void foo( int& param );<br \>
+foo( a );</tt></td><td><tt>declare sub foo( byref param as long )<br \>
+foo( a )</tt></td></tr></table><br \>
+<br \>
+<b>statement separator</b><br \>
+<table class="fb_box"><tr><td><tt>;</tt><br \>
+<br \>
+</td><td><tt>:</tt><br \>
+<tt>&lt;end-of-line&gt;</tt></td></tr></table><br \>
+<br \>
+<b>for loop</b><br \>
+<table class="fb_box"><tr><td><tt>for (int i = 0; i &lt; 10; i++) {<br \>
+<div class="fb_indent">...<br \>
+</div>}</tt></td><td><tt>for i as long = 0 to 9<br \>
+<div class="fb_indent">...<br \>
+</div>next</tt></td></tr></table><br \>
+<br \>
+<br \>
+<b>while loop</b><br \>
+<table class="fb_box"><tr><td><tt>while (condition) {<br \>
+<div class="fb_indent">...<br \>
+</div>}</tt></td><td><tt>while condition<br \>
+<div class="fb_indent">...<br \>
+</div>wend</tt></td></tr></table><br \>
+<br \>
+<br \>
+<b>do-while loop</b><br \>
+<table class="fb_box"><tr><td><tt>do {<br \>
+<div class="fb_indent">...<br \>
+</div>} while (condition);</tt></td><td><tt>do<br \>
+<div class="fb_indent">...<br \>
+</div>loop while condition</tt></td></tr></table><br \>
+<br \>
+<br \>
+<b>if block</b><br \>
+<table class="fb_box"><tr><td><tt>if (condition) {<br \>
+<div class="fb_indent">...<br \>
+</div>} else if (condition) {<br \>
+<div class="fb_indent">...<br \>
+</div>} else {<br \>
+<div class="fb_indent">...<br \>
+</div>}</tt></td><td><tt>if condition then<br \>
+<div class="fb_indent">...<br \>
+</div>elseif condition then<br \>
+<div class="fb_indent">...<br \>
+</div>else<br \>
+<div class="fb_indent">...<br \>
+</div>end if</tt></td></tr></table><br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<b>switch, select</b><br \>
+<table class="fb_box"><tr><td><tt>switch (a) {<br \>
+case 1:<br \>
+<div class="fb_indent">...<br \>
+break;<br \>
+</div>case 2:<br \>
+case 3:<br \>
+<div class="fb_indent">...<br \>
+break;<br \>
+</div>default:<br \>
+<div class="fb_indent">...<br \>
+break;<br \>
+</div>}</tt></td><td><tt>select case a<br \>
+case 1<br \>
+<div class="fb_indent">...<br \>
+<br \>
+<br \>
+</div>case 2, 3<br \>
+<div class="fb_indent">...<br \>
+<br \>
+</div>case else<br \>
+<div class="fb_indent">...<br \>
+<br \>
+</div>end select</tt></td></tr></table><br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<b>string literals, zstrings</b><br \>
+<table class="fb_box"><tr><td><tt>char *s = "Hello!";<br \>
+char s[] = "Hello!";</tt></td><td><tt>dim s as zstring ptr = @"Hello!"<br \>
+dim s as zstring * 6+1 = "Hello!"</tt></td></tr></table><br \>
+<br \>
+<b>hello world</b><br \>
+<table class="fb_box"><tr><td><tt>#include &lt;stdio.h&gt;<br \>
+int main() {<br \>
+<div class="fb_indent">printf("Hello!\n");<br \>
+return 0;<br \>
+</div>}</tt></td><td><tt>print "Hello!"</tt><br \>
+<br \>
+<br \>
+<br \>
+<br \>
+</td></tr></table><br \>
+<br \>
+<br \>
+<br \>
+<br \>
+<b>comments</b><br \>
+<table class="fb_box"><tr><td><tt>// foo<br \>
+/* foo */</tt></td><td><tt>' foo<br \>
+/' foo '/</tt></td></tr></table><br \>
+<br \>
+<b>compile-time checks</b><br \>
+<table class="fb_box"><tr><td><tt>#if <i>a</i></tt><br \>
+<tt>#elif <i>b</i></tt><br \>
+<tt>#else</tt><br \>
+<tt>#endif</tt></td><td><tt>#if <i>a</i></tt><br \>
+<tt>#elseif <i>b</i></tt><br \>
+<tt>#else</tt><br \>
+<tt>#endif</tt></td></tr></table><br \>
+<br \>
+<br \>
+<br \>
+<b>compile-time target system checks</b><br \>
+<table class="fb_box"><tr><td><tt>#ifdef _WIN32</tt></td><td><tt>#ifdef __FB_WIN32__</tt></td></tr></table><br \>
+<b>module/header file names</b><br \>
+<table class="fb_box"><tr><td><tt>foo.c, foo.h</tt></td><td><tt>foo.bas, foo.bi</tt></td></tr></table><br \>
+<b>typical compiler command to create an executable</b><br \>
+<table class="fb_box"><tr><td><tt>gcc foo.c -o foo</tt></td><td><tt>fbc foo.bas</tt></td></tr></table><br \>
+<br \>
+<br \>
+<br \>
+<i>Last reviewed by MrSwiss on April 6, 2018 Note: changed Integer to Long (where needed)</i>
+</div>
+</div> 
+</div> 
+</body>
+</html>

@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>Operator [] (String Index)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Operator [] (String Index)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Returns a reference to the numeric value of a character in a string<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgOperator.html">Operator</a> <b>[]</b> ( <a href="KeyPgByref.html">ByRef</a> <i>lhs</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgString.html">String</a>, <a href="KeyPgByref.html">ByRef</a> <i>rhs</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgInteger.html">Integer</a> ) <a href="KeyPgByrefFunction.html">ByRef</a> <a href="KeyPgAs.html">As</a> <a href="KeyPgUbyte.html">UByte</a><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgOperator.html">Operator</a> <b>[]</b> ( <a href="KeyPgByref.html">ByRef</a> <i>lhs</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgZstring.html">ZString</a>, <a href="KeyPgByref.html">ByRef</a> <i>rhs</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgInteger.html">Integer</a> ) <a href="KeyPgByrefFunction.html">ByRef</a> <a href="KeyPgAs.html">As</a> <a href="KeyPgUbyte.html">UByte</a><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgOperator.html">Operator</a> <b>[]</b> ( <a href="KeyPgByref.html">ByRef</a> <i>lhs</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgWstring.html">WString</a>, <a href="KeyPgByref.html">ByRef</a> <i>rhs</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgInteger.html">Integer</a> ) <a href="KeyPgByrefFunction.html">ByRef</a> <a href="KeyPgAs.html">As</a> <i>T</i><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+<div class="fb_indent"><i>result</i> = <i>lhs</i> <b>[</b> <i>rhs</i> <b>]</b><br \>
+</div>or<br \>
+<div class="fb_indent"><i>lhs</i> <b>[</b> <i>rhs</i> <b>]</b> = <i>value</i><br \>
+</div></tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>lhs</i></tt><br \>
+<div class="fb_indent">The string (a string reference, not a string returned as local copy).<br \>
+</div><tt><i>rhs</i></tt><br \>
+<div class="fb_indent">A zero-based offset from the first character.<br \>
+</div><tt><i>T</i></tt><br \>
+<div class="fb_indent">The wide-character type (varies per platform).<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+This operator returns a reference to the numeric value of a specific character in a string:<br \>
+<ul><ul><li> For a <tt><a href="KeyPgString.html">String</a></tt> or a <tt><a href="KeyPgZstring.html">ZString</a></tt>:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">a <tt><a href="KeyPgUbyte.html">UByte</a></tt> (containing the ASCII value of the character).<br \>
+</div></div></div><ul><ul><li> For a <tt><a href="KeyPgWstring.html">WString</a></tt>:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">a numeric type depending on platform, for example <tt><a href="KeyPgUshort.html">UShort</a></tt> for Windows or <tt><a href="KeyPgUlong.html">ULong</a></tt> for Linux (containing the numeric value of the character).<br \>
+<br \>
+</div></div></div>This operator must not be used in case of empty string because reference is undefined (inducing runtime error).<br \>
+Otherwise, the user must ensure that the index does not exceed the range "[0, <tt><a href="KeyPgLen.html">Len</a>(<i>lhs</i>) - 1</tt>]". Outside this range, results are undefined.<br \>
+<br \>
+Unlike 'return by value' (where only a copy is returned), 'return by reference' allows you to also modify the referenced variable.<br \>
+'Return by reference' is implemented under the hood as a pointer implicitly dereferenced:<br \>
+<div class="fb_indent"><b>-</b> In case of a <tt><a href="KeyPgString.html">String</a></tt> or a <tt><a href="KeyPgZstring.html">ZString</a></tt> <tt>'s'</tt>:<br \>
+<div class="fb_indent"><tt>s[n]</tt> is equivalent to <tt><a href="KeyPgOpValueOf.html">*</a><a href="KeyPgCptr.html">CPtr</a>(Ubyte <a href="KeyPgPtr.html">Ptr</a>, <a href="KeyPgOpStrptr.html">StrPtr</a>(s) + n)</tt><br \>
+</div><b>-</b> In case of a <tt><a href="KeyPgWstring.html">WString</a></tt> <tt>'s'</tt>:<br \>
+<div class="fb_indent"><tt>s[n]</tt> is equivalent to <tt><a href="KeyPgOpValueOf.html">*</a><a href="KeyPgCptr.html">CPtr</a>(T <a href="KeyPgPtr.html">Ptr</a>, <a href="KeyPgOpStrptr.html">StrPtr</a>(s) + n)</tt><br \>
+<br \>
+</div></div><b>Note:</b> The fact that this operator returns a reference greatly differentiates it from <tt><a href="KeyPgAsc.html">Asc</a>( str [, position ] )</tt> which allows to return the numeric representation of a character, but not to modify it.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="wrd">a</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;Hello,&nbsp;world!&quot;</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">a</span><span class="oth">)</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Chr</span><span class="oth">(</span><span class="wrd">a</span><span class="oth">[</span><span class="wrd">i</span><span class="oth">])</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">i</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">4</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">a</span><span class="oth">[</span><span class="wrd">i</span><span class="oth">]</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">a</span><span class="oth">[</span><span class="wrd">i</span><span class="oth">]</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">32</span>&nbsp;&nbsp;<span class="com">'&nbsp;converting&nbsp;lowercase&nbsp;alphabetic&nbsp;characters&nbsp;to&nbsp;uppercase</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">i</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">7</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">11</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">a</span><span class="oth">[</span><span class="wrd">i</span><span class="oth">]</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">a</span><span class="oth">[</span><span class="wrd">i</span><span class="oth">]</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">32</span>&nbsp;&nbsp;<span class="com">'&nbsp;converting&nbsp;lowercase&nbsp;alphabetic&nbsp;characters&nbsp;to&nbsp;uppercase</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">i</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">a</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Will print:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+H e l l o ,   w o r l d !
+
+HELLO, WORLD!
+		</pre></div></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="CatPgOpString.html">String Operators</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

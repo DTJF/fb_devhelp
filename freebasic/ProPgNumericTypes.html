@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>Numeric Types</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Numeric Types</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Of all built-in data-types, <b>Numeric Types</b> are those dedicated to the representation of all kinds of numbers.<br \>
+<br \>
+FreeBASIC supplies several numeric data types for handling numbers in various representations.<br \>
+Of these, integer types represent only integer numbers (positive, negative, and zero), and floating-point types represent real numbers.<br \>
+<br \>
+<div class="fb_sect_title">Integer types</div><div class="fb_sect_cont"><br \>
+Integer types are those that represent only integer numbers:<br \>
+<ul><ul><li> Signed integer types:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgByte.html">Byte</a> 8-bit</tt><br \>
+<b>-</b> <tt><a href="KeyPgShort.html">Short</a> 16-bit</tt><br \>
+<b>-</b> <tt><a href="KeyPgLong.html">Long</a> 32-bit</tt><br \>
+<b>-</b> <tt><a href="KeyPgInteger.html">Integer</a> 32-bit or 64-bit (*)</tt><br \>
+<b>-</b> <tt><a href="KeyPgLongint.html">LongInt</a> 64-bit</tt><br \>
+<b>-</b> <tt><a href="KeyPgInteger.html">Integer&lt;8|16|32|64&gt;</a> 8|16|32|64-bit</tt><br \>
+</div></div></div><ul><ul><li> Unsigned integer types:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgUbyte.html">UByte</a> 8-bit</tt><br \>
+<b>-</b> <tt><a href="KeyPgUshort.html">UShort</a> 16-bit</tt><br \>
+<b>-</b> <tt><a href="KeyPgUlong.html">ULong</a> 32-bit</tt><br \>
+<b>-</b> <tt><a href="KeyPgUinteger.html">UInteger</a> 32-bit or 64-bit (*)</tt><br \>
+<b>-</b> <tt><a href="KeyPgUlongint.html">ULongInt</a> 64-bit</tt><br \>
+<b>-</b> <tt><a href="KeyPgUinteger.html">Uinteger&lt;8|16|32|64&gt;</a> 8|16|32|64-bit</tt><br \>
+<br \>
+</div></div></div></div><div class="fb_sect_title">Floating-point types</div><div class="fb_sect_cont"><br \>
+Floating-point types are those that represent real numbers:<br \>
+<ul><ul><li> Single precision:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgSingle.html">Single</a> 32-bit</tt><br \>
+</div></div></div><ul><ul><li> Double precision:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgDouble.html">Double</a> 64-bits</tt><br \>
+<br \>
+</div></div></div></div><div class="fb_sect_title">Pseudo-integer types</div><div class="fb_sect_cont"><br \>
+Other types that also represent but indirectly integer numbers:<br \>
+<ul><ul><li> Enumerated type:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgEnum.html">Enum</a> (32-bit or 64-bit) (*)</tt><br \>
+</div></div></div><ul><ul><li> Boolean type:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt><a href="KeyPgBoolean.html">Boolean</a> (1-bit useful in 8-bit)</tt><br \>
+<br \>
+</div></div></div></div><div class="fb_sect_title">Pointer types</div><div class="fb_sect_cont"><br \>
+Pointers are types whose values <tt>(uinteger)</tt> are addresses in memory (they are said to 'point' to this memory).<br \>
+The type of data that is pointed to depends on the type of pointer (an Integer Pointer points to Integer data).<br \>
+Pointers are declared like any other variable, with the suffix <tt>pointer</tt> or <tt>ptr</tt> following the type name:<br \>
+<ul><ul><li> Pointer type:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> <tt>{<a href="DataType.html">DataType</a>|<a href="KeyPgAny.html">Any</a>} {<a href="KeyPgPtr.html">Pointer</a>|<a href="KeyPgPtr.html">Ptr</a>} (32-bit or 64-bit) (*)</tt><br \>
+<br \>
+</div></div></div><tt>(*)</tt> <tt>INTEGER</tt>, <tt>UINTEGER</tt>, and <tt>ENUM</tt> data types vary with platform, matching the size of <tt>POINTER</tt>.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Size (in bits) of all types above:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;A&nbsp;&nbsp;BYTE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Byte</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;A&nbsp;&nbsp;SHORT&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Short</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;A&nbsp;&nbsp;LONG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Long</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;An&nbsp;INTEGER&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Integer</span><span class="oth">)</span>&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;A&nbsp;&nbsp;LONGINT&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">LongInt</span><span class="oth">)</span>&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;An&nbsp;UBYTE&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">UByte</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;An&nbsp;USHORT&nbsp;&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">UShort</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;An&nbsp;ULONG&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">ULong</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;An&nbsp;UINTEGER&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">UInteger</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;An&nbsp;ULONGINT&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">ULongInt</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;A&nbsp;&nbsp;SINGLE&nbsp;&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Single</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;A&nbsp;&nbsp;DOUBLE&nbsp;&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Double</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span><br />
+<span class="key">Enum</span>&nbsp;<span class="wrd">myENUM</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">option1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">option2</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">End</span>&nbsp;<span class="key">Enum</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;An&nbsp;ENUM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">myENUM</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;A&nbsp;&nbsp;BOOLEAN&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Boolean</span><span class="oth">)</span>&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;A&nbsp;&nbsp;POINTER&nbsp;&nbsp;is&nbsp;##&quot;</span><span class="oth">;</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;&nbsp;<span class="oth">*</span>&nbsp;<span class="num">8</span><span class="oth">;</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;-bit&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example for win64:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+A  BYTE     is  8-bit
+A  SHORT    is 16-bit
+A  LONG     is 32-bit
+An INTEGER  is 64-bit
+A  LONGINT  is 64-bit
+An UBYTE    is  8-bit
+An USHORT   is 16-bit
+An ULONG    is 32-bit
+An UINTEGER is 64-bit
+An ULONGINT is 64-bit
+
+A  SINGLE   is 32-bit
+A  DOUBLE   is 64-bit
+
+An ENUM     is 64-bit
+
+A  BOOLEAN  is  8-bit
+
+A  POINTER  is 64-bit
+		</pre></div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="CatPgStdDataTypes.html">Standard Data Types</a></tt><br \>
+<li> <tt><a href="TblVarTypes.html">Standard Data Type Limits</a></tt><br \>
+<li> <a href="ProPgDataConversion.html">Coercion and Conversion</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

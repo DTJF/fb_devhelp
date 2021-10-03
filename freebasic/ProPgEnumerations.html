@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>Constants and Enumerations</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Constants and Enumerations</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<b>Enumeration</b>, a special User-Defined Type composed of a number of named <b>constants</b>.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><br \>
+<tt><a href="KeyPgEnum.html">Enum</a> [<i>typename</i> [ Explicit ] ]<br \>
+<div class="fb_indent"><i>symbolname</i> [= <i>expression</i>] [, ...]<br \>
+...<br \>
+</div>End Enum</tt><br \>
+<br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>typename</i></tt><br \>
+<div class="fb_indent">Name of the <tt><b>Enum</b></tt><br \>
+</div><tt><i>symbolname</i></tt><br \>
+<div class="fb_indent">Name of the constant<br \>
+</div><tt><i>expression</i></tt><br \>
+<div class="fb_indent">A constant expression<br \>
+</div><tt>Explicit</tt><br \>
+<div class="fb_indent">Requires that symbols must be explicitly referred to by <tt><i>typename</i>.<i>symbolname</i></tt><br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+An enumeration is a User-Defined Type that consists of a set of named integer constants.<br \>
+Enumerations are useful for defining sequences and states, particularly when there is a natural progression through those states.<br \>
+<br \>
+An enumeration provides context to describe a range of values which are represented as named constants through symbols.<br \>
+Unlike namespaces, enumerations can be also defined in any scope blocks, and their symbols are only visible throughout the scope in which the enumeration is declared.<br \>
+<br \>
+Enumerations lend themselves to more maintainable code because they are symbolic, allowing you to work with integer values ​​while using an explicit name.<br \>
+Enumerations are value Types, which means they contain their own value, can not inherit or be inherited from.<br \>
+<br \>
+<tt>Enum</tt> can not contain any member procedure or member data (only symbols), but it can be included (named or unnamed) in a <tt>Type</tt> by having.<br \>
+<br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><br \>
+Every symbol in an enumeration is implicitly assigned an integer value (positive or negative) that corresponds to its place in the order of the values in the enumeration.<br \>
+Every symbol is treated as a constant. <br \>
+<br \>
+By default, the first value is assigned 0, the next one is assigned 1, and so on.<br \>
+But you can explicitly set the value of any symbol (and the next symbol will be implicitly set to the previous value plus an increment of one).<br \>
+<br \>
+The values given to the symbols do not have to be unique.<br \>
+<br \>
+When an enumeration is qualified as <tt>Explicit</tt>, access to any <tt><i>symbolname</i></tt> must be always prefixed by <tt><i>typename</i></tt>.<br \>
+Prefixing can also be used to solve ambiguity with other entities.<br \>
+<br \>
+An <tt>Enum</tt> instance can be passed, as any User-Defined Type instance, to a procedure (including for the definition of overloaded operators).<br \>
+The size of an <tt>Enum</tt> instance will be always that of an <tt>Integer</tt> (no matter how many defined symbols are just declarations for the compiler assignment).<br \>
+<br \>
+An <tt>Enum</tt> instance (or <tt>Enum</tt> symbol) can be implicitly converted to an integer.<br \>
+<b>Note:</b><br \>
+<div class="fb_indent"><b>-</b> In many languages, no integer variable is implicitly convertible into a scoped enumeration type instance (and vice versa), the latter being strongly typed (declaration equivalent to the <tt>Enum</tt> qualified as <tt>Explicit</tt> with FreeBASIC), and an explicit cast is required for such a conversion.<br \>
+<b>-</b> But FreeBASIC accepts it (even if the numeric value does not match any <tt>Enum</tt> symbol defined). This is just one of FreeBASIC's many shortcomings over normal <tt>Enum</tt> functionality.<br \>
+<b>-</b> Therefore, there is not much interest in declaring a real <tt>ENUM</tt> instance (which is sized as an INTEGER), but otherwise any pre-built integer variable can be declared instead.<br \>
+<b>-</b> If the <tt>Explicit</tt> qualifier is not used (namespace prefix not imposed), there is not much point in using an <tt>ENUM</tt> structure compared to a simple discrete list of constants, except for the auto-increment of values.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Simple example of use:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Enum</span>&nbsp;<span class="wrd">Colors</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">black</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">blue</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">green</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">cyan</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">red</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pink</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">yellow</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">grey</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dark_grey</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_blue</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_green</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_cyan</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_red</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_pink</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_yellow</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">white</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Enum</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">print_fbc</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">foreground</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">background</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Color</span>&nbsp;<span class="wrd">foreground</span><span class="oth">,</span>&nbsp;<span class="wrd">background</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">__FB_SIGNATURE__</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span>&nbsp;<span class="wrd">std_foreground</span><span class="oth">,</span>&nbsp;<span class="wrd">std_background</span><br />
+<span class="wrd">std_foreground</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LoWord</span><span class="oth">(</span><span class="key">Color</span><span class="oth">())</span><br />
+<span class="wrd">std_background</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">HiWord</span><span class="oth">(</span><span class="key">Color</span><span class="oth">())</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span>&nbsp;<span class="wrd">my_foreground</span><span class="oth">,</span>&nbsp;<span class="wrd">my_background</span><br />
+<span class="wrd">my_foreground</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">bright_yellow</span><br />
+<span class="wrd">my_background</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">cyan</span><br />
+<br />
+<span class="wrd">print_fbc</span><span class="oth">(</span><span class="wrd">my_foreground</span><span class="oth">,</span>&nbsp;<span class="wrd">my_background</span><span class="oth">)</span><br />
+<br />
+<span class="key">Color</span>&nbsp;<span class="wrd">std_foreground</span><span class="oth">,</span>&nbsp;<span class="wrd">std_background</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;end&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Same result, but with a <tt>Type</tt> interfacing <tt>Enum</tt> to impose explicit casting when assigning numeric values to <tt>Enum</tt> instances (see 'Note' above):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Enum</span>&nbsp;<span class="wrd">Colors</span>&nbsp;<span class="key">Explicit</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">black</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">blue</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">green</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">cyan</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">red</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pink</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">yellow</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">grey</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dark_grey</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_blue</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_green</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_cyan</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_red</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_pink</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">bright_yellow</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">white</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Enum</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">Console_Colors</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">foreground</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">foreground</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">c</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">background</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">background</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">c</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span>&nbsp;<span class="wrd">_foreground</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span>&nbsp;<span class="wrd">_background</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">Console_Colors.foreground</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This._foreground</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">Console_Colors.foreground</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">c</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This._foreground</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">c</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">Console_Colors.background</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This._background</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">Console_Colors.background</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">c</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This._background</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">c</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">print_fbc</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">foreground</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">background</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Colors</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Color</span>&nbsp;<span class="wrd">foreground</span><span class="oth">,</span>&nbsp;<span class="wrd">background</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">__FB_SIGNATURE__</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Console_Colors</span>&nbsp;<span class="wrd">std_colors</span><br />
+<span class="wrd">std_colors.foreground</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">Colors</span><span class="oth">,</span>&nbsp;<span class="key">LoWord</span><span class="oth">(</span><span class="key">Color</span><span class="oth">()))</span>&nbsp;&nbsp;<span class="com">''&nbsp;explicit&nbsp;cast&nbsp;mandatory&nbsp;because&nbsp;of&nbsp;property&nbsp;declaration</span><br />
+<span class="wrd">std_colors.background</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="wrd">Colors</span><span class="oth">,</span>&nbsp;<span class="key">HiWord</span><span class="oth">(</span><span class="key">Color</span><span class="oth">()))</span>&nbsp;&nbsp;<span class="com">''&nbsp;explicit&nbsp;cast&nbsp;mandatory&nbsp;because&nbsp;of&nbsp;property&nbsp;declaration</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Console_Colors</span>&nbsp;<span class="wrd">my_colors</span><br />
+<span class="wrd">my_colors.foreground</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">Colors.bright_yellow</span><br />
+<span class="wrd">my_colors.background</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">Colors.cyan</span><br />
+<br />
+<span class="wrd">print_fbc</span><span class="oth">(</span><span class="wrd">my_colors.foreground</span><span class="oth">,</span>&nbsp;<span class="wrd">my_colors.background</span><span class="oth">)</span><br />
+<br />
+<span class="key">Color</span>&nbsp;<span class="wrd">std_colors.foreground</span><span class="oth">,</span>&nbsp;<span class="wrd">std_colors.background</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;end&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgEnum.html">Enum</a></tt><br \>
+<li> <tt><a href="KeyPgType.html">Type</a></tt><br \>
+<li> <a href="ProPgConstants.html">Constants</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

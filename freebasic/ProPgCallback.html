@@ -1,0 +1,159 @@
+<html>
+<head>
+<title>Callback</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Callback</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Callback procedures<br \>
+<br \>
+<div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+From Wikipedia: A callback, also known as a "call-after" function, is any executable code that is passed as an argument to other code; that other code is expected to call back (execute) the argument at a given time. This execution may be immediate as in a synchronous (or blocking) callback, or it might happen at a later time as in an asynchronous (or deferred) callback.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Example where a mathematical function is an argument in plot function call:<br \>
+(the invocation is implemented by calling the 'PlotF()' procedure, and the callback function is the 'Linear()', 'Sinusoidal()', or 'Quadratic()' function)<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">MathFunction</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">Linear</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">x</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">Quadratic</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">x</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">Sinusoidal</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">Sin</span><span class="oth">(</span><span class="wrd">x</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">PlotF</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">MathFunction</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">PSet</span><span class="oth">(</span>&nbsp;<span class="oth">-</span><span class="num">15</span><span class="oth">,</span>&nbsp;<span class="wrd">f</span><span class="oth">(-</span><span class="num">15</span><span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">-</span><span class="num">15</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">15</span>&nbsp;<span class="key">Step</span>&nbsp;<span class="num">0.1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Line</span>&nbsp;<span class="oth">-(</span>&nbsp;<span class="wrd">x</span><span class="oth">,</span>&nbsp;<span class="wrd">f</span><span class="oth">(</span><span class="wrd">x</span><span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Screen</span>&nbsp;<span class="num">19</span><br />
+<span class="key">Window</span>&nbsp;<span class="oth">(-</span><span class="num">15</span><span class="oth">,-</span><span class="num">10</span><span class="oth">)-(</span><span class="num">15</span><span class="oth">,</span><span class="num">10</span><span class="oth">)</span><br />
+<br />
+<span class="wrd">PlotF</span><span class="oth">(</span>&nbsp;<span class="oth">@</span><span class="wrd">Linear</span>&nbsp;<span class="oth">)</span><br />
+<span class="wrd">PlotF</span><span class="oth">(</span>&nbsp;<span class="oth">@</span><span class="wrd">Sinusoidal</span>&nbsp;<span class="oth">)</span><br />
+<span class="wrd">PlotF</span><span class="oth">(</span>&nbsp;<span class="oth">@</span><span class="wrd">Quadratic</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+The three callback processes are synchronous because each callback function is completely executed before 'PlotF()' returns to the caller code.<br \>
+<br \>
+</div>Similar plotting example (as above) but with a asynchronous callback. Here an artificial delay is added. A more realistic case would be if the data to be plotted is retrieved form a web-server with a response time larger than acceptable for the main loop of our program (prevent blocking behavior):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;fbthread.bi&quot;<br />
+</span><br />
+<span class="key">Type</span>&nbsp;<span class="wrd">MathFunction</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Function</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">ThreadPlot</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">1500</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;<span class="com">''&nbsp;sleep&nbsp;added&nbsp;only&nbsp;to&nbsp;check&nbsp;the&nbsp;asynchronous&nbsp;way&nbsp;of&nbsp;the&nbsp;callback</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">MathFunction</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Window</span>&nbsp;<span class="oth">(-</span><span class="num">15</span><span class="oth">,-</span><span class="num">10</span><span class="oth">)-(</span><span class="num">15</span><span class="oth">,</span><span class="num">10</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">PSet</span><span class="oth">(</span>&nbsp;<span class="oth">-</span><span class="num">15</span><span class="oth">,</span>&nbsp;<span class="wrd">f</span><span class="oth">(-</span><span class="num">15</span><span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">-</span><span class="num">15</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">15</span>&nbsp;<span class="key">Step</span>&nbsp;<span class="num">0.1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Line</span>&nbsp;<span class="oth">-(</span>&nbsp;<span class="wrd">x</span><span class="oth">,</span>&nbsp;<span class="wrd">f</span><span class="oth">(</span><span class="wrd">x</span><span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">PlotF</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">MathFunction</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Plotting&nbsp;requested&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ThreadDetach</span><span class="oth">(</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(</span>&nbsp;<span class="oth">@</span><span class="wrd">ThreadPlot</span><span class="oth">,</span>&nbsp;<span class="wrd">f</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="quo">&quot;Plotting&nbsp;request&nbsp;taken&nbsp;into&nbsp;account&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">Linear</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">x</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">Quadratic</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">x</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">Sinusoidal</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">Sin</span><span class="oth">(</span><span class="wrd">x</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Screen</span>&nbsp;<span class="num">19</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">PlotF</span><span class="oth">(</span>&nbsp;<span class="oth">@</span><span class="wrd">Linear</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">PlotF</span><span class="oth">(</span>&nbsp;<span class="oth">@</span><span class="wrd">Sinusoidal</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">PlotF</span><span class="oth">(</span>&nbsp;<span class="oth">@</span><span class="wrd">Quadratic</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="com">''&nbsp;following&nbsp;code&nbsp;added&nbsp;only&nbsp;to&nbsp;check&nbsp;the&nbsp;asynchronous&nbsp;way&nbsp;of&nbsp;callbacks</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Main&nbsp;program&nbsp;continues&nbsp;&quot;</span><span class="oth">;</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">15</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;.&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">200</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Main&nbsp;program&nbsp;finished&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+The three callback processes are asynchronous because the 'PlotF()' function returns immediately, and each callback function is executed in parallel with the caller's next code, from a 'ThreadPlot()' thread created (previously) by 'PlotF()' for each of them.<br \>
+<br \>
+</div>Example of a callback function for comparing values in a array to be sorted by the qsort algorithm:<br \>
+(the invocation is implemented by calling the 'qsort()' procedure, and the callback function is the 'CmpVarLenStr()' function)<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;crt/stdlib.bi&quot;<br />
+</span><br />
+<span class="key">Function</span>&nbsp;<span class="wrd">CmpVarLenStr</span>&nbsp;<span class="key">cdecl</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">p1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">p2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span>&nbsp;&nbsp;<span class="com">''&nbsp;compare&nbsp;2&nbsp;var-len&nbsp;strings</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ps1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ps2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">*</span><span class="wrd">ps1</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="oth">*</span><span class="wrd">ps2</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="oth">-</span><span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ElseIf</span>&nbsp;<span class="oth">*</span><span class="wrd">ps1</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="oth">*</span><span class="wrd">ps2</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">PrintList</span><span class="oth">(</span>&nbsp;<span class="wrd">array</span><span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;print&nbsp;a&nbsp;var-len&nbsp;string&nbsp;list</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">array</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">forename</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">12</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">{</span><span class="quo">&quot;Madison&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Emily&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Hailey&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Sarah&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Kaitlyn&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Hannah&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="quo">&quot;Jacob&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Christopher&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Nicholas&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Michael&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Matthew&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Joshua&quot;</span>&nbsp;<span class="oth">}</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;LIST&nbsp;OF&nbsp;UNSORTED&nbsp;FORENAMES:&quot;</span><br />
+<span class="wrd">PrintList</span><span class="oth">(</span>&nbsp;<span class="wrd">forename</span><span class="oth">()</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="wrd">qsort</span><span class="oth">(</span>&nbsp;<span class="oth">@</span><span class="wrd">forename</span><span class="oth">(</span><span class="key">LBound</span><span class="oth">(</span><span class="wrd">forename</span><span class="oth">)),</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">forename</span><span class="oth">)</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">forename</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">String</span><span class="oth">),</span>&nbsp;<span class="oth">@</span><span class="wrd">CmpVarLenStr</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;LIST&nbsp;OF&nbsp;SORTED&nbsp;FORENAMES:&quot;</span><br />
+<span class="wrd">PrintList</span><span class="oth">(</span>&nbsp;<span class="wrd">forename</span><span class="oth">()</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+The callback process is synchronous because the callback function is completely executed (several times), (successively) called by 'qsort()', before 'qsort()' returns to the caller code.<br \>
+<br \>
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="KeyPgSubPtr.html">Sub Pointer</a><br \>
+<li> <a href="KeyPgFunctionPtr.html">Function Pointer</a><br \>
+<li> <a href="ProPgMtThreads.html">Threads</a><br \>
+<li> <a href="ProPgObjectRtti.html">OBJECT built-in and RTTI info</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

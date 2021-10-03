@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>LPos</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">LPos</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Returns the number of characters sent to the printer port in the last <tt><a href="KeyPgLprint.html">LPrint</a></tt> statement.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgFunction.html">Function</a> <b>LPos</b> ( <a href="KeyPgByval.html">ByVal</a> <i>printer</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgLong.html">Long</a> ) <a href="KeyPgAs.html">As</a> <a href="KeyPgLong.html">Long</a><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+<i>result</i> = LPOS(<i>printer</i>)<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>printer</i></tt><br \>
+<div class="fb_indent">Either 0, 1, 2 or 3.  Represents the printer port (LPT#)<br \>
+<br \>
+</div></div><div class="fb_sect_title">Return Value</div><div class="fb_sect_cont"><br \>
+Returns the number of characters sent.<br \>
+<br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Used to determine, from the last <tt><a href="KeyPgLprint.html">LPrint</a></tt>, how many characters were sent to the printer port.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">'&nbsp;compile&nbsp;with&nbsp;-lang&nbsp;fblite&nbsp;or&nbsp;qb</span><br />
+<br />
+<span class="def">#lang&nbsp;&quot;fblite&quot;<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">test</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;LPrint&nbsp;Example&nbsp;test&quot;</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Sending&nbsp;'&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">test</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;'&nbsp;to&nbsp;LPT1&nbsp;(default)&quot;</span><br />
+<span class="key">LPrint</span>&nbsp;<span class="wrd">test</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;LPT1&nbsp;last&nbsp;recieved&nbsp;&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="key">LPos</span><span class="oth">(</span><span class="num">1</span><span class="oth">))</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;&nbsp;characters&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;String&nbsp;sent&nbsp;was&nbsp;&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="key">Len</span><span class="oth">(</span><span class="wrd">test</span><span class="oth">))</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;&nbsp;characters&nbsp;long&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> None<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgLprint.html">LPrint</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

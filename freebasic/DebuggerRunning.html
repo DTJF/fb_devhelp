@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>Debugging</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Debugging</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<br \>
+<div class="fb_indent">The debugger is in the <tt>bin\win32</tt> or <tt>bin\dos</tt> directories (the <b>GDB</b>.EXE file), for the Windows and DOS versions respectively.  It usually comes already installed in most Linux distros.<br \>
+<br \>
+<br \>
+(Note: all commands should be typed without quotes and then <tt>[return]</tt> must be pressed.)<br \>
+<br \>
+<br \>
+</div><ul><li> Compile the source code for your program in debug mode<br \>
+<ul><li> use the <tt><a href="CompilerOptg.html">-g</a></tt> command-line option to add debugging support, e.g. <tt>fbc -g myapp.bas</tt>.<br \>
+</ul><li> Load your compiled program in GDB <br \>
+<ul><li> For example, in Windows/DOS: <tt>gdb myapp.exe</tt><br \>
+</ul><li> Set any arguments you want to send to your application<br \>
+<ul><li> For example: <tt>set args arg1 arg2 argn</tt>.<br \>
+<li> You can also run GDB and pass the arguments directly to the application been debugged: <tt>gdb --args myapp.exe arg1 arg2 arg3</tt>.<br \>
+</ul><li> Ensure GDB can see your program's source code directory<br \>
+<ul><li> If the executable isn't in the same directory of the source files where it was compiled, type: <tt>dir path/to/my/application/sources</tt>.<br \>
+</ul><li> Set a breakpoint in your program<br \>
+<ul><li> Place a breakpoint in the first line using: <tt>b main</tt>.<br \>
+<li> To place a breakpoint in a function called <tt>func</tt> use: <tt>b FUNC</tt>.<br \>
+<li> Note: fbc exports variable/function names to UPPERCASE.  GDB is case sensitive by default, but you can use the <tt>set language pascal</tt> command to change GDB to case-insensitive mode.<br \>
+</ul><li> Use GDB shortcuts to run your code or to step through it<br \>
+<ul><li> Type <tt>r</tt> to start running the application.<br \>
+<li> Type <tt>n</tt> to step to the next line, stepping over function calls.<br \>
+<li> Keep pressing <tt>[return]</tt> to step forward to the next line.<br \>
+<li> Type <tt>s</tt> to step into function calls.<br \>
+<li> As above, keep pressing <tt>[return]</tt> to step through.<br \>
+<li> Type <tt>c</tt> to continue execution until the next breakpoint.<br \>
+</ul><li> Use GDB shortcuts to inspect variables<br \>
+<ul><li> Use <tt>print VAR_NAME</tt> to show the contents of the variable called <tt>var_name</tt>.<br \>
+<ul><li> GDB supports pointer/pointer field dereferencing, indexing and arithmetics too, so <tt>print *MYPOINTER</tt> will also work.<br \>
+<li> (note: undeclared variables or the ones with suffixes like <tt>%</tt> <tt>&</tt> <tt>!</tt> <tt>#</tt> <tt>$</tt> can't be printed).<br \>
+</ul><li> Use <tt>disp VAR_NAME</tt> to display the contents of a variable called <tt>var_name</tt>.<br \>
+<li> Use <tt>watch VAR_NAME</tt> to stop each time a variable called <tt>var_name</tt> is changed.<br \>
+</ul><li> Additional commands:<br \>
+<ul><li> Use <tt>r</tt> again to restart the application when it finishes.<br \>
+<li> Type <tt>q</tt> to quit.<br \>
+<li> Type <tt>help</tt> to see a list of commands, there are many others.<br \>
+<br \>
+<br \>
+</ul></ul>
+</div>
+</div> 
+</div> 
+</body>
+</html>

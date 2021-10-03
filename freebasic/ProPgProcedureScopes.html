@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>Procedure Scopes</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Procedure Scopes</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The <b>Scope</b> (visibility) of a <b>Procedure</b> through the different modules of a program.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+A procedure is a "subroutine" (sub) or a "function" that can be called by code outside the procedure (or internal code in the case of a recursion).<br \>
+A procedure consists of a sequence of instructions that form the body of the procedure.<br \>
+It is possible to pass values or variables to a procedure, and a function may return a value or a reference.<br \>
+<br \>
+<div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Scopes of procedures in modules follows simple rules:<br \>
+<ul><ul><li> <b>Private</b> scope:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">procedure visible only in its own module (where it is defined).<br \>
+</div></div></div><ul><ul><li> <b>Public</b> scope:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">procedure visible from all modules constituting a compiled program (including static libraries).<br \>
+</div></div></div><ul><ul><li> <b>Export</b> scope:<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">when defined in a DLL (dynamically linked library), procedure visible from an external program that has loaded it (statically or dynamically).<br \>
+<br \>
+</div></div></div></div><div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><br \>
+<div class="fb_indent"><tt>[ <a href="KeyPgPublic.html">Public</a> | <a href="KeyPgPrivate.html">Private</a> ] { <a href="KeyPgSub.html">Sub</a> | <a href="KeyPgFunction.html">Function</a> } <i>proc_name</i> ( <i>argumentlist</i> ) [ [ <a href="KeyPgByrefFunction.html">ByRef</a> ] <a href="KeyPgAs.html">As</a> <a href="DataType.html">datatype</a> ] <strike>Export</strike></tt><br \>
+</div>or<br \>
+<div class="fb_indent"><tt>[ <a href="KeyPgPublic.html">Public</a> ] { <a href="KeyPgSub.html">Sub</a> | <a href="KeyPgFunction.html">Function</a> } <i>proc_name</i> ( <i>argumentlist</i> ) [ [ <a href="KeyPgByrefFunction.html">ByRef</a> ] <a href="KeyPgAs.html">As</a> <a href="DataType.html">datatype</a> ] <a href="KeyPgExport.html">Export</a></tt><br \>
+<br \>
+</div></div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><br \>
+Private, Public and Export access controls are used in procedure definitions only (forbidden at declaration line level).<br \>
+<br \>
+By default, a procedure is Public except if the <tt><a href="KeyPgOptionprivate.html">Option Private</a></tt> statement (in the module) modifies the default state.<br \>
+That is why both Private and Public access controls are useful, depending on the default state.<br \>
+Export access control is incompatible with Private procedures (implicitly or explicitly defined like this).<br \>
+<br \>
+Among the compiled modules, two procedures with the same identifier, but defined inside different modules, may exist if both are Private.<br \>
+<br \>
+The compiler removes the Private procedures that are not called, but this does not currently work for Private procedures that are only called by other Private procedures that are not called themselves, because the first one appears as being called.<br \>
+<br \>
+</div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="CatPgModularizing.html">Modularizing</a><br \>
+<li> <a href="CatPgProcedures.html">Procedures</a><br \>
+<li> <a href="ProPgVarProcLinkage.html">Variable and Procedure Linkage</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

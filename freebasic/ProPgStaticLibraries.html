@@ -1,0 +1,203 @@
+<html>
+<head>
+<title>Static Libraries</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Static Libraries</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	A static library is compiled code that can be later used when building an executable.<br \>
+<br \>
+When the compiler makes an executable, the basic source files are first turned in to object files.  The object files are then linked together to make an executable.  When we compile source code, we don't necessarily have to make an executable.  We could instead group all of the object files (made from sources) in to a single file called a static library.<br \>
+<br \>
+The library is referred to as static, because when the object files which it contains are later linked in to an executable, a copy of all the needed code in the library is added to the executable.<br \>
+<br \>
+Once the library is made, we can then use the code that it contains just as if we were compiling the source directly with our program.<br \>
+<br \>
+<div class="fb_sect_title">Sharing variables with static library</div><div class="fb_sect_cont"><br \>
+A static library allows the direct sharing of variables by using the <tt><a href="KeyPgCommon.html">Common</a></tt> or <tt><a href="KeyPgExtern.html">Extern</a></tt> keyword, both in library code and module code.<br \>
+Otherwise, passing a parameter (by value or by reference) to a library procedure or returning a variable (by value or by reference) from a library function allows to indirectly exchange data with a library.<br \>
+<br \>
+</div><div class="fb_sect_title">Simple example of static library</div><div class="fb_sect_cont"><br \>
+Following is a simple example of creating a static library using these three files:<br \>
+<ul><ul><li> <tt>mylib.bas</tt> - the source for the library<br \>
+<li> <tt>mylib.bi</tt> - the header for the library<br \>
+<li> <tt>mytest.bas</tt> - a test program<br \>
+<br \>
+</ul></ul>Our library will be a single module providing a single function:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;mylib.bas</span><br />
+<span class="com">''&nbsp;compile&nbsp;with:&nbsp;fbc&nbsp;-lib&nbsp;mylib.bas</span><br />
+<br />
+<span class="com">''&nbsp;Add&nbsp;two&nbsp;numbers&nbsp;together&nbsp;and&nbsp;return&nbsp;the&nbsp;result</span><br />
+<span class="key">Public</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">Add2</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;<span class="key">Return</span><span class="oth">(</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Compile the library with:<br \>
+<div class="fb_indent"><tt>fbc -lib mylib.bas</tt><br \>
+<br \>
+</div>The <i><a href="CompilerOptlib.html">-lib</a></i> option tells the compiler to take the source code, <tt>mylib.bas</tt>, and turn it in to an object file <tt>mylib.o</tt>, then store the object file in to a library file, also called an archive, <tt>libmylib.a</tt>.  A library might contain many modules (source files) each with many functions, but for this simple example, it is just one each.<br \>
+<br \>
+</div>To make use of the library in some other source code, we need some way of telling the compiler what exactly is in the library. A good way to do this is to put the declarations ( also called an interface, or API ) for the library in to a header file:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;mylib.bi</span><br />
+<span class="def">#inclib&nbsp;&quot;mylib&quot;<br />
+</span><span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">Add2</span><span class="oth">(</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+There is no need to compile the header.  We want this in its source form so it can be included with other source files.  The <tt><a href="KeyPgInclib.html">#inclib</a></tt> statement will tell the compiler the name of a static library that we need to link with when eventually making an executable.<br \>
+<br \>
+</div>With our library (.a file) and a header (.bi file) we can try them out in a test program:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;mytest.bas</span><br />
+<span class="com">''&nbsp;compile&nbsp;with:&nbsp;fbc&nbsp;mytest.bas</span><br />
+<span class="def">#include&nbsp;Once&nbsp;&quot;mylib.bi&quot;<br />
+</span><span class="key">Print</span>&nbsp;<span class="wrd">Add2</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span><span class="num">2</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+The <tt><a href="KeyPgInclude.html">#include</a></tt> statement tells the compiler to include the source code from <tt>mylib.bi</tt> just as if we had typed it in to the original source.  With the way we have written our include file, it tells the compiler everything it needs to know about the library.<br \>
+<br \>
+We compile this with:<br \>
+<div class="fb_indent"><tt>fbc mytest.bas</tt><br \>
+<br \>
+</div>Then when we run the <tt>mytest</tt> executable, we should get the result of:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+ 3
+			</pre></div></div></div><div class="fb_sect_title">Advanced example of OOP static library</div><div class="fb_sect_cont"><br \>
+Following is an advanced example of creating an OOP static library using these three files:<br \>
+<ul><ul><li> <tt>varZstring.bi</tt> - the header for the library<br \>
+<li> <tt>varZstring.bas</tt> - the source for the library<br \>
+<li> <tt>varZstringTest.bas</tt> - a test program<br \>
+<br \>
+</ul></ul>Similar method than above to compile the library, then compile and execute the test program.<br \>
+<br \>
+Header file for the library:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;header&nbsp;file:&nbsp;'varZstring.bi'</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">varZstring</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="key">ZString</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">z</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="key">ZString</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">z</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="key">ZString</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">allocated</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">_p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">_allocated</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Len</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">v</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">varZstring</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">''&nbsp;mandatory&nbsp;for&nbsp;the&nbsp;user&nbsp;code&nbsp;to&nbsp;call</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;overload&nbsp;Len&nbsp;operator&nbsp;and</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;not&nbsp;the&nbsp;prebuilt-in&nbsp;Len&nbsp;operator</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<b>Note:</b> Take care to declare also each overload procedure, because the absence of declaration will not necessarily lead to a compilation error if its usage in the user code is syntactically compatible with the pre-built in procedure, but the result will obviously not be as expected.<br \>
+<br \>
+</div>Source file for the library:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;library&nbsp;module:&nbsp;'varZstring.bas'</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;varZstring.bi&quot;<br />
+</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">varZstring</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">z</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="key">ZString</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This._p</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Deallocate</span><span class="oth">(</span><span class="wrd">This._p</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This._allocated</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">z</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This._p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">CAllocate</span><span class="oth">(</span><span class="wrd">This._allocated</span><span class="oth">,</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">ZString</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">*</span><span class="wrd">This._p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">z</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">varZstring.Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="oth">*</span><span class="wrd">This._p</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">varZstring.Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">z</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="key">ZString</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This._allocated</span>&nbsp;<span class="oth">&lt;</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">z</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Deallocate</span><span class="oth">(</span><span class="wrd">This._p</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This._allocated</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">z</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This._p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">CAllocate</span><span class="oth">(</span><span class="wrd">This._allocated</span><span class="oth">,</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">ZString</span><span class="oth">))</span><br />
+&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;<span class="oth">*</span><span class="wrd">This._p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">z</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">varZstring.allocated</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This._allocated</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">varZstring</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Deallocate</span><span class="oth">(</span><span class="wrd">This._p</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This._p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="key">Len</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">v</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">varZstring</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="key">Type</span><span class="oth">&lt;</span><span class="key">String</span><span class="oth">&gt;(</span><span class="wrd">v</span><span class="oth">))</span>&nbsp;&nbsp;<span class="com">''&nbsp;found&nbsp;nothing&nbsp;better&nbsp;than&nbsp;this</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(or:&nbsp;'Return&nbsp;Len(Str(v))')</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Test program file:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;test&nbsp;program:&nbsp;'varZstringTest.bas'</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;varZstring.bi&quot;&nbsp;&nbsp;''&nbsp;must&nbsp;contain&nbsp;also&nbsp;the&nbsp;overload&nbsp;Len&nbsp;operator&nbsp;declaration,<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;otherwise&nbsp;the&nbsp;prebuilt-in&nbsp;Len&nbsp;operator&nbsp;is&nbsp;called&nbsp;and&nbsp;applied</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;the&nbsp;object&nbsp;variable&nbsp;(providing&nbsp;the&nbsp;length&nbsp;of&nbsp;its&nbsp;member&nbsp;data)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+<span class="def">#inclib&nbsp;&quot;varZstring&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;one&nbsp;can&nbsp;also&nbsp;put&nbsp;this&nbsp;line&nbsp;in&nbsp;the&nbsp;'varZstring.bi'&nbsp;file<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;(and&nbsp;not&nbsp;in&nbsp;this&nbsp;file),&nbsp;but&nbsp;it&nbsp;seems&nbsp;a&nbsp;bit&nbsp;crooked</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;VARIABLE&quot;</span><span class="oth">,,,</span>&nbsp;<span class="quo">&quot;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LEN|&nbsp;&nbsp;SIZEOF|&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;------------------------------------------|--------|--------|&quot;</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">varZstring</span>&nbsp;<span class="wrd">v</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;FreeBASIC&quot;</span>&nbsp;&nbsp;<span class="com">''&nbsp;adjusts&nbsp;memory&nbsp;allocation&nbsp;to&nbsp;minimum</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;varZstring&nbsp;v:&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">v</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,,</span>&nbsp;<span class="quo">&quot;|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;########|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">v</span><span class="oth">);</span>&nbsp;<span class="wrd">v.allocated</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">256</span>&nbsp;<span class="wrd">z</span><br />
+<span class="wrd">z</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">v</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Zstring&nbsp;&nbsp;&nbsp;&nbsp;z:&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">z</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,,</span>&nbsp;<span class="quo">&quot;|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;########|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">z</span><span class="oth">);</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">z</span><span class="oth">)</span><br />
+<br />
+<span class="wrd">v</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">z</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&amp;&nbsp;SourceForge&quot;</span>&nbsp;&nbsp;<span class="com">''&nbsp;only&nbsp;increases&nbsp;memory&nbsp;allocation&nbsp;if&nbsp;necessazy</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;varZstring&nbsp;v:&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">v</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;########|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">v</span><span class="oth">);</span>&nbsp;<span class="wrd">v.allocated</span><br />
+<br />
+<span class="wrd">v</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">z</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&amp;&nbsp;Wiki&quot;</span>&nbsp;<span class="com">''&nbsp;only&nbsp;increases&nbsp;memory&nbsp;allocation&nbsp;if&nbsp;necessazy</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;varZstring&nbsp;v:&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">v</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;########|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">v</span><span class="oth">);</span>&nbsp;<span class="wrd">v.allocated</span><br />
+<br />
+<span class="wrd">v.Constructor</span><span class="oth">(</span><span class="wrd">v</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;readjusts&nbsp;memory&nbsp;allocation&nbsp;to&nbsp;minimum</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;varZstring&nbsp;v:&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">v</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;########|&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Len</span><span class="oth">(</span><span class="wrd">v</span><span class="oth">);</span>&nbsp;<span class="wrd">v.allocated</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+VARIABLE                                  |     LEN|  SIZEOF|
+------------------------------------------|--------|--------|
+varZstring v: 'FreeBASIC'                 |       9|      10|
+Zstring    z: 'FreeBASIC'                 |       9|     256|
+varZstring v: 'FreeBASIC & SourceForge'   |      23|      24|
+varZstring v: 'FreeBASIC & Wiki'          |      16|      24|
+varZstring v: 'FreeBASIC & Wiki'          |      16|      17|
+			</pre></div></div>More than one source module can be used when making a library.  And basic programs can use more than one library by including each needed header.  Some libraries are so large that they might use several headers.  On very large projects, making libraries out of some code modules that seldom change can improve compile times dramatically.<br \>
+<br \>
+Libraries can optionally contain debugging information specified with the <i><a href="CompilerOptg.html">-g</a></i> command line option.<br \>
+<br \>
+A library can optionally have module constructors, a main code, and module destructors. The module constructors, then the main code are executed at library load. The module destructors are executed at library unload.<br \>
+<br \>
+Object files, and therefore libraries, are platform specific and in some cases specific to a particular version of the compiler and FreeBASIC runtime library.<br \>
+<br \>
+</div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgSharedLibraries.html">Shared Libraries</a><br \>
+<li> <tt><a href="KeyPgInclib.html">#inclib</a></tt><br \>
+<li> <tt><a href="KeyPgInclude.html">#include</a></tt><br \>
+<li> <a href="CompilerOptlib.html">Compiler Option: -lib</a><br \>
+<li> <a href="CompilerOptstatic.html">Compiler Option: -static</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

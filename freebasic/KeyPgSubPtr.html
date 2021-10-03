@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>Sub Pointer</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Sub Pointer</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Data type that stores a pointer to a <tt><a href="KeyPgSub.html">Sub</a></tt> procedure<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDim.html">Dim</a> <i>variable</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgSub.html">Sub</a> [<a href="KeyPgCdecl.html">cdecl</a>|<a href="KeyPgPascal.html">pascal</a>|<a href="KeyPgStdcall.html">stdcall</a>] [( [<i>parameter_list</i>] )] [= <i>initializer</i>]<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<div class="fb_indent"><tt><i>parameter_list</i></tt>: parameter[, parameter[, ...]]<br \>
+<tt><i>parameter</i></tt>: <tt>[<a href="KeyPgByref.html">ByRef</a>|<a href="KeyPgByval.html">ByVal</a>] <i>identifier</i> [<a href="KeyPgAs.html">As</a> <i>type</i>] [= <i>default_value</i>]</tt><br \>
+<div class="fb_indent"><tt><i>identifier</i></tt>: the name of the variable referenced in the subroutine<br \>
+<tt><i>type</i></tt>: the type of variable<br \>
+<tt><i>default_value</i></tt>: the value of the argument if none is specified in the call<br \>
+</div><tt><i>intializer</i></tt>: address of a subroutine to set as the intial value<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+A <tt><a href="KeyPgSub.html">Sub</a></tt> pointer is a procedure pointer that stores the memory location of compiled code.  If no intializer is given the default initial value is zero (0).<br \>
+<br \>
+The memory address for the <tt><a href="KeyPgSub.html">Sub</a></tt> procedure can be assigned to the variable by taking the address of a subroutine with <tt><a href="KeyPgOpProcptr.html">ProcPtr</a></tt> or <tt><a href="KeyPgOpAt.html">Operator @ (Address Of)</a></tt>.<br \>
+<br \>
+The procedure must match the same <tt><a href="KeyPgSub.html">Sub</a></tt> declaration as the declared <tt><a href="KeyPgSub.html">Sub</a></tt> pointer.<br \>
+<br \>
+To call the subroutine assigned, use the <tt><i>variable</i></tt> name as if it were a normal declared <tt><a href="KeyPgSub.html">Sub</a></tt>, always with parentheses around the parameter list even empty (without parentheses, only the pointer value, ie the address of the subroutine, would be accessed).<br \>
+<br \>
+One of the primary uses for <tt><a href="KeyPgSub.html">Sub</a></tt> pointers is to create callback procedures:<br \>
+<div class="fb_indent"><b>-</b> A callback <tt><a href="KeyPgSub.html">Sub</a></tt> is a <tt><a href="KeyPgSub.html">Sub</a></tt> that is passed through an argument (a <tt><a href="KeyPgSub.html">Sub</a></tt> pointer) to another procedure which is expected to call back (execute) the "argument" at a convenient time.<br \>
+<b>-</b> If the callback <tt><a href="KeyPgSub.html">Sub</a></tt> is completely executed before the invocation returns to the caller code, then the callback process is said to be "synchronous".<br \>
+<b>-</b> If the invocation immediately returns to the caller code, and the callback <tt><a href="KeyPgSub.html">Sub</a></tt> and the caller's next code are running in parallel, then the callback process is said to be "asynchronous".<br \>
+<br \>
+</div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">Hello</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Hello&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">Goodbye</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Goodbye&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Sub</span><span class="oth">()</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ProcPtr</span><span class="oth">(</span>&nbsp;<span class="wrd">Hello</span>&nbsp;<span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">x</span><span class="oth">()</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">x</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">Goodbye</span>&nbsp;&nbsp;<span class="com">''&nbsp;or&nbsp;procptr(Goodbye)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">x</span><span class="oth">()</span><br />
+</div></tt><br />
+<tt><div class="freebasic">
+<span class="key">Sub</span>&nbsp;<span class="wrd">s0</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'s0&nbsp;()'&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">s1</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'s1&nbsp;(Byval&nbsp;As&nbsp;Integer)'&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">s2</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">S</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">D</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'s2&nbsp;(Byref&nbsp;As&nbsp;String,&nbsp;Byval&nbsp;As&nbsp;Double)'&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">S</span><span class="oth">,</span>&nbsp;<span class="wrd">D</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">s0_ptr</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">s0</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">s1_ptr</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">s1</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">s2_ptr</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">S</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">D</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">s2</span><br />
+<br />
+<span class="wrd">s0_ptr</span><span class="oth">()</span><br />
+<span class="wrd">s1_ptr</span><span class="oth">(</span><span class="num">3</span><span class="oth">)</span><br />
+<span class="wrd">s2_ptr</span><span class="oth">(</span><span class="quo">&quot;PI&quot;</span><span class="oth">,</span>&nbsp;<span class="num">3.14</span><span class="oth">)</span><br />
+</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;Example&nbsp;of&nbsp;advanced&nbsp;callback&nbsp;Sub&nbsp;mechanism&nbsp;(asynchronous)&nbsp;to&nbsp;implement&nbsp;a&nbsp;key&nbsp;pressed&nbsp;event:</span><br />
+<span class="com">'&nbsp;(the&nbsp;user&nbsp;callback&nbsp;Sub&nbsp;address&nbsp;can&nbsp;be&nbsp;modified&nbsp;while&nbsp;the&nbsp;event&nbsp;thread&nbsp;is&nbsp;running)</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;-&nbsp;An&nbsp;asynchronous&nbsp;thread&nbsp;tests&nbsp;the&nbsp;keyboard&nbsp;in&nbsp;a&nbsp;loop,&nbsp;and&nbsp;calls&nbsp;a&nbsp;user&nbsp;callback&nbsp;Sub&nbsp;each&nbsp;time&nbsp;a&nbsp;key&nbsp;is&nbsp;pressed.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;-&nbsp;An&nbsp;UDT&nbsp;groups&nbsp;the&nbsp;common&nbsp;variables&nbsp;used&nbsp;(callback&nbsp;Sub&nbsp;pointer,&nbsp;character&nbsp;of&nbsp;key&nbsp;pressed,&nbsp;thread&nbsp;end&nbsp;flag),</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;the&nbsp;static&nbsp;thread&nbsp;Sub&nbsp;plus&nbsp;the&nbsp;thread&nbsp;handle.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;-&nbsp;An&nbsp;UDT&nbsp;instance&nbsp;pointer&nbsp;is&nbsp;passed&nbsp;to&nbsp;the&nbsp;thread,&nbsp;which&nbsp;then&nbsp;transmits&nbsp;it&nbsp;to&nbsp;the&nbsp;callback&nbsp;Sub&nbsp;each&nbsp;time.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;-&nbsp;The&nbsp;callback&nbsp;Sub&nbsp;prints&nbsp;the&nbsp;character&nbsp;of&nbsp;the&nbsp;key&nbsp;pressed&nbsp;character,</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;but&nbsp;if&nbsp;the&nbsp;key&nbsp;pressed&nbsp;is&nbsp;&lt;escape&gt;&nbsp;it&nbsp;orders&nbsp;the&nbsp;thread&nbsp;to&nbsp;finish.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;-&nbsp;As&nbsp;the&nbsp;user&nbsp;callback&nbsp;pointer&nbsp;is&nbsp;a&nbsp;member&nbsp;field&nbsp;of&nbsp;the&nbsp;UDT,&nbsp;it&nbsp;can&nbsp;be&nbsp;modified&nbsp;while&nbsp;the&nbsp;thread&nbsp;is&nbsp;running.</span><br />
+<br />
+<br />
+<span class="com">''&nbsp;UDT&nbsp;for&nbsp;thread&nbsp;environment</span><br />
+&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="wrd">threadUDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">ThreadUDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;<span class="wrd">callback</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;callback&nbsp;Sub&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">threadEnd</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;thread&nbsp;end&nbsp;flag</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;character&nbsp;of&nbsp;the&nbsp;key&nbsp;pressed</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">threadInkey</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;static&nbsp;thread&nbsp;Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">threadHandle</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;handle&nbsp;to&nbsp;the&nbsp;thread</span><br />
+&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="com">''&nbsp;thread&nbsp;Sub&nbsp;definition</span><br />
+&nbsp;&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">threadUDT.threadInkey</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">threadUDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pt</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;convert&nbsp;the&nbsp;any&nbsp;ptr&nbsp;to&nbsp;a&nbsp;threadUDT&nbsp;pointer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pt</span><span class="oth">-&gt;</span><span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Inkey</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">pt</span><span class="oth">-&gt;</span><span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">AndAlso</span>&nbsp;<span class="wrd">pt</span><span class="oth">-&gt;</span><span class="wrd">callback</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;condition&nbsp;key&nbsp;pressed&nbsp;&amp;&nbsp;callback&nbsp;Sub&nbsp;defined</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pt</span><span class="oth">-&gt;</span><span class="wrd">callback</span><span class="oth">(</span><span class="wrd">p</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">pt</span><span class="oth">-&gt;</span><span class="wrd">threadEnd</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;condition&nbsp;to&nbsp;finish&nbsp;thread</span><br />
+&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">''&nbsp;user&nbsp;callback&nbsp;Sub&nbsp;definition</span><br />
+&nbsp;&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">printInkey</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">pt</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">threadUDT</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">Asc</span><span class="oth">(</span><span class="wrd">pt</span><span class="oth">-&gt;</span><span class="wrd">s</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">27</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;condition&nbsp;key&nbsp;pressed&nbsp;=&nbsp;&lt;escape&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pt</span><span class="oth">-&gt;</span><span class="wrd">threadEnd</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">-</span><span class="num">1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;order&nbsp;thread&nbsp;to&nbsp;finish</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">pt</span><span class="oth">-&gt;</span><span class="wrd">s</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">''&nbsp;user&nbsp;main&nbsp;code</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">ThreadUDT</span>&nbsp;<span class="wrd">t</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;create&nbsp;an&nbsp;instance&nbsp;of&nbsp;threadUDT</span><br />
+&nbsp;&nbsp;<span class="wrd">t.threadHandle</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">threadUDT.threadInkey</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">t</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;launch&nbsp;the&nbsp;thread,&nbsp;passing&nbsp;the&nbsp;instance&nbsp;address</span><br />
+&nbsp;&nbsp;<span class="wrd">t.callback</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">@</span><span class="wrd">printInkey</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;initialize&nbsp;the&nbsp;callback&nbsp;Sub&nbsp;pointer</span><br />
+&nbsp;&nbsp;<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">t.threadHandle</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;wait&nbsp;for&nbsp;the&nbsp;thread&nbsp;finish</span><br />
+</div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgSub.html">Sub</a></tt><br \>
+<li> <tt><a href="KeyPgOpProcptr.html">ProcPtr</a></tt><br \>
+<li> <tt><a href="KeyPgOpAt.html">Operator @ (Address Of)</a></tt><br \>
+<br \>
+</ul><br \>
+</div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

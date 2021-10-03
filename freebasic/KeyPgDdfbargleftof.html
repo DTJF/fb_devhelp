@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>__FB_ARG_LEFTOF__</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">__FB_ARG_LEFTOF__</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Intrinsic define (macro) performed by the compiler.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+__FB_ARG_LEFTOF__( arg, sep [, ret] )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>arg</i></tt><br \>
+<div class="fb_indent">argument<br \>
+</div><tt><i>sep</i></tt><br \>
+<div class="fb_indent">separator, obviously different from the comma (,)<br \>
+</div><tt><i>ret</i></tt><br \>
+<div class="fb_indent">default return if separator not found<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Returns the left token of the argument (<tt><i>arg</i></tt>), based on the separator (<tt><i>sep</i></tt>).<br \>
+<br \>
+By default, if the default return (<tt><i>ret</i></tt>) is not given, the macro returns nothing (empty token) if the separator (<tt><i>sep</i></tt>) is not found.<br \>
+Otherwise, if the default return (<tt><i>ret</i></tt>) is given, the macro returns the default return (<tt><i>ret</i></tt>) if the separator (<tt><i>sep</i></tt>) is not found.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="def">#macro&nbsp;m(&nbsp;arg&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Var</span>&nbsp;<span class="wrd">v</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">__FB_ARG_LEFTOF__</span><span class="oth">(</span>&nbsp;<span class="wrd">arg</span><span class="oth">,</span>&nbsp;<span class="wrd">versus</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Not&nbsp;found&nbsp;'versus'&quot;</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">v</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="wrd">m</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="wrd">versus</span>&nbsp;<span class="num">2</span><span class="oth">)</span><br />
+<span class="wrd">m</span><span class="oth">(</span><span class="quo">&quot;left-side&quot;</span>&nbsp;<span class="wrd">versus</span>&nbsp;<span class="quo">&quot;right-side&quot;</span><span class="oth">)</span><br />
+<span class="wrd">m</span><span class="oth">(</span><span class="num">3.14</span>&nbsp;<span class="wrd">verso</span>&nbsp;<span class="wrd">pi</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">/'&nbsp;Output:</span><br />
+<span class="com">&nbsp;1</span><br />
+<span class="com">left-side</span><br />
+<span class="com">Not&nbsp;found&nbsp;'versus'</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+See also <tt><a href="KeyPgDdfbargrightof.html">__FB_ARG_RIGHTOF__</a></tt> example.<br \>
+<br \>
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgDdfbargrightof.html">__FB_ARG_RIGHTOF__</a></tt><br \>
+<li> <tt><a href="KeyPgDdfbargcount.html">__FB_ARG_COUNT__</a></tt><br \>
+<li> <tt><a href="KeyPgDdfbargextract.html">__FB_ARG_EXTRACT__</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

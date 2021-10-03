@@ -1,0 +1,112 @@
+<html>
+<head>
+<title>Differences between Expressions and Statements</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Differences between Expressions and Statements</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	To introduce the <b>expressions and statements</b> (syntactic entities) in FreeBASIC.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+Simply put, an expression represents a value and a statement represents an operation.<br \>
+However, in fact, some special expressions may be composed and represent multiple values, and some statements may be composed of several sub operations/statements.<br \>
+By context, some statements can also be considered expressions.<br \>
+<br \>
+Statements can contain other constructs such as expressions, keywords, operators, and other elements.<br \>
+Expressions are parts of statements that return values. Thus, expressions can be used whenever a value is expected.<br \>
+<br \>
+The following description does not make very precise definitions for expressions and statements. It is difficult to achieve this.<br \>
+Not all types of expressions and statements are covered here, but only simple examples are highlighted.<br \>
+<br \>
+<div class="fb_sect_title">Expressions</div><div class="fb_sect_cont"><br \>
+An expression is a collection of one or more terms that can perform a mathematical or logical operation. To be precise, an expression must have at least one operand but may not have any operator.<br \>
+The terms are usually either literals or variables or functions that are combined with operators to evaluate for example to a string or numeric result or boolean or user defined type.<br \>
+A value in itself is a simple expression, just like a variable. Evaluating a variable gives the value to which the variable refers.<br \>
+<br \>
+Expressions can be used to perform calculations, manipulate variables, or concatenate strings.<br \>
+Expressions are evaluated according to precedence order. Use parentheses to override the default precedence order.<br \>
+<br \>
+</div><div class="fb_sect_title">Statements</div><div class="fb_sect_cont"><br \>
+A statement is a basic unit of execution of a program. A statement is a complete instruction in FreeBASIC programs.<br \>
+It may contain keywords, operators, variables, literal values, constants and expressions.<br \>
+<br \>
+Statements could be categorized as:<br \>
+<div class="fb_indent"><b>-</b> Declaration statements: these are the statements where the user names a variable, constant, or procedure, and can also initialize it.<br \>
+<b>-</b> Executable statements: these are the statements which initiate actions. These statements can call a procedure, loop or branch through blocks of code or assign values or expression to a variable or constant. In the last case, it is called an expression statement. The most common expression statements are assignments and function calls.<br \>
+<br \>
+</div>Statements normally take up a single line with no terminator. Statements can be stacked by using a colon (:) to separate them.<br \>
+If a statement is very long, it may be continued to the next line using the continuation character, an underscore (_).<br \>
+<br \>
+</div><div class="fb_sect_title">Basic examples of expressions / statements</div><div class="fb_sect_cont"><br \>
+Some basic examples just to illustrate the definitions above.<br \>
+<br \>
+<u>Basic examples of expressions</u><br \>
+<div class="fb_indent"><b>-</b> Arithmetic expression:<br \>
+<div class="fb_indent"><tt>10</tt><br \>
+<div class="fb_indent">this is an expression that is evaluated to the numeric value 10.<br \>
+</div><tt>10 + 13</tt><br \>
+<div class="fb_indent">this is another expression that is evaluated to produce the numeric value 23.<br \>
+<br \>
+</div></div><b>-</b> String expression:<br \>
+<div class="fb_indent"><tt>"hello"</tt><br \>
+<div class="fb_indent">evaluates to the string "hello".<br \>
+</div><tt>"hello" & " " & "world"</tt><br \>
+<div class="fb_indent">evaluates to the string "hello world".<br \>
+<br \>
+</div></div><b>-</b> Combined expression:<br \>
+<div class="fb_indent"><tt>Len("hello" & " " & "world")</tt><br \>
+<div class="fb_indent">Len function evaluating the length of the string expression.<br \>
+<br \>
+</div></div><b>-</b> Logical expression:<br \>
+<div class="fb_indent"><tt>10 &gt; 9</tt><br \>
+<div class="fb_indent">evaluates to boolean value true (more precisely produces the integer value -1 here).<br \>
+</div><tt>10 &lt; 20</tt><br \>
+<div class="fb_indent">evaluates to boolean value false (more precisely produces the integer value 0 here).<br \>
+</div><tt>true</tt><br \>
+<div class="fb_indent">evaluates to boolean value true.<br \>
+</div><tt>a=20 And b=30</tt><br \>
+<div class="fb_indent">evaluates to true (-1) or false (0) based on the values of a and b.<br \>
+<br \>
+</div></div></div><u>Basic examples of statements</u><br \>
+<div class="fb_indent"><b>-</b> Statement:<br \>
+<div class="fb_indent"><tt>Print 10 + 13<br \>
+Print "hello" & " " & "world"</tt><br \>
+<div class="fb_indent">where the arguments of the two Print statements are expressions listed above.<br \>
+<br \>
+</div></div><b>-</b> Assignment statement:<br \>
+<div class="fb_indent"><tt>average = 55 + 33</tt><br \>
+<div class="fb_indent">where the right-hand-side is an expression.<br \>
+<br \>
+</div></div><b>-</b> Declaration statement with initializer:<br \>
+<div class="fb_indent"><tt>Dim As Integer I = J + 3</tt><br \>
+<div class="fb_indent">where the right-hand-side of the initializer is an expression.<br \>
+<br \>
+</div></div><b>-</b> Conditional statement:<br \>
+<div class="fb_indent"><tt>If (expression) Then<br \>
+<div class="fb_indent">statement 1<br \>
+</div>Else<br \>
+<div class="fb_indent">statement 2<br \>
+</div>End If</tt><br \>
+<div class="fb_indent">if the expression following the If statement evaluates to a truth value, statement 1 is executed else statement 2 is executed.<br \>
+<br \>
+</div></div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgConstantExpressions.html">Constant Expressions</a><br \>
+<li> <a href="ProPgAssignments.html">Assignments</a><br \>
+<li> <a href="CatPgOperators.html">Operator list</a><br \>
+<li> <a href="OpPrecedence.html">Operator Precedence</a><br \>
+<li> <a href="ProPgControlFlow.html">Control Flow Statements</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

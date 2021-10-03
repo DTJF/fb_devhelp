@@ -1,0 +1,199 @@
+<html>
+<head>
+<title>ThreadSelf</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">ThreadSelf</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Return the thread handle of the current thread.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgFunction.html">Function</a> <b>ThreadSelf</b> ( ) <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+#include "fbthread.bi"<br \>
+<i>result</i> = <b>ThreadSelf</b><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Return Value</div><div class="fb_sect_cont"><br \>
+<b>ThreadSelf</b> returns an <tt>Any Ptr</tt> handle of the current thread.<br \>
+<br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<b>ThreadSelf</b> is used to get the handle of the current thread.<br \>
+<br \>
+This function can uniquely identify the existing threads:<br \>
+<div class="fb_indent"><b>-</b> If there are multiple threads, and one thread is completed, then that handle can be reused.<br \>
+<b>-</b> So for all the only threads still running, the handles are unique.<br \>
+<br \>
+</div>When a new thread is created, a handle to the thread is returned by the creation function.<br \>
+When the thread runs code, <b>ThreadSelf</b> allows to return the handle of the thread (the implicit main thread also has its own unique handle).<br \>
+<br \>
+<b>ThreadSelf</b> may be used to code some sort of TLS (Thread Local Storage) from the unique handle of each thread (including the implicit main thread).<br \>
+Therefore, a same global variable name may be defined, but with a stored value specific to the thread that accesses it.<br \>
+This allows generic procedures to be coded, but with parameters depending on the thread which executes them (see 3rd example below).<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;fbthread.bi&quot;<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">phandle</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">myThread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Thread&nbsp;handle:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">ThreadSelf</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">phandle</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">myThread</span><span class="oth">)</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">phandle</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">))</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Checking for equality between the thread handle returned by ThreadCreate at thread creation and the one returned by ThreadSelf from thread running:<br \>
+<tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;fbthread.bi&quot;<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">phandle</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pmutex</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">myThread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">pmutex</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">'&nbsp;to&nbsp;ensure&nbsp;that&nbsp;ThreadCreate&nbsp;line&nbsp;is&nbsp;completed&nbsp;before&nbsp;accessing&nbsp;the&nbsp;handle&nbsp;value</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">phandle1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">CPtr</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">p</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">pmutex</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">phandle2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadSelf</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Left</span><span class="oth">(</span><span class="quo">&quot;&nbsp;&nbsp;&nbsp;ThreadCreate:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">phandle1</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Space</span><span class="oth">(</span><span class="num">18</span><span class="oth">),</span>&nbsp;<span class="num">36</span><span class="oth">)</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;ThreadSelf:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">phandle2</span>&nbsp;&nbsp;<span class="com">'&nbsp;single&nbsp;print&nbsp;with&nbsp;concatenated&nbsp;string&nbsp;avoids&nbsp;using&nbsp;a&nbsp;mutex</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">100</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Handles&nbsp;returned&nbsp;from:&quot;</span><br />
+<span class="wrd">pmutex</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">MutexCreate</span><span class="oth">()</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">pmutex</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">'&nbsp;to&nbsp;ensure&nbsp;that&nbsp;ThreadCreate&nbsp;line&nbsp;is&nbsp;completed&nbsp;before&nbsp;thread&nbsp;accesses&nbsp;the&nbsp;handle&nbsp;value</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">phandle</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">myThread</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">phandle</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">pmutex</span><span class="oth">)</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">phandle</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">))</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">MutexDestroy</span><span class="oth">(</span><span class="wrd">pmutex</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Example of a sort of TLS (Thread Local Storage):<br \>
+(see the end of the "Description" paragraph)<br \>
+<tt><div class="freebasic">
+<span class="def">#include&nbsp;Once&nbsp;&quot;fbthread.bi&quot;<br />
+</span><br />
+<span class="key">Function</span>&nbsp;<span class="wrd">TLSindex</span><span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">'&nbsp;returning&nbsp;a&nbsp;unique&nbsp;thread&nbsp;index&nbsp;(incremented&nbsp;with&nbsp;each&nbsp;new&nbsp;thread)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">TLSind</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">-</span><span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">LBound</span><span class="oth">(</span><span class="wrd">TLSind</span><span class="oth">)</span>&nbsp;<span class="key">To</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">TLSind</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">TLSind</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadSelf</span><span class="oth">()</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">index</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">For</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">-</span><span class="num">1</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">index</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">TLSind</span><span class="oth">)</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">TLSind</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">TLSind</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadSelf</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">index</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">TLSinteger</span><span class="oth">()</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">'&nbsp;emulation&nbsp;of&nbsp;global&nbsp;integer&nbsp;with&nbsp;value&nbsp;depending&nbsp;on&nbsp;thread&nbsp;using&nbsp;it</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">TLSint</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">TLSindex</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">index</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="key">UBound</span><span class="oth">(</span><span class="wrd">TLSint</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ReDim</span>&nbsp;<span class="key">Preserve</span>&nbsp;<span class="wrd">TLSint</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">TLSint</span><span class="oth">(</span><span class="wrd">index</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="com">'------------------------------------------------------------------------------</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">threadData</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">handle</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">prefix</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">suffix</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">tempo</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">counter</span><span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;&nbsp;<span class="com">'&nbsp;definition&nbsp;of&nbsp;a&nbsp;generic&nbsp;counter&nbsp;with&nbsp;counting&nbsp;depending&nbsp;on&nbsp;thread&nbsp;calling&nbsp;it</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">TLSinteger</span><span class="oth">()</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">TLSinteger</span><span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">Thread</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">threadData</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ptd</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">c</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">c</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">counter</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">ptd</span><span class="oth">-&gt;</span><span class="wrd">prefix</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">c</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">ptd</span><span class="oth">-&gt;</span><span class="wrd">suffix</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span>&nbsp;&nbsp;<span class="com">'&nbsp;single&nbsp;print&nbsp;with&nbsp;concatenated&nbsp;string&nbsp;avoids&nbsp;using&nbsp;a&nbsp;mutex</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="wrd">ptd</span><span class="oth">-&gt;</span><span class="wrd">tempo</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">c</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">12</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">'------------------------------------------------------------------------------</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;|x|&nbsp;:&nbsp;counting&nbsp;from&nbsp;thread&nbsp;a&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;(x)&nbsp;:&nbsp;counting&nbsp;from&nbsp;thread&nbsp;b&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;[x]&nbsp;:&nbsp;counting&nbsp;from&nbsp;thread&nbsp;c&quot;</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">threadData</span>&nbsp;<span class="wrd">mtlsa</span><br />
+<span class="wrd">mtlsa.prefix</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;|&quot;</span><br />
+<span class="wrd">mtlsa.suffix</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;|&quot;</span><br />
+<span class="wrd">mtlsa.tempo</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">250</span><br />
+<span class="wrd">mtlsa.handle</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">Thread</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">mtlsa</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">threadData</span>&nbsp;<span class="wrd">mtlsb</span><br />
+<span class="wrd">mtlsb.prefix</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;(&quot;</span><br />
+<span class="wrd">mtlsb.suffix</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;)&quot;</span><br />
+<span class="wrd">mtlsb.tempo</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">150</span><br />
+<span class="wrd">mtlsb.handle</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">Thread</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">mtlsb</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">threadData</span>&nbsp;<span class="wrd">mtlsc</span><br />
+<span class="wrd">mtlsc.prefix</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;[&quot;</span><br />
+<span class="wrd">mtlsc.suffix</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;]&quot;</span><br />
+<span class="wrd">mtlsc.tempo</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">100</span><br />
+<span class="wrd">mtlsc.handle</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">Thread</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">mtlsc</span><span class="oth">)</span><br />
+<br />
+<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">mtlsa.handle</span><span class="oth">)</span><br />
+<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">mtlsb.handle</span><span class="oth">)</span><br />
+<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">mtlsc.handle</span><span class="oth">)</span><br />
+<br />
+<span class="key">Print</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;end&nbsp;of&nbsp;threads&quot;</span><br />
+<br />
+<span class="key">Sleep</span>&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Threading is not allowed in the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Platform Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> <b>ThreadSelf</b> is not available with the DOS version of FreeBASIC, because multithreading is not supported by DOS kernel nor the used extender.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

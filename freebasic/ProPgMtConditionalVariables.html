@@ -1,0 +1,318 @@
+<html>
+<head>
+<title>Conditional Variables</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Conditional Variables</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The built-in procedures that create, wait-for/signal, and destroy <b>Conditional Variables</b>.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+A condition variable is a mechanism that allows threads to wait (without wasting CPU cycles) for some even to occur.<br \>
+Several threads may wait on a condition variable, until some other thread signals this condition variable (thus sending a notification).<br \>
+At this time, one of the threads waiting on this condition variable wakes up, and can act on the event. It is possible to also wake up all threads waiting on this condition variable by using a broadcast method on this variable.<br \>
+<br \>
+A condition variable does not provide locking. Thus, a mutex must be used along with the condition variable, to provide the necessary locking when accessing this condition variable.<br \>
+<br \>
+Conditional variable capability (and also mutex capability) can be fully used even with a detached thread (only its handler is no longer accessible by its identifier).<br \>
+<br \>
+<div class="fb_sect_title">Creating / Destructing a conditional variable</div><div class="fb_sect_cont"><br \>
+<tt><a href="KeyPgCondCreate.html">CondCreate</a></tt> creates a condition variable, returning a handle identifier which is to be referred to when destroying the condition variable.<br \>
+Condition variables created with <tt><a href="KeyPgCondCreate.html">CondCreate</a></tt> should be destroyed when no longer needed or before the end of the program with <tt><a href="KeyPgCondDestroy.html">CondDestroy</a></tt> (to avoid leaking resources in the OS).<br \>
+<br \>
+<u>Create</u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgFunction.html">Function</a> <a href="KeyPgCondCreate.html">CondCreate</a> ( ) <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><i>conditionalid</i> = <a href="KeyPgCondCreate.html">CondCreate</a></tt><br \>
+</div><b>-</b> Return value:<br \>
+<div class="fb_indent">The <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle <tt><i>(conditionalid)</i></tt> to the conditional variable created, or the null pointer (<tt>0</tt>) on failure.<br \>
+<br \>
+</div></div><u>Destroy</u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <a href="KeyPgCondDestroy.html">CondDestroy</a> ( <a href="KeyPgByval.html">ByVal</a> <i>conditionalid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><a href="KeyPgCondDestroy.html">CondDestroy</a> ( <i>conditionalid</i> )</tt><br \>
+</div><b>-</b> Parameter:<br \>
+<div class="fb_indent"><tt><i>conditionalid</i></tt><br \>
+<div class="fb_indent">The <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle of the conditional variable to be destroyed.<br \>
+<br \>
+</div></div></div><u>Description</u><br \>
+<div class="fb_indent"><tt><a href="KeyPgCondDestroy.html">CondDestroy</a></tt> destroys a condition variable, freeing the resources it might hold.<br \>
+No threads must be waiting on the condition variable on entrance to <tt><a href="KeyPgCondDestroy.html">CondDestroy</a></tt>.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Waiting-for/Signaling a conditional variable</div><div class="fb_sect_cont"><br \>
+The condition variable mechanism allows threads to suspend execution and relinquish the processor until some condition is true.<br \>
+<br \>
+<tt><a href="KeyPgCondWait.html">CondWait</a></tt> stops execution of the current thread until some condition becomes true.<br \>
+<tt><a href="KeyPgCondSignal.html">CondSignal</a></tt> allows to restart one thread waiting on the conditional,  while <tt><a href="KeyPgCondBroadcast.html">CondBroadcast</a></tt> allows to restart all threads waiting on the conditional.<br \>
+<br \>
+<u>Wait-for</u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <a href="KeyPgCondWait.html">CondWait</a> ( <a href="KeyPgByval.html">ByVal</a> <i>conditionalid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a>, <a href="KeyPgByval.html">ByVal</a> <i>mutexid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><a href="KeyPgCondWait.html">CondWait</a> ( <i>conditionalid</i>, <i>mutexid</i> )</tt><br \>
+</div><b>-</b> Parameters:<br \>
+<div class="fb_indent"><tt><i>conditionalid</i></tt><br \>
+<div class="fb_indent">The handle identifier of a conditional variable.<br \>
+</div><tt><i>mutexid</i></tt><br \>
+<div class="fb_indent">The handle identifier of the mutex associated with this conditional variable, which must be locked when testing the condition and calling <tt><a href="KeyPgCondWait.html">CondWait</a></tt>.<br \>
+<br \>
+</div></div></div><u>Signal</u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <a href="KeyPgCondSignal.html">CondSignal</a> ( <a href="KeyPgByval.html">ByVal</a> <i>conditionalid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div>or<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <a href="KeyPgCondBroadcast.html">CondBroadcast</a> ( <a href="KeyPgByval.html">ByVal</a> <i>conditionalid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div></div><b>-</b> Usage:<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><a href="KeyPgCondSignal.html">CondSignal</a> ( <i>conditionalid</i> )</tt><br \>
+</div>or<br \>
+<div class="fb_indent"><tt><a href="KeyPgCondBroadcast.html">CondBroadcast</a> ( <i>conditionalid</i> )</tt><br \>
+</div></div><b>-</b> Parameter:<br \>
+<div class="fb_indent"><tt><i>conditionalid</i></tt><br \>
+<div class="fb_indent">The <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle of the conditional variable to be signaled.<br \>
+<br \>
+</div></div></div><u>Description</u><br \>
+<div class="fb_indent">Once the conditional variable is created with <tt><a href="KeyPgCondCreate.html">CondCreate</a></tt> and the threads are started, one of more of them (including the implicit main thread executing main program) can be set in waiting for the conditional state by <tt><a href="KeyPgCondWait.html">CondWait</a></tt>.<br \>
+They will be stopped until another thread signals by <tt><a href="KeyPgCondSignal.html">CondSignal</a></tt> that one among the waiting threads can restart.<br \>
+<tt><a href="KeyPgCondBroadcast.html">CondBroadcast</a></tt> can be used to restart all threads waiting for the conditional.<br \>
+<br \>
+A condition variable must always be associated with a mutex to avoid a race condition created by one thread preparing to wait and another thread which may signal the condition before the first thread actually waits on it resulting in a deadlock. The thread will be perpetually waiting for a signal that is never sent. Any mutex can be used, there is no explicit link between the mutex and the condition variable.<br \>
+<br \>
+When calling <tt><a href="KeyPgCondWait.html">CondWait</a></tt>, mutex should already be locked (using the same mutex as one used with <tt><a href="KeyPgCondSignal.html">CondSignal</a></tt> or <tt><a href="KeyPgCondBroadcast.html">CondBroadcast</a></tt>).<br \>
+The detailed sequence is the following:<br \>
+<div class="fb_indent"><b>-</b> An atomic unlock of the mutex is applied before entering in waiting on the conditional variable in order to release other eventual threads using this mutex (this is why <tt><a href="KeyPgCondWait.html">CondWait</a></tt> takes as arguments both the mutex and condition variable).<br \>
+<b>-</b> The thread execution is suspended and does not consume any CPU time until the condition variable is signaled.<br \>
+<b>-</b> When the condition variable becomes signaled, mutex is atomically re-locked.<br \>
+<b>-</b> The thread execution can resume after the <tt><a href="KeyPgCondWait.html">CondWait</a></tt> statement, but is suspended because of the locked mutex owned by the signal-caller.<br \>
+<b>-</b> So, the signal-caller is then responsible for unlocking mutex in order that the called-thread completes the <tt><a href="KeyPgCondWait.html">CondWait</a></tt> subroutine and that execution after the <tt><a href="KeyPgCondWait.html">CondWait</a></tt> call can then really resume.<br \>
+<br \>
+</div><tt><a href="KeyPgCondSignal.html">CondSignal</a></tt> restarts one thread waiting. It should be called after mutex is locked (using the same mutex as one used with <tt><a href="KeyPgCondWait.html">CondWait</a></tt>):<br \>
+<div class="fb_indent"><b>-</b> If no threads are waiting on the conditional, nothing happens (the signal is lost forever).<br \>
+<b>-</b> if several are waiting, only one is restarted:<br \>
+<div class="fb_indent"><b>.</b> It might be that a condition variable that has several threads waiting on it is signaled many times, and yet one of the threads waiting on it never awakened.<br \>
+<b>.</b> This is because it is not known which of the waiting threads is awakened when the variable is signaled.<br \>
+<b>.</b> It might be that the awakened thread quickly comes back to waiting on the condition variables, and gets awakened again when the variable is signaled again, and so on (no wake-up priority based on history is assured).<br \>
+<b>.</b> It is up to the programmer to make sure this situation does not occur if it implies bad behavior.<br \>
+<br \>
+</div></div>When using <tt><a href="KeyPgCondBroadcast.html">CondBroadcast</a></tt>, this does not mean all threads are running together:<br \>
+<div class="fb_indent"><b>-</b> Each of them tries to lock the mutex again before returning from their wait function.<br \>
+<b>-</b> And thus they will start running one by one, each one locking the mutex, doing their work, and freeing the mutex before the next thread gets its chance to run.<br \>
+<br \>
+</div><b>Note:</b><br \>
+<div class="fb_indent"><b>-</b> It is a good habit to use <tt><a href="KeyPgCondWait.html">CondWait</a></tt> in a protected way against eventual spurious wake-ups.<br \>
+<b>-</b> For that, <tt><a href="KeyPgCondWait.html">CondWait</a></tt> is put within a loop for checking that a Boolean predicate is indeed true (predicate set true by another thread just before executing <tt><a href="KeyPgCondSignal.html">CondSignal</a></tt> or <tt><a href="KeyPgCondBroadcast.html">CondBroadcast</a></tt>) when the thread has finished waiting:<br \>
+<div class="fb_indent"><div class="fb_indent"><b><tt>While predicate &lt;&gt; True<br \>
+<div class="fb_indent">Condwait(conditionalid, mutexid)<br \>
+</div>Wend<br \>
+predicate = False</tt></b><br \>
+</div></div><b>-</b> The loop can terminate only when the predicate is true.<br \>
+<b>-</b> On the other hand, if the predicate is already true before the thread reaches the loop, <tt><a href="KeyPgCondWait.html">CondWait</a></tt> is downright skipped (allowing to take into account a case of <tt><a href="KeyPgCondSignal.html">CondSignal</a></tt> or <tt><a href="KeyPgCondBroadcast.html">CondBroadcast</a></tt> that would have been lost otherwise, because prematurely executed in a second thread before the first thread is really waiting for this).<br \>
+<br \>
+</div><b>Pseudo-codes for detailed coding by applying all proper above rules:</b><br \>
+</div><ul><ul><ul><li> Pseudo-code sub-section for a thread:<br \>
+</ul></ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> Pseudo-code for the "waiting-for" critical sub-section (with the links to/from critical section items of other thread):<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'  Principle of mutual exclusion + waiting-for, for a thread sub-section
+'  (connecting lines join the sender(s) and receiver(s) impacted by each action occurring during the sequence)
+'
+'          Thread                                         Other Thread
+'      MUTEXLOCK(mutexID) <-------------------------- from ( atomic_mutex_unlock(mutexID) ) or MUTEXUNLOCK(mutexID)
+'      .......
+'      While booleanT <> True <---------------------- from booleanT = True
+'          ( atomic_mutex_unlock(mutexID) ) --------> to MUTEXLOCK(mutexID) or ( atomic_mutex_re-lock(mutexID) )
+'          CONDWAIT(conditionalID, mutexID) <-------- from CONDSIGNAL(conditionalID)
+'          ( atomic_mutex_re-lock(mutexID) ) <------- from ( atomic_mutex_unlock(mutexID) ) or MUTEXUNLOCK(mutexID)
+'      Wend
+'      booleanT = False
+'      .......
+'      MUTEXUNLOCK(mutexID) ------------------------> to MUTEXLOCK(mutexID) or ( atomic_mutex_re-lock(mutexID) )
+						</pre></div><b>-</b> Pseudo-code for the "signaling" critical sub-section (with the links to/from the critical section items of other thread):<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'  Principle of mutual exclusion + signaling, for a thread sub-section
+'  (connecting lines join the sender(s) and receiver(s) impacted by each action occurring during the sequence)
+'
+'          Thread                              Other Thread
+'      MUTEXLOCK(mutexID) <--------------- from ( atomic_mutex_unlock(mutexID) ) or MUTEXUNLOCK(mutexID)
+'      .......
+'      booleanOT = True -----------------> to While booleanOT <> True
+'      CONDSIGNAL(conditionalID) --------> to CONDWAIT(conditionalID, mutexID)
+'      .......
+'      MUTEXUNLOCK(mutexID) -------------> to MUTEXLOCK(mutexID) or ( atomic_mutex_re-lock(mutexID) )
+						</pre></div></div></div></div></div><ul><ul><ul><li> Pseudo-code section for a thread:<br \>
+</ul></ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> Pseudo-code for the "signaling, then waiting-for" critical section (with the links to/from the critical section items of other thread):<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'  Principle (1) of mutual exclusion + mutual synchronization, for a thread section
+'  (connecting lines join the sender(s) and receiver(s) impacted by each action occurring during the sequence)
+'
+'          Thread                                        Other Thread
+'      MUTEXLOCK(mutexID) <------------------------- from ( atomic_mutex_unlock(mutexID) ) or MUTEXUNLOCK(mutexID)
+'      Do_something_1_with_exclusion
+'      booleanOT = True ---------------------------> to While booleanOT <> True
+'      CONDSIGNAL(conditionalID) ------------------> to CONDWAIT(conditionalID, mutexID)
+'      While booleanT <> True <--------------------- from booleanT = True
+'          ( atomic_mutex_unlock(mutexID) ) -------> to MUTEXLOCK(mutexID) or ( atomic_mutex_re-lock(mutexID) )
+'          CONDWAIT(conditionalID, mutexID) <------- from CONDSIGNAL(conditionalID)
+'          ( atomic_mutex_re-lock(mutexID) ) <------ from ( atomic_mutex_unlock(mutexID) ) or MUTEXUNLOCK(mutexID)
+'      Wend
+'      booleanT = False
+'      Do_something_2_with_exclusion
+'      MUTEXUNLOCK(mutexID) -----------------------> to MUTEXLOCK(mutexID) or ( atomic_mutex_re-lock(mutexID) )
+						</pre></div><b>-</b> Pseudo-code for the "waiting-for, then signaling" critical section (with the links to/from  critical section items of other thread):<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'  Principle (2) of mutual exclusion + mutual synchronization, for a thread section
+'  (connecting lines join the sender(s) and receiver(s) impacted by each action occurring during the sequence)
+'
+'          Thread                                         Other Thread
+'      MUTEXLOCK(mutexID) <-------------------------- from ( atomic_mutex_unlock(mutexID) ) or MUTEXUNLOCK(mutexID)
+'      Do_something_1_with_exclusion
+'      While booleanT <> True <---------------------- from booleanT = True
+'          ( atomic_mutex_unlock(mutexID) ) --------> to MUTEXLOCK(mutexID) or ( atomic_mutex_re-lock(mutexID) )
+'          CONDWAIT(conditionalID, mutexID) <-------- from CONDSIGNAL(conditionalID)
+'          ( atomic_mutex_re-lock(mutexID) ) <------- from ( atomic_mutex_unlock(mutexID) ) or MUTEXUNLOCK(mutexID)
+'      Wend
+'      booleanT = False
+'      Do_something_2_with_exclusion
+'      booleanOT = True ----------------------------> to While booleanOT <> True
+'      CONDSIGNAL(conditionalID) -------------------> to CONDWAIT(conditionalID, mutexID)
+'      MUTEXUNLOCK(mutexID) ------------------------> to MUTEXLOCK(mutexID) or ( atomic_mutex_re-lock(mutexID) )
+						</pre></div></div></div></div></div><ul><ul><ul><li> Pseudo-code section example for each of 2 threads:<br \>
+</ul></ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><div class="fb_indent"><b>-</b> Pseudo-code for the "signaling, then waiting-for" critical section of a main thread and for "waiting-for, then signaling" critical section of a child thread (with the links to/from critical section items of both threads):<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'  Principle (example) of mutual exclusion + mutual synchronization sections, between 2 threads,
+'  using the principle (1) for the main thread, and the principle (2) for the child thread
+'  (connecting lines join the sender(s) and receiver(s) impacted by each action occurring during the sequence)
+'
+'          Main Thread                                                                          Child Thread
+'      MUTEXLOCK(mutexID) <-----------------------------.     .-------------.-------------> MUTEXLOCK(mutexID)
+'      Do_something_1_with_exclusion                    |     |             |               Do_something_1_with_exclusion
+'      boolC = True ----------------------------------- | --- | ----------- | ------------> While boolC <> True
+'      CONDSIGNAL(conditionalID) ---------------------- | --- | ----------- | ---.    .-------- ( atomic_mutex_unlock(mutexID) )
+'      While boolM <> True <--------------------------- | --- | ---------.  |    '--- | ------> CONDWAIT(conditionalID, mutexID)
+'          ( atomic_mutex_unlock(mutexID) ) ------.     |     |          |  '-------- | ------> ( atomic_mutex_re-lock(mutexID) )
+'          CONDWAIT(conditionalID, mutexID) <---- | --- | --- | ------.  |            |     Wend
+'          ( atomic_mutex_re-lock(mutexID) ) <--- | ----'---- | ---.  |  |            |     boolC = False
+'      Wend                                       |           |    |  |  |            |     Do_something_2_with_exclusion
+'      boolM = False                              |           |    |  |  '----------- | --- boolM = True
+'      Do_something_2_with_exclusion              |           |    |  '-------------- | --- CONDSIGNAL(conditionalID)
+'      MUTEXUNLOCK(mutexID) ----------------------'-----------'    '------------------'---- MUTEXUNLOCK(mutexID)
+						</pre></div></div></div></div></div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+The second example on the previous page (<tt><a href="ProPgMtMutualExclusion.html">Mutual Exclusion</a></tt>) is modified by using a conditional variable to exhibit a synchronization example.<br \>
+So, the two sections of code, previously protected by a mutual exclusion block <tt>[Mutexlock ... Mutexunlock]</tt>, are now synchronized in order that each thread displays one after the other its character sequence ("[M]" or "(C)").<br \>
+<br \>
+In this example, the two threads critical sections have their sub-sections in an reverse order:<br \>
+<div class="fb_indent"><b>-</b> main thread critical section: at first signaling, then waiting for,<br \>
+<b>-</b> child thread critical section: at first waiting for, then signaling.<br \>
+</div>Therefore the main thread will always be the first to display its sequence:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'  Principle of mutual exclusion + mutual synchronization between 2 threads with loop
+'  (connecting lines join the sender(s) and receiver(s) impacted by each action occurring during the sequence)
+'
+'          Main Thread                                                                  Child Thread
+'  .....                                                                          .....
+'  Loop                                                                           Loop
+'      MUTEXLOCK(mutID) <-----------------------------.     .-------------.---------> MUTEXLOCK(mutID)
+'      Do_something_with_exclusion              .---- | --- | ----------- | --------> While boolC <> True
+'      boolC = True ----------------------------'     |     |             |     .-------- ( atomic_mutex_unlock(mutID) )
+'      CONDSIGNAL(condID) --------------------------- | --- | ----------- | --- | ------> CONDWAIT(condID, mutID)
+'      While boolM <> True <------------------------- | --- | ---------.  '---- | ------> ( atomic_mutex_re-lock(mutID) )
+'          ( atomic_mutex_unlock(mutID) ) ------.     |     |          |        |     Wend
+'          CONDWAIT(condID, mutID) <----------- | --- | --- | ------.  |        |     boolC = False
+'          ( atomic_mutex_re-lock(mutID) ) <--- | ----'---- | ---.  |  |        |     Do_something_with_exclusion
+'      Wend                                     |           |    |  |  '------- | --- boolM = True
+'      boolM = False                            |           |    |  '---------- | --- CONDSIGNAL(condID)
+'      MUTEXUNLOCK(mutID) ----------------------'-----------'    '--------------'---- MUTEXUNLOCK(mutID)
+'  End Loop                                                                       End Loop
+'  .....                                                                          .....
+		</pre><tt><div class="freebasic">
+<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">threadID</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;an&nbsp;'Any&nbsp;Ptr'&nbsp;thread-ID&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">mutID</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;a&nbsp;global&nbsp;'Any&nbsp;Ptr'&nbsp;mutex-ID</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">mutID</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">MutexCreate</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;creation&nbsp;of&nbsp;the&nbsp;mutex</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span>&nbsp;<span class="wrd">boolM</span><span class="oth">,</span>&nbsp;<span class="wrd">boolC</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;2&nbsp;global&nbsp;'Boolean'&nbsp;boolM&nbsp;and&nbsp;boolC&nbsp;as&nbsp;predicates</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">condID</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;a&nbsp;global&nbsp;'Any&nbsp;Ptr'&nbsp;conditional-ID</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">condID</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">CondCreate</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;creation&nbsp;of&nbsp;the&nbsp;conditional</span><br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;[M]&quot;&quot;:&nbsp;from&nbsp;'Main'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;(C)&quot;&quot;:&nbsp;from&nbsp;'Child'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="wrd">threadID</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">thread</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;creation&nbsp;of&nbsp;the&nbsp;child&nbsp;thread&nbsp;from&nbsp;the&nbsp;main&nbsp;thread</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;main&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;mutex&nbsp;locked&nbsp;at&nbsp;the&nbsp;beginning&nbsp;of&nbsp;the&nbsp;exclusive&nbsp;section</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;[&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;M&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;]&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">boolC</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">True</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;to&nbsp;'True'&nbsp;the&nbsp;predicate&nbsp;for&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">CondSignal</span><span class="oth">(</span><span class="wrd">condID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;signal&nbsp;to&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">boolM</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="key">True</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;predicate&nbsp;from&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">CondWait</span><span class="oth">(</span><span class="wrd">condID</span><span class="oth">,</span>&nbsp;<span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;wait&nbsp;for&nbsp;signal&nbsp;from&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">boolM</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">False</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;reset&nbsp;the&nbsp;predicate&nbsp;from&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;mutex&nbsp;unlocked&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;exclusive&nbsp;section</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">threadID</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;waiting&nbsp;for&nbsp;the&nbsp;child&nbsp;thread&nbsp;termination</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Child'&nbsp;thread&nbsp;finished&quot;</span><br />
+<br />
+<span class="key">MutexDestroy</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;destruction&nbsp;of&nbsp;the&nbsp;mutex</span><br />
+<span class="key">CondDestroy</span><span class="oth">(</span><span class="wrd">condID</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;destruction&nbsp;of&nbsp;the&nbsp;conditional</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;sub&nbsp;executed&nbsp;by&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexLock</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;mutex&nbsp;locked&nbsp;at&nbsp;the&nbsp;beginning&nbsp;of&nbsp;the&nbsp;exclusive&nbsp;section</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">boolC</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="key">True</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;predicate&nbsp;from&nbsp;the&nbsp;main&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">CondWait</span><span class="oth">(</span><span class="wrd">condID</span><span class="oth">,</span>&nbsp;<span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;wait&nbsp;for&nbsp;signal&nbsp;from&nbsp;the&nbsp;main&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">boolC</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">False</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;reset&nbsp;the&nbsp;predicate&nbsp;from&nbsp;the&nbsp;main&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;(&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;C&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">50</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;)&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">boolM</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">True</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;to&nbsp;'True'&nbsp;the&nbsp;predicate&nbsp;for&nbsp;the&nbsp;main&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">CondSignal</span><span class="oth">(</span><span class="wrd">condID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;signal&nbsp;to&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">MutexUnlock</span><span class="oth">(</span><span class="wrd">mutID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;mutex&nbsp;unlocked&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;exclusive&nbsp;section</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">250</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+"[M]": from 'Main' thread
+"(C)": from 'Child' thread
+
+[M](C)[M](C)[M](C)[M](C)[M](C)[M](C)[M](C)[M](C)[M](C)[M](C)
+'Child' thread finished
+			</pre></div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgCondCreate.html">CondCreate</a></tt>, <tt><a href="KeyPgCondDestroy.html">CondDestroy</a></tt>,<br \>
+<li> <tt><a href="KeyPgCondWait.html">CondWait</a></tt>, <tt><a href="KeyPgCondSignal.html">CondSignal</a></tt>, <tt><a href="KeyPgCondBroadcast.html">CondBroadcast</a></tt><br \>
+<li> <a href="ProPgMultiThreading.html">Multi-Threading Overview</a><br \>
+<li> <a href="ProPgMtThreads.html">Threads</a><br \>
+<li> <a href="ProPgMtMutualExclusion.html">Mutual Exclusion</a><br \>
+<li> <a href="ProPgMtCriticalSections.html">Critical Sections</a><br \>
+<li> <a href="ProPgMtCriticalSectionsFAQ.html">Critical Sections FAQ</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>Extends Wstring</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Extends Wstring</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Specifies a type which inherits a Wstring behavior<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<a href="KeyPgType.html">Type</a>|<a href="KeyPgUnion.html">Union</a> <i>typename</i> <b>Extends Wstring</b> [, <i>base_typename</i>]<br \>
+<div class="fb_indent">...<br \>
+</div>End <a href="KeyPgType.html">Type</a>|<a href="KeyPgUnion.html">Union</a><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>Extends Wstring</b></tt> declares <tt><i>typename</i></tt> to inherit properties and behaviors of a <tt><a href="KeyPgWstring.html">WString</a></tt>. Purpose is to allow users to create custom string types (with i.e. dynamic memory management) that can integrate well in to existing fbc compiler built ins (good interoperability with fbc's <tt><a href="KeyPgWstring.html">WString</a></tt> type).<br \>
+<br \>
+This declaration of such a UDT with a suitable <tt><a href="KeyPgOpCast.html">Cast</a></tt> operator will instruct compiler to convert the UDT to a <tt><a href="KeyPgWstring.html">WString</a></tt> (in addition, other suitable operators as <tt><a href="KeyPgOpLet.html">Let</a></tt>, <tt><a href="KeyPgOpPtrIndex.html">[] (Pointer Index)</a></tt>, <tt><a href="KeyPgLen.html">Len</a></tt>, ..., can be also declared).<br \>
+<br \>
+<tt><a href="KeyPgWstring.html">WString</a></tt> behaviour can be inherited directly, or indirectly and singly from a base-type.<br \>
+<tt><a href="KeyPgWstring.html">WString</a></tt> behaviour can be inherited by a UDT also extending <tt><i>base_typename</i></tt> (a kind of pseudo multiple-inheritance).<br \>
+<br \>
+<b>Note:</b> By declaring a type (directly or indirectly) as <tt><b>Extends Wstring</b></tt> (in addition to defining a suitable <tt><a href="KeyPgOpCast.html">Cast</a></tt> operator only), this promotes it fully compatible even with <tt><a href="KeyPgOpStrptr.html">StrPtr</a></tt>/<tt><a href="KeyPgSadd.html">SAdd</a></tt>, <tt><a href="KeyPgLset.html">LSet</a></tt>/<tt><a href="KeyPgRset.html">RSet</a></tt>, and <tt><a href="KeyPgSelectcase.html">Select Case</a></tt>, but currently not yet with the built in functions <tt><a href="KeyPgVal.html">Val</a></tt>/<tt><a href="KeyPgValint.html">ValInt</a></tt>/<tt><a href="KeyPgVallng.html">ValLng</a></tt>/<tt><a href="KeyPgValuint.html">ValUInt</a></tt>/<tt><a href="KeyPgValulng.html">Valunlg</a></tt> and <tt><a href="KeyPgLeft.html">Left</a></tt>/<tt><a href="KeyPgRight.html">Right</a></tt>.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+See <tt><a href="KeyPgExtendsZstring.html">Extends Zstring</a></tt> for similar examples.<br \>
+<br \>
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Not available in the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect unless referenced with the alias <tt><b>__Extends __Wstring</b></tt>, but unusable because no member procedure is allowed in this dialect.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgType.html">Type</a></tt><br \>
+<li> <tt><a href="KeyPgUnion.html">Union</a></tt><br \>
+<li> <tt><a href="KeyPgExtends.html">Extends</a></tt><br \>
+<li> <tt><a href="KeyPgWstring.html">WString</a></tt><br \>
+<li> <tt><a href="KeyPgExtendsZstring.html">Extends Zstring</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

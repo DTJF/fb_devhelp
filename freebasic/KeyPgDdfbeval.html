@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>__FB_EVAL__</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">__FB_EVAL__</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Intrinsic define (macro) performed by the compiler.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+__FB_EVAL__( arg )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>arg</i></tt><br \>
+<div class="fb_indent">argument<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Evaluates the argument (constant-expression) at compile time.<br \>
+<br \>
+<tt><b>__FB_EVAL__</b></tt> macro is useful where there is any of the following:<br \>
+<div class="fb_indent"><b>-</b> non functional expression (i.e. side-effects),<br \>
+<b>-</b> needs to be evaluated (i.e. simplified, respecting the operator precedence) before passing it on,<br \>
+<b>-</b> used in a place where fbc would not allow an expression.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="def">#print&nbsp;1&nbsp;+&nbsp;2<br />
+#print&nbsp;__FB_EVAL__(&nbsp;1&nbsp;+&nbsp;2&nbsp;)<br />
+#print&nbsp;4&nbsp;*&nbsp;Atn(1)<br />
+#print&nbsp;__FB_EVAL__(&nbsp;4&nbsp;*&nbsp;Atn(1)&nbsp;)<br />
+</span><br />
+<span class="com">/'&nbsp;Compiler&nbsp;output:</span><br />
+<span class="com">1&nbsp;+&nbsp;2</span><br />
+<span class="com">3</span><br />
+<span class="com">4&nbsp;*&nbsp;Atn(1)</span><br />
+<span class="com">3.141592653589793</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;&nbsp;&nbsp;In&nbsp;this&nbsp;example,&nbsp;the&nbsp;three&nbsp;'__FB_EVAL__'&nbsp;are&nbsp;absolutely&nbsp;mandatory&nbsp;in&nbsp;this&nbsp;'assign()'&nbsp;macro.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;Even&nbsp;for&nbsp;'__FB_QUOTE__(&nbsp;__FB_EVAL__(&nbsp;expr&nbsp;)&nbsp;)',&nbsp;because&nbsp;for&nbsp;the&nbsp;case&nbsp;of&nbsp;expr&nbsp;=&nbsp;cos(1/x),</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;'cos(1/x)'&nbsp;must&nbsp;be&nbsp;properly&nbsp;evaluated&nbsp;before&nbsp;be&nbsp;quoted&nbsp;(after&nbsp;the&nbsp;previous&nbsp;'assign(&quot;x&quot;,&nbsp;x+1)'),</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;otherwise&nbsp;in&nbsp;that&nbsp;case&nbsp;'cos(1/x+1)'&nbsp;is&nbsp;taken&nbsp;into&nbsp;account&nbsp;(giving&nbsp;'cos(2)')&nbsp;instead&nbsp;of&nbsp;'cos(1/(x+1))'&nbsp;(giving&nbsp;'cos&nbsp;(1/2)')</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;because&nbsp;the&nbsp;operator&nbsp;precedence&nbsp;is&nbsp;not&nbsp;applied&nbsp;by&nbsp;'__FB_QUOTE__'.</span><br />
+<br />
+<span class="def">#macro&nbsp;assign(&nbsp;sym,&nbsp;expr&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">__FB_UNQUOTE__</span><span class="oth">(</span>&nbsp;<span class="key">__FB_EVAL__</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;#undef&nbsp;&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">sym</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">__FB_UNQUOTE__</span><span class="oth">(</span>&nbsp;<span class="key">__FB_EVAL__</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;#define&nbsp;&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">sym</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="key">__FB_QUOTE__</span><span class="oth">(</span>&nbsp;<span class="key">__FB_EVAL__</span><span class="oth">(</span>&nbsp;<span class="wrd">expr</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="def">#define&nbsp;x<br />
+</span><br />
+<span class="wrd">assign</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;x&quot;</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">x</span><br />
+<br />
+<span class="wrd">assign</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;x&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">x</span><span class="oth">+</span><span class="num">1</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">x</span><br />
+<br />
+<span class="wrd">assign</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;x&quot;</span><span class="oth">,</span>&nbsp;<span class="key">Cos</span><span class="oth">(</span><span class="num">1</span><span class="oth">/</span><span class="wrd">x</span><span class="oth">)</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">x</span><br />
+<br />
+<span class="wrd">assign</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;x&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;hello&quot;</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">x</span><br />
+<br />
+<span class="wrd">assign</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;x&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">x</span><span class="oth">+</span><span class="wrd">x</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">x</span><br />
+<br />
+<span class="com">/'&nbsp;Output:</span><br />
+<span class="com">&nbsp;1</span><br />
+<span class="com">&nbsp;2</span><br />
+<span class="com">&nbsp;0.877582...</span><br />
+<span class="com">hello</span><br />
+<span class="com">hellohello</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+See also <tt><a href="KeyPgDdfbargextract.html">__FB_ARG_EXTRACT__</a></tt> example.<br \>
+<br \>
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgDdfbquote.html">__FB_QUOTE__</a></tt><br \>
+<li> <tt><a href="KeyPgDdfbunquote.html">__FB_UNQUOTE__</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

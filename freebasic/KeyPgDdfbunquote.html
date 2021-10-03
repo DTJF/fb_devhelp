@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>__FB_UNQUOTE__</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">__FB_UNQUOTE__</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Intrinsic define (macro) performed by the compiler.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+__FB_UNQUOTE__( arg )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>arg</i></tt><br \>
+<div class="fb_indent">argument<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Takes a literal string and converts it back to tokens.<br \>
+More precisely, <tt><b>__FB_UNQUOTE__</b></tt> returns a sub-quoted text compared to the one passed through the argument (the argument may already be an over-quoted string, and so the return will be a simple string in this case).<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="def">#macro&nbsp;m(&nbsp;arg&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Var</span>&nbsp;<span class="wrd">v1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">arg</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#print&nbsp;TypeOf(v1)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">v1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Var</span>&nbsp;<span class="wrd">v2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">__FB_UNQUOTE__</span><span class="oth">(</span>&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#print&nbsp;TypeOf(v2)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">v2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="wrd">m</span><span class="oth">(</span><span class="quo">&quot;&quot;&quot;Hello&quot;&quot;&quot;</span><span class="oth">)</span><br />
+<span class="wrd">m</span><span class="oth">(</span><span class="quo">&quot;1&quot;</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="com">/'&nbsp;Compiler&nbsp;output:</span><br />
+<span class="com">STRING</span><br />
+<span class="com">STRING</span><br />
+<span class="com">STRING</span><br />
+<span class="com">INTEGER</span><br />
+<span class="com">'/</span><br />
+<br />
+<span class="com">/'&nbsp;Output:</span><br />
+<span class="com">&quot;Hello&quot;</span><br />
+<span class="com">Hello</span><br />
+<span class="com">1</span><br />
+<span class="com">&nbsp;1</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="def">#define&nbsp;X&nbsp;__FB_QUOTE__(&nbsp;Print&nbsp;&quot;hello&quot;&nbsp;)<br />
+#macro&nbsp;Y(&nbsp;arg&nbsp;)<br />
+</span>&nbsp;&nbsp;<span class="key">__FB_UNQUOTE__</span><span class="oth">(</span>&nbsp;<span class="wrd">arg</span>&nbsp;<span class="oth">)</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">X</span><br />
+<span class="wrd">Y</span><span class="oth">(</span>&nbsp;<span class="wrd">X</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="com">/'&nbsp;Output:</span><br />
+<span class="com">print&nbsp;&quot;hello&quot;</span><br />
+<span class="com">hello</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgDdfbquote.html">__FB_QUOTE__</a></tt><br \>
+<li> <tt><a href="KeyPgDdfbeval.html">__FB_EVAL__</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

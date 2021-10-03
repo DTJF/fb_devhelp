@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>FastCGI</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">FastCGI</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Open extension to CGI that provides high performance without the limitations of server specific APIs.<br \>
+<br \>
+Website: https://web.archive.org/web/20080213023105/http://www.fastcgi.com:80/ http://www.fastcgi.com (archived copy from 2006)<br \>
+Github: https://github.com/FastCGI-Archives<br \>
+See also Forum: https://freebasic.net/forum/viewtopic.php?f=14&t=28126<br \>
+Platforms supported: Win32, Linux<br \>
+Headers to include: fastcgi/fastcgi.bi, fastcgi/fcgiapp.bi, fastcgi/fcgi_stdio.bi<br \>
+Header version: 2.4.1-SNAP-0311112127<br \>
+<br \>
+<div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;fastcgi/fcgi_stdio.bi&quot;<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+<span class="key">While</span>&nbsp;<span class="oth">(</span><span class="wrd">FCGI_Accept</span><span class="oth">()</span>&nbsp;<span class="oth">&gt;=</span>&nbsp;<span class="num">0</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">count</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">!</span><span class="quo">&quot;Content-type:&nbsp;text/html\r\n&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">!</span><span class="quo">&quot;\r\n&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&lt;title&gt;FastCGI&nbsp;Hello!&lt;/title&gt;&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&lt;h1&gt;FastCGI&nbsp;Hello!&lt;/h1&gt;&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;Request&nbsp;number&nbsp;###&nbsp;running&nbsp;on&nbsp;host&nbsp;&lt;i&gt;&amp;&lt;/i&gt;&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">count</span><span class="oth">;</span>&nbsp;<span class="oth">*</span><span class="wrd">getenv</span><span class="oth">(</span><span class="quo">&quot;SERVER_NAME&quot;</span><span class="oth">);</span><br />
+<span class="key">Wend</span><br />
+</div></tt><br />
+<br \>
+</div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

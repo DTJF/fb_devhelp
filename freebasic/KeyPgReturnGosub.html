@@ -1,0 +1,67 @@
+<html>
+<head>
+<title>Return (From Gosub)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Return (From Gosub)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Control flow statement to return from a procedure or <tt><a href="KeyPgGosub.html">GoSub</a></tt>.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<b>Return</b> [ <i>label</i> ]<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>Return</b></tt> is used to return from a gosub <tt><a href="KeyPgGosub.html">GoSub</a></tt>.<br \>
+<br \>
+Because <tt>Return</tt> could mean return-from-gosub or return-from-procedure, <tt><a href="KeyPgOptiongosub.html">Option Gosub</a></tt> and <tt><a href="KeyPgOptionnogosub.html">Option Nogosub</a></tt> can be used to enable and disable <tt><a href="KeyPgGosub.html">GoSub</a></tt> support.  When <tt><a href="KeyPgGosub.html">GoSub</a></tt> support is disabled, <tt><a href="KeyPgReturn.html">Return</a></tt> is then recognized as return-from-procedure.  When <tt><a href="KeyPgGosub.html">GoSub</a></tt> support is enabled, <tt><a href="KeyPgReturnGosub.html">Return</a></tt> is then recognized as return-from-gosub.<br \>
+<br \>
+<tt><b>Return</b></tt> (from gosub) is used to return control back to the statement immediately following a previous <tt><a href="KeyPgGosub.html">GoSub</a></tt> call. When used in combination with <tt><a href="KeyPgGosub.html">GoSub</a></tt>, no return value can be specified.  If the optional <tt><i>label</i></tt> is specified, execution continues at the specified label.  If no <tt><a href="KeyPgGosub.html">GoSub</a></tt> was made, a runtime error is generated, and execution continues immediately after <tt><b>Return</b></tt>.<br \>
+<br \>
+A <tt><a href="KeyPgGosub.html">GoSub</a></tt> should always have a matching <tt><b>Return</b></tt> statement.  However, if <tt><b>Return</b></tt> (from gosub) is used where no <tt><a href="KeyPgGosub.html">GoSub</a></tt> was made, a run-time error is generated.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">''&nbsp;GOSUB&nbsp;&amp;&nbsp;RETURN&nbsp;example,&nbsp;compile&nbsp;with&nbsp;&quot;-lang&nbsp;qb&quot;&nbsp;or&nbsp;use&nbsp;&quot;$lang&quot;&nbsp;as&nbsp;below</span><br />
+<br />
+<span class="com">'$lang:&nbsp;&quot;qb&quot;</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Let's&nbsp;Gosub!&quot;</span><br />
+<span class="key">GoSub</span>&nbsp;<span class="wrd">MyGosub</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Back&nbsp;from&nbsp;Gosub!&quot;</span><br />
+<span class="key">Sleep</span><br />
+<span class="key">End</span><br />
+<br />
+<span class="wrd">MyGosub</span><span class="oth">:</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;In&nbsp;Gosub!&quot;</span><br />
+<span class="key">Return</span><br />
+</div></tt><br />
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> In the <i><a href="CompilerOptlang.html">-lang fb</a></i> dialect <tt><b>Return</b></tt> always means return-from-procedure.<br \>
+<li> In the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect, <tt><b>Return</b></tt> means return-from-gosub by default unless changed with <tt><a href="KeyPgOptionnogosub.html">Option Nogosub</a></tt>, in which case the compiler will recognize <tt><b>Return</b></tt> as return-from-procedure.<br \>
+<li> In the <i><a href="CompilerOptlang.html">-lang fblite</a></i> dialect, <tt><b>Return</b></tt> means return-from-procedure by default unless changed with <tt><a href="KeyPgOptiongosub.html">Option Gosub</a></tt>, in which case the compiler will recognize <tt><b>Return</b></tt> as return-from-gosub.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> None when using the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgSub.html">Sub</a></tt><br \>
+<li> <tt><a href="KeyPgFunction.html">Function</a></tt><br \>
+<li> <tt><a href="KeyPgGosub.html">GoSub</a></tt><br \>
+<li> <tt><a href="KeyPgOptiongosub.html">Option Gosub</a></tt><br \>
+<li> <tt><a href="KeyPgOptionnogosub.html">Option Nogosub</a></tt><br \>
+<li> <tt><a href="ProPgLabels.html">Labels</a></tt><br \>
+<li> <tt><a href="KeyPgReturn.html">Return (From Procedure)</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

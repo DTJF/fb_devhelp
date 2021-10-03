@@ -1,0 +1,289 @@
+<html>
+<head>
+<title>Fbarray (Array Descriptor Structure And Access)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Fbarray (Array Descriptor Structure And Access)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Pre-defined structure (UDT) and procedure declarations from the <tt>fbc-int/array.bi</tt> include file, usable to access the array descriptor data fields.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><br \>
+From <tt>./inc/fbc-int/array.bi (for fbc versions &gt;= 1.08)</tt>:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#&nbsp;If&nbsp;__FB_LANG__&nbsp;=&nbsp;&quot;fb&quot;<br />
+</span><span class="key">Namespace</span>&nbsp;<span class="wrd">FBC</span><br />
+<span class="def">#&nbsp;endif<br />
+</span><br />
+<span class="key">Const</span>&nbsp;<span class="wrd">FB_MAXDIMENSIONS</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">8</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">FBARRAYDIM</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">elements</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;number&nbsp;of&nbsp;elements</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="key">LBound</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;dimension&nbsp;lower&nbsp;bound</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="key">UBound</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;dimension&nbsp;upper&nbsp;bound</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Const</span>&nbsp;<span class="wrd">FBARRAY_FLAGS_DIMENSIONS</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">&amp;h0000000f</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;number&nbsp;of&nbsp;entries&nbsp;allocated&nbsp;in&nbsp;dimTb()</span><br />
+<span class="key">Const</span>&nbsp;<span class="wrd">FBARRAY_FLAGS_FIXED_DIM</span>&nbsp;&nbsp;<span class="oth">=</span>&nbsp;<span class="num">&amp;h00000010</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;array&nbsp;has&nbsp;fixed&nbsp;number&nbsp;of&nbsp;dimensions</span><br />
+<span class="key">Const</span>&nbsp;<span class="wrd">FBARRAY_FLAGS_FIXED_LEN</span>&nbsp;&nbsp;<span class="oth">=</span>&nbsp;<span class="num">&amp;h00000020</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;array&nbsp;points&nbsp;to&nbsp;fixed-length&nbsp;memory</span><br />
+<span class="key">Const</span>&nbsp;<span class="wrd">FBARRAY_FLAGS_RESERVED</span>&nbsp;&nbsp;&nbsp;<span class="oth">=</span>&nbsp;<span class="num">&amp;hffffffc0</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;reserved,&nbsp;do&nbsp;not&nbsp;use</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">FBARRAY</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">index_ptr</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;@array(0,&nbsp;0,&nbsp;0,&nbsp;...&nbsp;)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">base_ptr</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;start&nbsp;of&nbsp;memory&nbsp;at&nbsp;array&nbsp;lowest&nbsp;bounds</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">size</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;byte&nbsp;size&nbsp;of&nbsp;allocated&nbsp;contents</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">element_len</span>&nbsp;&nbsp;<span class="com">''&nbsp;byte&nbsp;size&nbsp;of&nbsp;single&nbsp;element</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">dimensions</span>&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;number&nbsp;of&nbsp;dimensions</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">flags</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;FBARRAY_FLAGS_*</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;take&nbsp;care&nbsp;with&nbsp;number&nbsp;of&nbsp;dimensions;&nbsp;fbc&nbsp;may&nbsp;allocate</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;a&nbsp;smaller&nbsp;descriptor&nbsp;with&nbsp;fewer&nbsp;than&nbsp;FB_MAXDIMENSIONS</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;in&nbsp;dimTb()&nbsp;if&nbsp;it&nbsp;is&nbsp;known&nbsp;at&nbsp;compile&nbsp;time&nbsp;that&nbsp;they</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;are&nbsp;never&nbsp;needed.&nbsp;&nbsp;Always&nbsp;respect&nbsp;number&nbsp;of&nbsp;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;dimensions&nbsp;when&nbsp;accessing&nbsp;dimTb()</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">FBARRAYDIM</span>&nbsp;<span class="wrd">dimTb</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">FB_MAXDIMENSIONS</span><span class="oth">-</span><span class="num">1</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Extern</span>&nbsp;<span class="quo">&quot;rtlib&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ArrayDescriptorPtr</span>&nbsp;<span class="key">Alias</span>&nbsp;<span class="quo">&quot;fb_ArrayGetDesc&quot;</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">(</span>&nbsp;<span class="wrd">array</span><span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">FBC.FBARRAY</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">ArrayConstDescriptorPtr</span>&nbsp;<span class="key">Alias</span>&nbsp;<span class="quo">&quot;fb_ArrayGetDesc&quot;</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">(</span>&nbsp;<span class="wrd">array</span><span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="wrd">FBC.FBARRAY</span>&nbsp;<span class="key">Ptr</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Extern</span><br />
+<br />
+<span class="def">#&nbsp;If&nbsp;__FB_LANG__&nbsp;=&nbsp;&quot;fb&quot;<br />
+</span><span class="key">End</span>&nbsp;<span class="key">Namespace</span><br />
+<span class="def">#&nbsp;endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+#include once "fbc-int/array.bi"<br \>
+using <b>FBC</b><br \>
+<br \>
+' then:<br \>
+<div class="fb_indent"><a href="KeyPgDim.html">Dim</a> <i>pd</i> <a href="KeyPgAs.html">As</a> <b>FBARRAY</b> <a href="KeyPgPtr.html">Ptr</a><br \>
+...<br \>
+<i>pd</i> = <b>ArrayDescriptorPtr</b> ( <i>array()</i> )<br \>
+<br \>
+</div>' or safer:<br \>
+<div class="fb_indent"><a href="KeyPgDim.html">Dim</a> <i>pd</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgConstQualifier.html">Const</a> <b>FBARRAY</b> <a href="KeyPgPtr.html">Ptr</a><br \>
+...<br \>
+<i>pd</i> = <b>ArrayConstDescriptorPtr</b> ( <i>array()</i> )<br \>
+</div></tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>pd</i></tt> <br \>
+<div class="fb_indent">The name of a pointer to the array descriptor<br \>
+</div><tt><i>array</i></tt> <br \>
+<div class="fb_indent">The name of the array for which one want to access its descriptor<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+At compile time, fbc allocates an array descriptor to store and track information about the array.<br \>
+<br \>
+If the number of dimensions is unknown at compile time, then the full <tt>FB_MAXDIMENSIONS</tt> is allocated in the <tt>dimTb()</tt> field.  Otherwise, if the number dimensions is known at compile time, then only the number of dimensions needed are allocated.  Therefore the allocated <tt>FBARRAY</tt> data may be smaller than the declared <tt>FBARRAY</tt> structure.<br \>
+<br \>
+If an array is passed as argument to a procedure, an array descriptor is allocated.  However, if the array is static, fixed length, and never passed as an argument, then all information about the array is known at compile time, including memory locations, and the allocation of a descriptor is optimized out, since all expressions involving the array are compile time constant.<br \>
+<br \>
+The array descriptor may also be allocated at run time, as would be in the case of allocating a new UDT containing a variable-length array field member.<br \>
+<br \>
+<b><u>WARNING:</u></b> It is inadvisable (especially for a non advanced user) to change the data values ​​of the array descriptor (internal structure of the compiler).<br \>
+For that, it is safer to use rather the function <tt>ArrayConstDescriptorPtr()</tt> initializing a pointer declared <tt>As Const FBARRAY Ptr</tt> (or implicitly declared in this way by <tt>Var</tt>).<br \>
+<br \>
+<div class="fb_sect_title">FBARRAY.index_ptr</div><br \>
+<div class="fb_indent">Pointer to the array data <tt>@array(0, 0, ...)</tt>.  This pointer may be outside of the actual array data as a kind of virtual pointer to use when calculating offsets using indexes in to the array.<br \>
+<br \>
+</div><div class="fb_sect_title">FBARRAY.base_ptr</div><br \>
+<div class="fb_indent">Pointer to the array's memory at the array's lowest bound.  For variable-length arrays allocated at run time, this points to the allocated memory region (i.e. <tt>malloc</tt>)<br \>
+<br \>
+</div><div class="fb_sect_title">FBARRAY.size</div><br \>
+<div class="fb_indent">Total size in bytes of the array data.  Size is equal to total number of elements in the array (all dimensions) multiplied by element length.  i.e. <tt>size = dimTb(0).elements * element_len + dimTb(1).elements * element_len + ...</tt><br \>
+<br \>
+</div><div class="fb_sect_title">FBARRAY.element_len</div><br \>
+<div class="fb_indent">Size in bytes of an individual element.  Must be set to non-zero value.<br \>
+<br \>
+</div><div class="fb_sect_title">FBARRAY.dimensions</div><br \>
+<div class="fb_indent">Number of valid dimensions in the <tt>dimTb()</tt> table.  A value of zero (0) indicates that <tt>dimTb()</tt> has <tt>FB_MAXDIMENSIONS</tt> avaiable, but the array does not yet have number of dimensions defined.  On first REDIM, the number of dimensions will be set.<br \>
+<br \>
+</div><div class="fb_sect_title">FBARRAY.flags</div><br \>
+<div class="fb_indent">The flags field contains information about the array descriptor that needs to be known at run time.<br \>
+<br \>
+<div class="fb_indent"><tt>FBARRAY_FLAGS_DIMENSIONS</tt> : a 4 bit field to indicate the number of elements allocated in <tt>dimTb()</tt>.  If fbc can determine at compile time that less than <tt>FB_MAXDIMENSIONS</tt> are needed to represent the array, then only the number of dimensions needed are allocated in <tt>dimTb()</tt>.<br \>
+The real size allocated for the array descriptor can be calculated by:<br \>
+<div class="fb_indent"><tt>Sizeof(FBC.FBARRAY) - (FBC.FB_MAXDIMENSIONS - (FBC.ArrayDescriptorPtr(array())-&gt;flags And FBC.FBARRAY_FLAGS_DIMENSIONS)) * Sizeof(FBC.FBARRAYDIM)</tt><br \>
+<br \>
+</div><tt>FBARRAY_FLAGS_FIXED_DIM</tt> : if this bit is set, indicates that the number of dimensions are set and are given in <tt>dimTb()</tt> and must not be changed.<br \>
+<br \>
+<tt>FBARRAY_FLAGS_FIXED_LEN</tt> : if this bit is set, indicates that the array data is fixed length and must not be resized or reallocated<br \>
+<br \>
+<tt>FBARRAY_FLAGS_RESERVED</tt> : all other bits are reserved for future use<br \>
+<br \>
+</div></div><div class="fb_sect_title">FBARRAY.dimTb()</div><br \>
+<div class="fb_indent"><tt>dimTb()</tt> is an array of <tt>FBARRAYDIM</tt> to indicate the bounds of each dimension.<br \>
+<br \>
+If the number of dimensions is unknown at compile time, then the full <tt>FB_MAXDIMENSIONS</tt> is allocated in the <tt>dimTb()</tt> field. Otherwise, if the number dimensions is known at compile time, then only the number of dimensions needed are allocated. Therefore the allocated <tt>FBARRAY</tt> data may be smaller than the declared <tt>FBARRAY</tt> structure.<br \>
+<br \>
+</div><div class="fb_sect_title">FBARRAYDIM.elements</div><br \>
+<div class="fb_indent">Number of elements in the dimension.  i.e. <tt>(ubound-lbound+1)</tt><br \>
+<br \>
+</div><div class="fb_sect_title">FBARRAYDIM.lbound</div><br \>
+<div class="fb_indent">Lower bound is the lowest valid index in this dimension.<br \>
+<br \>
+</div><div class="fb_sect_title">FBARRAYDIM.ubound</div><br \>
+<div class="fb_indent">Upper bound is the highest valid index in this dimension.<br \>
+<br \>
+</div><div class="fb_sect_title">ArrayDescriptorPtr( array() as any ) as FBC.FBARRAY ptr</div><br \>
+<div class="fb_indent">Retrieves a pointer to the array descriptor, returning a pointer to <tt>FBC.ARRAY</tt> that can be modified.<br \>
+<br \>
+</div><div class="fb_sect_title">ArrayConstDescriptorPtr( array() as const any ) as const FBC.FBARRAY ptr</div><br \>
+<div class="fb_indent">Retrieves a pointer to the array descriptor, returning a pointer to <tt>FBC.ARRAY</tt> that is read only.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Very simple syntaxic example highlighting the access capabilities to the data fields of an array descriptor (for fbc versions &gt;= 1.08):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;fbc-int/array.bi&quot;<br />
+</span><br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">printArrayDescriptor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">tabulation</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">title</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">FBC.FBARRAY</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pd</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">p</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">t</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">title</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">title</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">t</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;[@array&nbsp;descriptor:&nbsp;@&amp;h&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">pd</span><span class="oth">,</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">))</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;/&nbsp;&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="wrd">FBC.FBARRAY</span><span class="oth">)</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="oth">(</span><span class="num">8</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">dimensions</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">3</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Integer</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;bytes]&quot;</span><span class="com">'</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;@array(all_null_indexes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&amp;h&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">index_ptr</span><span class="oth">,</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;@array(all_min_indexes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&amp;h&quot;</span><span class="oth">;</span>&nbsp;<span class="key">Hex</span><span class="oth">(</span><span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">base_ptr</span><span class="oth">,</span>&nbsp;<span class="num">2</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="key">SizeOf</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;array_total_size_in_bytes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">size</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;array_element_size_in_bytes&nbsp;&nbsp;&nbsp;=&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">element_len</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;number_of_array_dimensions&nbsp;&nbsp;&nbsp;&nbsp;=&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">dimensions</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;fixed_len/fixed_dim/dimensions=&quot;</span><span class="oth">;</span>&nbsp;<span class="oth">(</span><span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">flags</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">FBC.FBARRAY_FLAGS_FIXED_LEN</span><span class="oth">)</span>&nbsp;<span class="key">Shr</span>&nbsp;<span class="num">5</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;/&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">(</span><span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">flags</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">FBC.FBARRAY_FLAGS_FIXED_DIM</span><span class="oth">)</span>&nbsp;<span class="key">Shr</span>&nbsp;<span class="num">4</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;/&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">(</span><span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">flags</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">FBC.FBARRAY_FLAGS_DIMENSIONS</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">dimensions</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;[dimension&nbsp;number:&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">1</span><span class="oth">;</span>&nbsp;<span class="quo">&quot;]&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;number_of_elements=&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">dimTb</span><span class="oth">(</span><span class="wrd">i</span><span class="oth">).</span><span class="wrd">elements</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;min_index&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">dimTb</span><span class="oth">(</span><span class="wrd">i</span><span class="oth">).</span><span class="key">LBound</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Space</span><span class="oth">((</span><span class="wrd">t</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="wrd">tabulation</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;max_index&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">pd</span><span class="oth">-&gt;</span><span class="wrd">dimTb</span><span class="oth">(</span><span class="wrd">i</span><span class="oth">).</span><span class="key">UBound</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">i</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Screen</span>&nbsp;<span class="num">0</span><br />
+<span class="key">Width</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="num">35</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span>&nbsp;<span class="wrd">test1</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">9</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">100</span><span class="oth">)</span><br />
+<span class="wrd">printArrayDescriptor</span><span class="oth">(</span><span class="wrd">FBC.ArrayDescriptorPtr</span><span class="oth">(</span><span class="wrd">test1</span><span class="oth">()),</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'Dim&nbsp;As&nbsp;Longint&nbsp;test1(0&nbsp;to&nbsp;9,&nbsp;1&nbsp;to&nbsp;100)':&quot;</span><span class="oth">)</span><br />
+<span class="key">Sleep</span><br />
+<span class="key">Cls</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span>&nbsp;<span class="wrd">test2</span><span class="oth">()</span><br />
+<span class="wrd">printArrayDescriptor</span><span class="oth">(</span><span class="wrd">FBC.ArrayDescriptorPtr</span><span class="oth">(</span><span class="wrd">test2</span><span class="oth">()),</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'Dim&nbsp;As&nbsp;Longint&nbsp;test2()':&quot;</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="wrd">test2</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">9</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">100</span><span class="oth">)</span><br />
+<span class="wrd">printArrayDescriptor</span><span class="oth">(</span><span class="wrd">FBC.ArrayDescriptorPtr</span><span class="oth">(</span><span class="wrd">test2</span><span class="oth">()),</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'Redim&nbsp;test2(0&nbsp;to&nbsp;9,&nbsp;1&nbsp;to&nbsp;100)':&quot;</span><span class="oth">)</span><br />
+<span class="key">Sleep</span><br />
+<span class="key">Cls</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">LongInt</span>&nbsp;<span class="wrd">test3</span><span class="oth">(</span><span class="key">Any</span><span class="oth">,</span>&nbsp;<span class="key">Any</span><span class="oth">)</span><br />
+<span class="wrd">printArrayDescriptor</span><span class="oth">(</span><span class="wrd">FBC.ArrayDescriptorPtr</span><span class="oth">(</span><span class="wrd">test3</span><span class="oth">()),</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'Dim&nbsp;As&nbsp;Longint&nbsp;test3(Any,&nbsp;Any)':&quot;</span><span class="oth">)</span><br />
+<span class="key">Print</span><br />
+<span class="key">ReDim</span>&nbsp;<span class="wrd">test3</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">9</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">100</span><span class="oth">)</span><br />
+<span class="wrd">printArrayDescriptor</span><span class="oth">(</span><span class="wrd">FBC.ArrayDescriptorPtr</span><span class="oth">(</span><span class="wrd">test3</span><span class="oth">()),</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;'Redim&nbsp;test3(0&nbsp;to&nbsp;9,&nbsp;1&nbsp;to&nbsp;100)':&quot;</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example (32-bit):<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'Dim As Longint test1(0 to 9, 1 to 100)':
+	[@array descriptor: @&h0019DE70 / 48 bytes]
+		@array(all_null_indexes)      =&h0019DE98
+		@array(all_min_indexes)       =&h0019DEA0
+		array_total_size_in_bytes     =8000
+		array_element_size_in_bytes   =8
+		number_of_array_dimensions    =2
+		fixed_len/fixed_dim/dimensions=1/1/2
+		[dimension number: 1]
+			number_of_elements=10
+			min_index         = 0
+			max_index         = 9
+		[dimension number: 2]
+			number_of_elements=100
+			min_index         = 1
+			max_index         = 100
+			</pre><pre class="fb_pre">
+'Dim As Longint test2()':
+	[@array descriptor: @&h0019DDF8 / 24 bytes]
+		@array(all_null_indexes)      =&h00000000
+		@array(all_min_indexes)       =&h00000000
+		array_total_size_in_bytes     =0
+		array_element_size_in_bytes   =8
+		number_of_array_dimensions    =0
+		fixed_len/fixed_dim/dimensions=0/0/8
+
+'Redim test2(0 to 9, 1 to 100)':
+	[@array descriptor: @&h0019DDF8 / 48 bytes]
+		@array(all_null_indexes)      =&h01FD2AB8
+		@array(all_min_indexes)       =&h01FD2AC0
+		array_total_size_in_bytes     =8000
+		array_element_size_in_bytes   =8
+		number_of_array_dimensions    =2
+		fixed_len/fixed_dim/dimensions=0/0/8
+		[dimension number: 1]
+			number_of_elements=10
+			min_index         = 0
+			max_index         = 9
+		[dimension number: 2]
+			number_of_elements=100
+			min_index         = 1
+			max_index         = 100
+			</pre><pre class="fb_pre">
+'Dim As Longint test3(Any, Any)':
+	[@array descriptor: @&h0019DDC8 / 48 bytes]
+		@array(all_null_indexes)      =&h00000000
+		@array(all_min_indexes)       =&h00000000
+		array_total_size_in_bytes     =0
+		array_element_size_in_bytes   =8
+		number_of_array_dimensions    =2
+		fixed_len/fixed_dim/dimensions=0/1/2
+		[dimension number: 1]
+			number_of_elements=0
+			min_index         = 0
+			max_index         = 0
+		[dimension number: 2]
+			number_of_elements=0
+			min_index         = 0
+			max_index         = 0
+
+'Redim test3(0 to 9, 1 to 100)':
+	[@array descriptor: @&h0019DDC8 / 48 bytes]
+		@array(all_null_indexes)      =&h01FD4C20
+		@array(all_min_indexes)       =&h01FD4C28
+		array_total_size_in_bytes     =8000
+		array_element_size_in_bytes   =8
+		number_of_array_dimensions    =2
+		fixed_len/fixed_dim/dimensions=0/1/2
+		[dimension number: 1]
+			number_of_elements=10
+			min_index         = 0
+			max_index         = 9
+		[dimension number: 2]
+			number_of_elements=100
+			min_index         = 1
+			max_index         = 100
+			</pre></div></div></div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Only available in the <i><a href="CompilerOptlang.html">-lang fb</a></i> dialect.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgArrays.html">Arrays</a><br \>
+</ul> <br \>
+</div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

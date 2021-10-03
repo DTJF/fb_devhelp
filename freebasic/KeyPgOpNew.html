@@ -1,0 +1,178 @@
+<html>
+<head>
+<title>Operator New Expression</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Operator New Expression</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Operator to dynamically allocate memory and construct data of a specified type.<br \>
+<br \>
+<div class="fb_sect_title">Usage</div><div class="fb_sect_cont"><tt><br \>
+<i>result</i> = <b>New</b> <i><a href="DataType.html">datatype</a></i><br \>
+<div class="fb_indent"><i>or</i><br \>
+</div><i>result</i> = <b>New</b> <i><a href="DataType.html">datatype</a></i> ( <i>initializers</i>, ... )<br \>
+<div class="fb_indent"><i>or</i><br \>
+</div><i>result</i> = <b>New</b> <i><a href="DataType.html">datatype</a></i><b>[</b> <i>count</i> <b>]</b><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>datatype</i></tt><br \>
+<div class="fb_indent">Name of the data type to create.<br \>
+</div><tt><i>initializers</i></tt><br \>
+<div class="fb_indent">Initial value(s) for the variable.<br \>
+</div><tt><i>count</i></tt><br \>
+<div class="fb_indent">Exact number of elements to allocate.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Return Value</div><div class="fb_sect_cont"><br \>
+A pointer of type <a href="DataType.html">datatype</a> to the newly allocated data, or null pointer if the memory allocation failed.<br \>
+<br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+The <tt><b>New Expression</b></tt> operator dynamically allocates memory and constructs a specified data type.<br \>
+<br \>
+For simple types, like integers, an initial value can be given. For types without constructors, initial values can be specified for each field (either with default initializer at data-field declaration, or with initializer list as in <tt><b>New</b> <i>datatype</i> (<b>initializers, ..</b>)</tt> if all type data-fields are numeric primitives only and without any default initializers). For types with at least one constructor, the initialize list (if any) must match an existing constructor. If no initializers are given, the default values for those types will be set.<br \>
+<br \>
+<tt><b>New[] Expression</b></tt> operator is the (one-dimensional) array-version of the <tt><b>New Expression</b></tt> operator and allocates enough memory for the specified number of objects. The default constructor for the type will be used to set the initial values for each item.<br \>
+<br \>
+Objects created with <tt><b>New Expression</b></tt> operator must be freed with <tt><a href="KeyPgOpDelete.html">Delete Statement</a></tt> operator. Object array created with <tt><b>New[] Expression</b></tt> operator must be freed with <tt><b>Delete[] Statement</b></tt> operator, the array-version of <tt><a href="KeyPgOpDelete.html">Delete Statement</a></tt> operator. You cannot mix and match the different versions of the operators.<br \>
+<br \>
+Specifying an initial value of <tt><a href="KeyPgAny.html">Any</a></tt>, as in <tt><b>New</b> <i>datatype</i> (<b>Any</b>)</tt> will allocate memory for the type, but not initialize the data.  This is only valid on data types that do not have constructors (otherwise for data types with constructors, syntax of simple memory allocation with pointer conversion, like <i>Cptr(datatype Ptr, Allocate(Sizeof(datatype)))</i>, can be substituted to the invalid use of New...Any).<br \>
+<br \>
+Specifying an initial value of <tt><a href="KeyPgAny.html">Any</a></tt>, as in <tt><b>New</b> <i>datatype</i>[<i>count</i>] {<b>Any</b>}</tt> will allocate memory for the array, but not initialize the data.  This is only valid on data types that do not have constructors (otherwise for data types with constructors, syntax of simple memory allocation with pointer conversion, like <i>Cptr(datatype Ptr, Allocate(count * Sizeof(datatype)))</i>, can be substituted to the invalid use of New...Any).<br \>
+<br \>
+The total memory, in bytes, to be allocated with <tt><b>New</b> <i>datatype</i>[<i>count</i>]</tt> expression is calculated as <tt><i>sizeof(datatype) * count</i></tt>, plus <tt><i>sizeof(uinteger)</i></tt> if there is an implicit or explicit <tt><a href="KeyPgDestructor.html">Destructor</a></tt>.  The total memory requested in bytes to be allocated must not overflow the value that can be held by a <tt><a href="KeyPgUinteger.html">UInteger</a></tt>.  The extra <tt><i>uinteger</i></tt>, if allocated, stores the number of elements as part of the allocation, so that <tt><a href="KeyPgOpDelete.html">Delete Statement</a></tt> can determine the count of destructors to call.<br \>
+<br \>
+If the memory allocation fails, a null pointer is returned and no constructors are called.<br \>
+<br \>
+The dynamic memory allocation process part provided by the <tt><b>New Expression</b></tt> operator can be overloaded for user-defined types as a member operator <tt><a href="KeyPgOpNewOverload.html">New Overload</a></tt>. The following process part for data construction can never be modified.<br \>
+<br \>
+<b>Note:</b> Using <tt><i>pointer</i> = <b>New</b> <i>datatype</i>[<i>count</i>]</tt> may be unsafe if <tt><i>pointer</i></tt> was declared with a type different from <tt><i>datatype</i></tt> (for sub-type polymorphism purpose for example), because the pointer arithmetic fails to access the elements if the pointer type size is different from the size of <tt><i>datatype</i></tt> (when using <tt><a href="KeyPgOpPtrIndex.html">Operator [] (Pointer Index)</a></tt> or adding an offset (element number) to the pointer, or even when <tt><b>Delete[] Statement</b></tt> itself (the array-version of <tt><a href="KeyPgOpDelete.html">Delete Statement</a></tt>) must destroy the elements).<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">Rational</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">numerator</span><span class="oth">,</span>&nbsp;<span class="wrd">denominator</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="com">'&nbsp;Create&nbsp;and&nbsp;initialize&nbsp;a&nbsp;&quot;rational&quot;&nbsp;and&nbsp;store&nbsp;its&nbsp;address.</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Rational</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">Rational</span><span class="oth">(</span><span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">4</span><span class="oth">)</span><br />
+<br />
+<span class="com">'&nbsp;Test&nbsp;if&nbsp;null&nbsp;return&nbsp;pointer</span><br />
+<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Error:&nbsp;unable&nbsp;to&nbsp;allocate&nbsp;memory&quot;</span><br />
+<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">p</span><span class="oth">-&gt;</span><span class="wrd">numerator</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;/&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">p</span><span class="oth">-&gt;</span><span class="wrd">denominator</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;Destroy&nbsp;the&nbsp;rational&nbsp;and&nbsp;give&nbsp;its&nbsp;memory&nbsp;back&nbsp;to&nbsp;the&nbsp;system.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">p</span><br />
+<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;Allocate&nbsp;memory&nbsp;for&nbsp;100&nbsp;integers&nbsp;and&nbsp;store&nbsp;the&nbsp;address&nbsp;of&nbsp;the&nbsp;first&nbsp;one.</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="key">Integer</span><span class="oth">[</span><span class="num">100</span><span class="oth">]</span><br />
+<br />
+<span class="com">'&nbsp;Test&nbsp;if&nbsp;null&nbsp;return&nbsp;pointer</span><br />
+<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Error:&nbsp;unable&nbsp;to&nbsp;allocate&nbsp;memory&quot;</span><br />
+<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;Assign&nbsp;some&nbsp;values&nbsp;to&nbsp;the&nbsp;integers&nbsp;in&nbsp;the&nbsp;array.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">99</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p</span><span class="oth">[</span><span class="wrd">i</span><span class="oth">]</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">i</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;Free&nbsp;the&nbsp;entire&nbsp;integer&nbsp;array.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span><span class="oth">[]</span>&nbsp;<span class="wrd">p</span><br />
+<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Done.&quot;</span><br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">''&nbsp;Example&nbsp;of&nbsp;nested&nbsp;New&nbsp;[]&nbsp;to&nbsp;get&nbsp;a&nbsp;2-dimentional&nbsp;object&nbsp;array&nbsp;(4*3)</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">N</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Constructor&quot;</span><span class="oth">,</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Destructor&quot;</span><span class="oth">,</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">[</span><span class="num">4</span><span class="oth">]</span>&nbsp;&nbsp;<span class="com">''&nbsp;New&nbsp;[]&nbsp;allocation&nbsp;for&nbsp;the&nbsp;first&nbsp;dimension:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;no&nbsp;internal&nbsp;allocation&nbsp;of&nbsp;extra&nbsp;uinteger&nbsp;because</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;allocation&nbsp;of&nbsp;array&nbsp;of&nbsp;pointers&nbsp;(to&nbsp;UDT&nbsp;objects&nbsp;with&nbsp;destructor)</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">]</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">[</span><span class="num">5</span><span class="oth">]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;New&nbsp;[]&nbsp;allocations&nbsp;for&nbsp;the&nbsp;last&nbsp;dimension:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;internal&nbsp;allocation&nbsp;of&nbsp;an&nbsp;extra&nbsp;uinteger&nbsp;for&nbsp;each&nbsp;New&nbsp;[],</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;&nbsp;&nbsp;because&nbsp;allocation&nbsp;of&nbsp;an&nbsp;array&nbsp;of&nbsp;UDT&nbsp;objects&nbsp;with&nbsp;destructor</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">4</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">p</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">][</span><span class="wrd">J</span><span class="oth">].</span><span class="wrd">N</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">*</span>&nbsp;<span class="num">10</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">J</span>&nbsp;&nbsp;<span class="com">''&nbsp;assignment&nbsp;of&nbsp;each&nbsp;object&nbsp;array&nbsp;element</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">J</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">Print</span><br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">4</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">p</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">][</span><span class="wrd">J</span><span class="oth">].</span><span class="wrd">N</span><span class="oth">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;display&nbsp;of&nbsp;each&nbsp;object&nbsp;array&nbsp;element</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">[]</span>&nbsp;<span class="wrd">p</span><span class="oth">[</span><span class="wrd">I</span><span class="oth">]</span>&nbsp;&nbsp;<span class="com">''&nbsp;Delete&nbsp;[]&nbsp;deallocations&nbsp;for&nbsp;the&nbsp;last&nbsp;dimension</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Delete</span>&nbsp;<span class="oth">[]</span>&nbsp;<span class="wrd">p</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;Delete&nbsp;[]&nbsp;deallocation&nbsp;for&nbsp;the&nbsp;first&nbsp;dimension)</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+<br \>
+<div class="fb_indent">Output example:<br \>
+<pre class="fb_pre">
+Constructor   Constructor   Constructor   Constructor   Constructor
+Constructor   Constructor   Constructor   Constructor   Constructor
+Constructor   Constructor   Constructor   Constructor   Constructor
+Constructor   Constructor   Constructor   Constructor   Constructor
+
+ 0             1             2             3             4
+ 10            11            12            13            14
+ 20            21            22            23            24
+ 30            31            32            33            34
+
+Destructor    Destructor    Destructor    Destructor    Destructor
+Destructor    Destructor    Destructor    Destructor    Destructor
+Destructor    Destructor    Destructor    Destructor    Destructor
+Destructor    Destructor    Destructor    Destructor    Destructor</pre></div></div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Only available in the <i><a href="CompilerOptlang.html">-lang fb</a></i> dialect.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgOpDelete.html">Delete Statement</a></tt><br \>
+<li> <tt><a href="KeyPgOpPlacementNew.html">Placement New</a></tt><br \>
+<li> <tt><a href="KeyPgOpNewOverload.html">New Overload</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

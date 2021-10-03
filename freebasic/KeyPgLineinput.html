@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>Line Input</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Line Input</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Reads one line of input from the keyboard<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<b>Line Input</b> [;] [<i>promptstring</i> {;|,} ] <i>stringvariable</i><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>promptstring</i></tt><br \>
+<div class="fb_indent">optional prompt to display before waiting for input. If it is followed by a semicolon (<tt>;</tt>), a question mark (<tt>"? "</tt>) will be appended to the prompt. If it is followed by a comma, nothing will be appended.<br \>
+</div><tt><i>stringvariable</i></tt><br \>
+<div class="fb_indent">variable to receive the line of text<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Reads a line of text from the keyboard and stores it in a string variable.<br \>
+<br \>
+The <tt><i>promptstring</i></tt> - if any - is written to the screen at the current cursor location, and characters read are echoed to the screen immediately following the prompt. If no prompt is specified, characters are echoed at the current cursor location.<br \>
+<br \>
+The optional leading semicolon (<tt>;</tt>) after <tt><b>Line Input</b></tt> is similar to the optional trailing semicolon in a <tt><a href="KeyPgPrint.html">Print</a></tt> statement: the cursor will remain on the same line after all of the characters have been echoed, otherwise, the cursor will move to the beginning of the next line.<br \>
+<br \>
+<tt><b>Line Input</b></tt> has a limited edit capacity: it allows to use the left and right cursor keys to navigate the text, and to erase or insert characters. If a better user interface is needed, a custom input routine should be used.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+<br />
+<span class="key">Line</span>&nbsp;<span class="key">Input</span>&nbsp;<span class="quo">&quot;Enter&nbsp;a&nbsp;line:&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">x</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;You&nbsp;entered&nbsp;'&quot;</span><span class="oth">;</span>&nbsp;<span class="wrd">x</span><span class="oth">;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+</div></tt><br />
+<br \>
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> QBASIC only allowed literal strings for the prompt text.  FreeBASIC allows any variable or constant string expression.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgLineinputPp.html">Line Input #</a></tt><br \>
+<li> <tt><a href="KeyPgInput.html">Input</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>Cva_End</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Cva_End</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Macro to clean-up a variadic argument list object variable<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<b>Cva_End</b>( <i>argument_list</i> )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>argument_list</i></tt><br \>
+<div class="fb_indent"><tt><a href="KeyPgCvaList.html">Cva_List</a></tt> variable to clean up<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Cleans-up a <tt><a href="KeyPgCvaList.html">Cva_List</a></tt> type variable that was previously initialized with <tt><a href="KeyPgCvaStart.html">Cva_Start</a></tt> or <tt><a href="KeyPgCvaCopy.html">Cva_Copy</a></tt>, like a destructor.<br \>
+<br \>
+<tt><i>argument_list</i></tt> must already have been initialized with a previous <tt><a href="KeyPgCvaStart.html">Cva_Start</a></tt> or <tt><a href="KeyPgCvaCopy.html">Cva_Copy</a></tt> statement in the same procedure as <tt><b>Cva_End</b></tt> (for cross platform compatibility).<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="key">Sub</span>&nbsp;<span class="wrd">proc</span>&nbsp;<span class="key">cdecl</span><span class="oth">(</span><span class="wrd">count</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="oth">...</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Cva_List</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_Start</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="wrd">count</span>&nbsp;<span class="oth">)</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Cva_Arg</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span><span class="oth">,</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Cva_End</span><span class="oth">(</span>&nbsp;<span class="wrd">args</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="wrd">proc</span><span class="oth">(</span>&nbsp;<span class="num">4</span><span class="oth">,</span>&nbsp;<span class="num">4000</span><span class="oth">,</span>&nbsp;<span class="num">300</span><span class="oth">,</span>&nbsp;<span class="num">20</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">)</span><br />
+</div></tt><br />
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> Not available in the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect unless referenced with the alias <tt><b>__cva_end</b></tt>.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="KeyPgDots.html">... (Ellipsis)</a><br \>
+<li> <tt><a href="KeyPgCvaArg.html">Cva_Arg</a></tt><br \>
+<li> <tt><a href="KeyPgCvaCopy.html">Cva_Copy</a></tt><br \>
+<li> <tt><a href="KeyPgCvaList.html">Cva_List</a></tt><br \>
+<li> <tt><a href="KeyPgCvaStart.html">Cva_Start</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

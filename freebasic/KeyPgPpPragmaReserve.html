@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>#Pragma Reserve</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">#Pragma Reserve</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Preprocessor directive<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<b>#pragma reserve</b> <i>symbol</i><br \>
+</tt><i>Or</i><tt><br \>
+<b>#pragma reserve</b> <b>(shared)</b> <i>symbol</i><br \>
+</tt><i>Or</i><tt><br \>
+<b>#pragma reserve</b> <b>(asm)</b> <i>symbol</i><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>symbol</i></tt><br \>
+<div class="fb_indent">symbol name to reserve.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>#pragma reserved</b></tt> statements are preprocessor directives that allow user to reserve symbol names by accessing to the internal symbol tables of the fbc compiler:<br \>
+<div class="fb_indent"><b>-</b> <tt><b>#pragma reserve</b> <i>symbol</i></tt><br \>
+<div class="fb_indent"><div class="fb_indent">statement will reserve a symbol name in the current scope / namespace.<br \>
+</div></div><b>-</b> <tt><b>#pragma reserve</b> <b>(shared)</b> <i>symbol</i></tt><br \>
+<div class="fb_indent"><div class="fb_indent">statement will reserve a symbol name in the shared scope (module or namespace).<br \>
+</div></div><b>-</b> <tt><b>#pragma reserve</b> <b>(asm)</b> <i>symbol</i></tt><br \>
+<div class="fb_indent"><div class="fb_indent">statement will reserve an ASM symbol name in all ASM statements and blocks.<br \>
+<br \>
+</div></div></div>The primary objective (with the first two syntaxes) is to create a mechanism to help deal with some symbols causing compile errors or run-time crashes.<br \>
+Some symbol names in fbc compiler are emitted as-is to the backend compilers (gcc, as, etc) where the symbol name is a reserved keyword by the backend compiler.<br \>
+There are typically two outcomes:<br \>
+<div class="fb_indent"><b>-</b> compilation error in the backend,<br \>
+<b>-</b> bad code generation in the backend (successful compile and unexpected run time crashes).<br \>
+</div>Using <tt><b>#pragma reserve</b> <b>[ (shared) ]</b> <i>symbol</i></tt> statement allows the fbc compiler to output an error message dedicated to the illegal use of this symbol name by the user.<br \>
+<br \>
+A closely related secondary objective (with the third syntax) is ASM words used in ASM blocks and statements.<br \>
+This allows to add new ASM instruction name in the fbc ASM keywords list (so not yet implicitly reserved by fbc).<br \>
+Therefore, using <tt><b>#pragma reserve</b> <b>(asm)</b> <i>symbol</i></tt> statement allows the fbc compiler to always emit an undecorated ASM instruction symbol name to the backend compiler.<br \>
+<br \>
+<b>Note:</b> Some compound syntaxes, such as for example <tt><b>#pragma reserve</b> <b>(asm, shared)</b> <i>symbol</i></tt> (equivalent to the two concatenated statements <tt><b>#pragma reserve</b> <b>(asm)</b> <i>symbol</i></tt> and <tt><b>#pragma reserve</b> <b>(shared)</b> <i>symbol</i></tt>), are currently allowed by the fbc compiler (for flexibility if more attributes) but not yet finalized as requirements (therefore to be used at own risk).<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Example (for the mechanism only) to prohibit the definition of a local variable with the duplicate name of a variable already defined outside the local scope:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">variable1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+<br />
+<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#pragma&nbsp;reserve&nbsp;variable1<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">variable1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">variable1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span>&nbsp;&nbsp;<span class="com">''&nbsp;error:&nbsp;Duplicated&nbsp;definition,&nbsp;variable1&nbsp;in&nbsp;.....</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">variable2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">3</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">s</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#pragma&nbsp;reserve&nbsp;variable2<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">variable2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">variable2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">4</span>&nbsp;&nbsp;<span class="com">''&nbsp;error:&nbsp;Duplicated&nbsp;definition,&nbsp;variable2&nbsp;in&nbsp;.....</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">variable1</span><br />
+<span class="wrd">s</span><span class="oth">()</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">variable2</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Suppose that 'xyz' is a new ASM instruction not yet entered in the fbc ASM keywords list (so not yet implicitly reserved by fbc), and this 'xyz' symbol is also used to define a global variable name:<br \>
+<div class="fb_indent"><b>-</b> thus fbc emits to the backend compiler a decorated 'xyz' symbol (<tt><b>XYZ$</b></tt>) in the inserted ASM block:<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#cmdline&nbsp;&quot;-gen&nbsp;gas64&nbsp;-r&quot;<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="wrd">xyz</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">proc</span>&nbsp;<span class="key">Naked</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Asm</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">xyz</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">ret</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Asm</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">/'</span><br />
+<span class="com">OUTPUT&nbsp;in&nbsp;the&nbsp;.asm&nbsp;file:</span><br />
+<br />
+<span class="com">&nbsp;&nbsp;&nbsp;.intel_syntax&nbsp;noprefix</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.section&nbsp;.text</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.text</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.globl&nbsp;PROC</span><br />
+<span class="com">PROC:</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.L_0004:</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;XYZ$</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;ret</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.L_0005:</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;ret</span><br />
+<span class="com">.....</span><br />
+<br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><b>-</b> after reserving the 'xyz' ASM symbol, fbc now emits to the backend compiler an undecorated 'xyz' symbol (<tt><b>xyz</b></tt>) in the inserted ASM block:<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#cmdline&nbsp;&quot;-gen&nbsp;gas64&nbsp;-r&quot;<br />
+#pragma&nbsp;reserve(Asm)&nbsp;xyz<br />
+</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="wrd">xyz</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">proc</span>&nbsp;<span class="key">Naked</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Asm</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">xyz</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">ret</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Asm</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">/'</span><br />
+<span class="com">OUTPUT&nbsp;in&nbsp;the&nbsp;.asm&nbsp;file:</span><br />
+<br />
+<span class="com">&nbsp;&nbsp;&nbsp;.intel_syntax&nbsp;noprefix</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.section&nbsp;.text</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.text</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.globl&nbsp;PROC</span><br />
+<span class="com">PROC:</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.L_0004:</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;xyz</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;ret</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;.L_0005:</span><br />
+<span class="com">&nbsp;&nbsp;&nbsp;ret</span><br />
+<span class="com">.....</span><br />
+<br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div></div></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgPpPragma.html">#pragma</a></tt><br \>
+<li> <a href="ProPgPreprocessor.html">Preprocessor Overview</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

@@ -1,0 +1,399 @@
+<html>
+<head>
+<title>Threads</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Threads</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	The built-in procedures that create, and detach/wait-for the <b>Threads</b>.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+When a program starts executing, it has one implicit thread running (this is already a full-fledged thread).<br \>
+This "main" thread executes the main function of the program.<br \>
+This same program can explicitly launch additional threads that will run in a competitive manner (both between them and with the main thread).<br \>
+<br \>
+All threads (including the main thread) share the same memory, and thus can access the same global variables, same heap memory, same set of file descriptors, etc.<br \>
+All these threads execute in parallel (i.e. using time slices, or if the system has several processors/cores, then really in parallel).<br \>
+<br \>
+<div class="fb_sect_title">Creating a thread</div><div class="fb_sect_cont"><br \>
+There are two methods to create a thread:<br \>
+<div class="fb_indent"><b>-</b> a "classic" method <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> that starts a specific user-defined subroutine type (which has obligatorily one single parameter, an <i>'Any Ptr'</i> type pointer) in a separate execution thread, this first method being 100% safe,<br \>
+<b>-</b> a "specific" method <tt><a href="KeyPgThreadCall.html">ThreadCall</a></tt> that should have start any user-defined subroutine type (which may have almost any number and any type of parameters) in a separate execution thread, but for the moment this second method is bugged.<br \>
+<br \>
+</div><u>Classic method (100% safe) - <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt></u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgFunction.html">Function</a> <a href="KeyPgThreadCreate.html">ThreadCreate</a> ( <a href="KeyPgByval.html">ByVal</a> <i>procptr</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgSub.html">Sub</a> ( <a href="KeyPgByval.html">ByVal</a> <i>userdata</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> ), <a href="KeyPgByval.html">ByVal</a> <i>param</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> = 0, 		<a href="KeyPgByval.html">ByVal</a> <i>stack_size</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgInteger.html">Integer</a> = 0 ) <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><i>threadid</i> = <a href="KeyPgThreadCreate.html">ThreadCreate</a> ( <i>procptr</i> [, [ <i>param</i> ] [, <i>stack_size</i> ] ] )</tt><br \>
+</div><b>-</b> Parameters:<br \>
+<div class="fb_indent"><tt><i>procptr</i></tt><br \>
+<div class="fb_indent">A pointer to the <tt><a href="KeyPgSub.html">Sub</a></tt> intended to work as a thread. The sub must have the following signature (same parameters, same calling convention) to be compatible to <tt><i>procptr</i></tt>:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> myThread ( <a href="KeyPgByval.html">ByVal</a> <i>userdata</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div></div><tt><i>userdata</i></tt><br \>
+<div class="fb_indent">The <tt>Any Ptr</tt> parameter of the <tt><a href="KeyPgSub.html">Sub</a></tt> intended to work as a thread. FreeBASIC expects this parameter to be present, it must not be omitted! <br \>
+</div><tt><i>param</i></tt><br \>
+<div class="fb_indent"><tt>Any Ptr</tt> argument that will be passed to the thread <tt><a href="KeyPgSub.html">Sub</a></tt> pointed to by <tt><i>procptr</i></tt> through its <tt><i>userdata</i></tt> parameter. For example, this can be a pointer to a structure or an array containing various information for the thread sub to work with. If <tt><i>param</i></tt> is not given, <tt>0</tt> (zero) will be passed to the thread sub's <tt><i>userdata</i></tt> parameter instead.<br \>
+</div><tt><i>stack_size</i></tt><br \>
+<div class="fb_indent">Optional number of bytes to reserve for this thread's stack.<br \>
+</div></div><b>-</b> Return value:<br \>
+<div class="fb_indent">The <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle <tt><i>(threadid)</i></tt> to the thread created, or the null pointer (<tt>0</tt>) on failure.<br \>
+<br \>
+</div><b>Note:</b><br \>
+<div class="fb_indent"><b>-</b> The <tt><i>userdata</i></tt> parameter can be unused in the body of the <tt>myThread</tt> sub, but declaring it as an <tt>Any Ptr</tt> parameter is always mandatory in the header. In this case, the corresponding <tt><i>param</i></tt> parameter can then be omitted when calling <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt>, or else a needless argument can still be passed ('0' is commonly used because this value is directly compatible with any pointer). See the 1st and 2nd example.<br \>
+<b>-</b> In the case where data must be passed to <tt>myThread</tt>, the Any Ptr <tt><i>param</i></tt> can be used to reference them, usually requiring a type conversion (implicit or explicit) into <tt>Any Ptr</tt> before passing it to <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt>, and a reverse type conversion from <tt>Any Ptr</tt> in the body of <tt>myThread</tt> before using it. See the 3rd example.<br \>
+<br \>
+</div></div><u>Specific method (bugged) - <tt><a href="KeyPgThreadCall.html">ThreadCall</a></tt></u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgFunction.html">Function</a> <a href="KeyPgThreadCall.html">ThreadCall</a> <i>subname</i> ( [<i>paramlist</i>] ) <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><i>threadid</i> = <a href="KeyPgThreadCall.html">ThreadCall</a> <i>subname</i> ( [<i>paramlist</i>] )</tt><br \>
+</div><b>-</b> Parameters:<br \>
+<div class="fb_indent"><tt><i>subname</i></tt><br \>
+<div class="fb_indent">The name of a subroutine<br \>
+</div><tt><i>paramlist</i></tt><br \>
+<div class="fb_indent">A list of parameters to pass to the subroutine, as with a normal sub call.	<br \>
+</div></div><b>-</b> Return value:<br \>
+<div class="fb_indent">The <tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle <tt><i>(threadid)</i></tt> to the thread created, or the null pointer (<tt>0</tt>) on failure.<br \>
+<br \>
+</div><b>Warning:</b><br \>
+<div class="fb_indent">Presently when <tt><a href="KeyPgThreadCall.html">ThreadCall</a></tt> involves to pass parameters to the thread, there is no guarantee that the corresponding data are still maintained after the end of the <a href="KeyPgThreadCall.html">ThreadCall</a> statement and this until the thread is really launched. That can cause bad behavior.<br \>
+Therefore it is more advisable for the moment to use <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> (100% safe) instead.<br \>
+<br \>
+</div></div><u>Description</u><br \>
+<div class="fb_indent">Several different threads can be created from the same <tt><a href="KeyPgSub.html">Sub</a></tt>, with different passed arguments allowing to define the behavior of each.<br \>
+<br \>
+There may be a long time between the end of the <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt>/<tt><a href="KeyPgThreadCall.html">ThreadCall</a></tt> statement execution and the effective launch of the thread. So some statements following the <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt>/<tt><a href="KeyPgThreadCall.html">ThreadCall</a></tt> statement can be executed before the actual launch of the thread.<br \>
+Conversely, the thread body can start executing even before <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt>/<tt><a href="KeyPgThreadCall.html">ThreadCall</a></tt> returns.<br \>
+<br \>
+There is no guarantee about the order in which different threads execute, and no assumptions can be made about the order in which multiple create threads actually start executing (except in Linux).<br \>
+<br \>
+By default, a thread is always created in the "joinable" state, ie its handle is accessible by its <tt><i>'threadid'</i></tt> identifier.<br \>
+If a thread ends in this state (joinable), the resources that were assigned to it will not be released automatically (but only at the main thread termination).<br \>
+<br \>
+So a good habit is to always use one and only one of the following two methods for a thread to finish properly (see the paragraph below):<br \>
+<div class="fb_indent"><b>-</b> either  waiting for the thread end,<br \>
+<b>-</b> otherwise detaching the thread (the thread becomes no longer joinable).<br \>
+<br \>
+</div>Each running thread can be identified by its handle which is unique among all running threads.<br \>
+When a new thread is created, a handle to the thread is returned by the creation function.<br \>
+When the thread runs code, <tt><a href="KeyPgThreadSelf.html">ThreadSelf</a></tt> (from fbc version 1.08) allows to also return the handle of the thread (the implicit main thread also has its own unique handle).<br \>
+<tt><a href="KeyPgThreadSelf.html">ThreadSelf</a></tt> may be used to code some sort of TLS (Thread Local Storage) from the unique handle of each thread (including the implicit main thread). Therefore, a same global variable name may be defined, but with a stored value specific to the thread that accesses it. This allows generic procedures to be coded, but with parameters depending on the thread which executes them.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Waiting for a thread end, otherwise detaching a thread</div><div class="fb_sect_cont"><br \>
+There are two methods to induce a proper thread termination:<br \>
+<div class="fb_indent"><b>-</b> either a first method <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt> where another thread waits for this thread to finish,<br \>
+<b>-</b> otherwise a second method <tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt> where another thread detaches this thread and continues.<br \>
+<br \>
+</div><u>First method - <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt></u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <a href="KeyPgThreadWait.html">ThreadWait</a> ( <a href="KeyPgByval.html">ByVal</a> <i>threadid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt><a href="KeyPgThreadWait.html">ThreadWait</a> ( <i>threadid</i> )</tt><br \>
+</div><b>-</b> Parameters:<br \>
+<div class="fb_indent"><tt><i>threadid</i></tt><br \>
+<div class="fb_indent"><tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle of a thread created by <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> or <tt><a href="KeyPgThreadCall.html">ThreadCall</a></tt><br \>
+</div></div><b>-</b> Note:<br \>
+<div class="fb_indent">In other language (as C++), the <i>'wait()'</i> suffix is called <i>'join()'</i>.<br \>
+<br \>
+</div></div><u>Second method - <tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt></u><br \>
+<div class="fb_indent"><b>-</b> Syntax:<br \>
+<div class="fb_indent"><tt><a href="KeyPgDeclare.html">Declare</a> <a href="KeyPgSub.html">Sub</a> <a href="KeyPgThreadDetach.html">ThreadDetach</a> ( <a href="KeyPgByval.html">ByVal</a> <i>threadid</i> <a href="KeyPgAs.html">As</a> <a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a> )</tt><br \>
+</div><b>-</b> Usage:<br \>
+<div class="fb_indent"><tt>#include "fbthread.bi"</tt><br \>
+<tt><a href="KeyPgThreadDetach.html">ThreadDetach</a> ( <i>threadid</i> )</tt><br \>
+</div><b>-</b> Parameters:<br \>
+<div class="fb_indent"><tt><i>threadid</i></tt><br \>
+<div class="fb_indent"><tt><a href="KeyPgAny.html">Any</a> <a href="KeyPgPtr.html">Ptr</a></tt> handle of a thread created by <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> or <tt><a href="KeyPgThreadCall.html">ThreadCall</a></tt><br \>
+<br \>
+</div></div></div><u>Description</u><br \>
+<div class="fb_indent">After creating it, the programmer must make sure that the thread is either waited for (joined) otherwise detached, and this from another thread (including the main thread).<br \>
+<br \>
+<tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt> waits for a thread to complete its execution, and then release the resources associated with the thread handle. <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt> does not return until the thread (designated by the identifier) ends.<br \>
+During the wait, the caller does not consume CPU time.<br \>
+<tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt> does not force the thread to end. If a thread requires a signal to force an end, a mechanism such as a shared flag must be used.<br \>
+<br \>
+<tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt> releases resources associated with the thread handle. The thread handle will be destroyed by <tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt> and can no longer be used.<br \>
+Unlike <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt>, <tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt> does not wait for the end of the thread, and its execution continues independently. All allocated resources will be freed once the thread is complete.<br \>
+<br \>
+After <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt> or <tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt> is applied, the thread can no longer be joined, so the handle identifier value must not be used again in any of these commands.<br \>
+<br \>
+Generally, before finishing, a 'parent' thread is waiting for the 'child' thread to finish.<br \>
+But if the programmer chooses not to wait until the end of the thread (and necessarily detaches it only), then he must make sure that the data accessed by that thread is valid until the thread has finished with it. Otherwise, one may encounter a situation where the 'parent' thread holds pointers/references to local variables and the 'child' thread hasn't finished when the 'parent' thread finishes (the variables being destroyed because becoming out of scope).<br \>
+<br \>
+</div></div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+The 'Main' thread displays ten "M" characters while the 'Child' thread simultaneously displays ten "C" characters.<br \>
+A <i>'Sleep x, 1'</i> tempo is put in the <i>'For'</i> loop of each thread (main thread and child thread) to release time-slice allowing the other thread to execute as well.<br \>
+The tempos are set so that the execution time of the child thread <i>'For'</i> loop is greater than the one of the main thread <i>'For'</i> loop.<br \>
+<br \>
+<div class="fb_indent"><b>-</b> Using <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> ..... <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt>:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">threadID</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;an&nbsp;'Any&nbsp;Ptr'&nbsp;thread-ID&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;M&quot;&quot;:&nbsp;from&nbsp;'Main'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;C&quot;&quot;:&nbsp;from&nbsp;'Child'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="wrd">threadID</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">thread</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;creation&nbsp;of&nbsp;the&nbsp;child&nbsp;thread&nbsp;from&nbsp;the&nbsp;main&nbsp;thread</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;main&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;M&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">150</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">threadID</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;waiting&nbsp;for&nbsp;the&nbsp;child&nbsp;thread&nbsp;termination</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Child'&nbsp;thread&nbsp;finished&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;sub&nbsp;executed&nbsp;by&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;C&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">350</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+"M": from 'Main' thread
+"C": from 'Child' thread
+
+MCMMCMMCMMCMMMCCCCCC
+'Child' thread finished
+				</pre></div></div><b>-</b> Using <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> + <tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt> ..... (a global end-flag is added at the end of the child thread):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#include&nbsp;&quot;fbthread.bi&quot;<br />
+</span><br />
+<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">threadID</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;an&nbsp;'Any&nbsp;Ptr'&nbsp;thread-ID&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">Shared</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span>&nbsp;<span class="wrd">threadEnd</span>&nbsp;&nbsp;<span class="com">''&nbsp;declaration&nbsp;of&nbsp;a&nbsp;global&nbsp;'Boolean'&nbsp;thread-End&nbsp;flag&nbsp;for&nbsp;the&nbsp;child&nbsp;thread</span><br />
+<br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;M&quot;&quot;:&nbsp;from&nbsp;'Main'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&quot;&quot;C&quot;&quot;:&nbsp;from&nbsp;'Child'&nbsp;thread&quot;</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="wrd">threadID</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">thread</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;creation&nbsp;of&nbsp;the&nbsp;child&nbsp;thread&nbsp;from&nbsp;the&nbsp;main&nbsp;thread</span><br />
+<span class="key">ThreadDetach</span><span class="oth">(</span><span class="wrd">threadID</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;detaching&nbsp;the&nbsp;child&nbsp;thread</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;main&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;M&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">150</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">While</span>&nbsp;<span class="wrd">threadEnd</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">False</span>&nbsp;&nbsp;<span class="com">''&nbsp;waiting&nbsp;for&nbsp;the&nbsp;thread-End&nbsp;flag&nbsp;=&nbsp;'True'&nbsp;from&nbsp;the&nbsp;child&nbsp;thread</span><br />
+<span class="key">Wend</span><br />
+<span class="key">Print</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;'Child'&nbsp;thread&nbsp;finishing&nbsp;or&nbsp;finished&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">userdata</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;sub&nbsp;executed&nbsp;by&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">10</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;'For'&nbsp;loop&nbsp;of&nbsp;the&nbsp;child&nbsp;thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;C&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">350</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">threadEnd</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">True</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;set&nbsp;the&nbsp;thrend-End&nbsp;flag&nbsp;to&nbsp;'True'</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+"M": from 'Main' thread
+"C": from 'Child' thread
+
+MCMMCMMCMMCMMMCCCCCC
+'Child' thread finishing or finished
+				</pre></div></div></div>A UDT for a multi-timer feature:<br \>
+<div class="fb_indent"><b>-</b> using internally a joinable thread (<tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> ..... <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt>) to sequence each timer,<br \>
+<b>-</b> and call-backing externally a detached thread (<tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> + <tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt> .....) as event for user.<br \>
+</div>The user event being triggered by a detached-thread callback from the timer loop, the requested time-out is only biased by the execution time of <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt> + <tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt> (small time about constant) and not by a <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt> waiting-for:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;Only&nbsp;4&nbsp;member&nbsp;procedures&nbsp;in&nbsp;public&nbsp;access&nbsp;(the&nbsp;first&nbsp;3&nbsp;returning&nbsp;'true'&nbsp;if&nbsp;success,&nbsp;'false'&nbsp;else):</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Function&nbsp;'Set'&nbsp;to&nbsp;parametrize&nbsp;the&nbsp;considered&nbsp;timer&nbsp;(time-out&nbsp;in&nbsp;ms,&nbsp;pointer&nbsp;to&nbsp;user&nbsp;thread)</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Function&nbsp;'Start'&nbsp;to&nbsp;start&nbsp;the&nbsp;considered&nbsp;timer</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Function&nbsp;'Stop'&nbsp;to&nbsp;stop&nbsp;the&nbsp;considered&nbsp;timer&nbsp;(then,&nbsp;the&nbsp;considered&nbsp;timer&nbsp;may&nbsp;be&nbsp;re-Set&nbsp;and&nbsp;re-Start)</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Property&nbsp;'Counter'&nbsp;to&nbsp;get&nbsp;the&nbsp;occurrence&nbsp;number&nbsp;of&nbsp;the&nbsp;timer</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;Plus&nbsp;an&nbsp;'Any&nbsp;Ptr'&nbsp;in&nbsp;public&nbsp;access:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Pointer&nbsp;field&nbsp;'userdata'&nbsp;to&nbsp;point&nbsp;to&nbsp;any&nbsp;user&nbsp;data&nbsp;structure&nbsp;(optional&nbsp;usage)</span><br />
+<span class="com">'</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;Remark:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Pointer&nbsp;to&nbsp;the&nbsp;considered&nbsp;timer&nbsp;instance&nbsp;is&nbsp;provided&nbsp;to&nbsp;the&nbsp;user&nbsp;thread&nbsp;procedure</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;order&nbsp;to&nbsp;be&nbsp;able&nbsp;to&nbsp;factorize&nbsp;the&nbsp;treatment&nbsp;per&nbsp;timers&nbsp;group,</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;to&nbsp;address&nbsp;the&nbsp;right&nbsp;user&nbsp;data&nbsp;structure&nbsp;if&nbsp;used&nbsp;(see&nbsp;example&nbsp;for&nbsp;usage).</span><br />
+<span class="com">'</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;In&nbsp;private&nbsp;access:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;4&nbsp;internal&nbsp;variables&nbsp;(time-out&nbsp;value,&nbsp;pointer&nbsp;to&nbsp;user&nbsp;thread,&nbsp;handle&nbsp;to&nbsp;timer&nbsp;thread,&nbsp;counter&nbsp;of&nbsp;occurence)</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Static&nbsp;timer&nbsp;thread</span><br />
+<br />
+<br />
+<span class="def">#include&nbsp;&quot;fbthread.bi&quot;<br />
+</span><span class="key">Type</span>&nbsp;<span class="wrd">UDT_timer_thread</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">Set</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">time_out</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">timer_procedure</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Sub</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">param</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">))</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">Start</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="key">Stop</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Property</span>&nbsp;<span class="wrd">Counter</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">userdata</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">tempo</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Sub</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">param</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span>&nbsp;<span class="wrd">routine</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">handle</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">count</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">param</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">UDT_timer_thread.Set</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">time_out</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><span class="oth">,</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">timer_procedure</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Sub</span><span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">param</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">))</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">timer_procedure</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">This.handle</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.tempo</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">time_out</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.routine</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">timer_procedure</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.count</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">True</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">False</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">UDT_timer_thread.Start</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.handle</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">This.routine</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.handle</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">UDT_timer_thread.thread</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">True</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">False</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">UDT_timer_thread.Stop</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.handle</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Swap</span>&nbsp;<span class="wrd">p</span><span class="oth">,</span>&nbsp;<span class="wrd">This.handle</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">p</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">True</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Function</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">False</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Property</span>&nbsp;<span class="wrd">UDT_timer_thread.Counter</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This.count</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Property</span><br />
+<br />
+<span class="key">Static</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">UDT_timer_thread.thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">param</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT_timer_thread</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">param</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">While</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">handle</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">tempo</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">count</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">routine</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(</span><span class="key">Cast</span><span class="oth">(</span><span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">routine</span><span class="oth">),</span>&nbsp;<span class="wrd">param</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">ThreadDetach</span><span class="oth">(</span><span class="wrd">p</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Wend</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">'---------------------------------------------------------------------------------------------------</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">tempo1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">950</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UInteger</span>&nbsp;<span class="wrd">tempo2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">380</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT_timer_thread</span>&nbsp;<span class="wrd">timer1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">timer1.userdata</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="key">String</span><span class="oth">(</span><span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback&nbsp;from&nbsp;timer&nbsp;#1&nbsp;(&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">tempo1</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;ms)&quot;</span><span class="oth">)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT_timer_thread</span>&nbsp;<span class="wrd">timer2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">timer2.userdata</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="key">String</span><span class="oth">(</span><span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback&nbsp;from&nbsp;timer&nbsp;#2&nbsp;(&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">tempo2</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;ms)&quot;</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">User_thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">param</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT_timer_thread</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">param</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ps</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">userdata</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="wrd">ps</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;,&nbsp;occurrence:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">pu</span><span class="oth">-&gt;</span><span class="wrd">Counter</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Beginning&nbsp;of&nbsp;test&quot;</span><br />
+<span class="key">If</span>&nbsp;<span class="wrd">timer1.Set</span><span class="oth">(</span><span class="wrd">tempo1</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">User_thread</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;timer&nbsp;#1&nbsp;set&nbsp;OK&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">timer1.Start</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timer&nbsp;#1&nbsp;start&nbsp;OK&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">If</span>&nbsp;<span class="wrd">timer2.Set</span><span class="oth">(</span><span class="wrd">tempo2</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="wrd">User_thread</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;timer&nbsp;#2&nbsp;set&nbsp;OK&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">timer2.Start</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timer&nbsp;#2&nbsp;start&nbsp;OK&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;Then,&nbsp;any&nbsp;key&nbsp;to&nbsp;stop&nbsp;the&nbsp;timers&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+<br />
+<span class="key">If</span>&nbsp;<span class="wrd">timer1.stop</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;timer&nbsp;#1&nbsp;stop&nbsp;OK&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">If</span>&nbsp;<span class="wrd">timer2.stop</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;timer&nbsp;#2&nbsp;stop&nbsp;OK&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">Sleep</span>&nbsp;<span class="num">500</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;End&nbsp;of&nbsp;test&quot;</span><br />
+<span class="key">Delete</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="key">String</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">timer1.userdata</span><span class="oth">)</span><br />
+<span class="key">Delete</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="key">String</span>&nbsp;<span class="key">Ptr</span><span class="oth">,</span>&nbsp;<span class="wrd">timer2.userdata</span><span class="oth">)</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+Beginning of test
+	timer #1 set OK
+		timer #1 start OK
+	timer #2 set OK
+		timer #2 start OK
+	Then, any key to stop the timers
+		callback from timer #2 (380ms), occurrence: 1
+		callback from timer #2 (380ms), occurrence: 2
+		callback from timer #1 (950ms), occurrence: 1
+		callback from timer #2 (380ms), occurrence: 3
+		callback from timer #2 (380ms), occurrence: 4
+		callback from timer #1 (950ms), occurrence: 2
+		callback from timer #2 (380ms), occurrence: 5
+		callback from timer #2 (380ms), occurrence: 6
+		callback from timer #2 (380ms), occurrence: 7
+		callback from timer #1 (950ms), occurrence: 3
+		callback from timer #2 (380ms), occurrence: 8
+		callback from timer #2 (380ms), occurrence: 9
+		callback from timer #1 (950ms), occurrence: 4
+		callback from timer #2 (380ms), occurrence: 10
+		callback from timer #2 (380ms), occurrence: 11
+		callback from timer #2 (380ms), occurrence: 12
+	timer #1 stop OK
+		callback from timer #1 (950ms), occurrence: 5
+	timer #2 stop OK
+		callback from timer #2 (380ms), occurrence: 13
+End of test
+			</pre></div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgThreadCreate.html">ThreadCreate</a></tt>, <tt><a href="KeyPgThreadCall.html">ThreadCall</a></tt><br \>
+<li> <tt><a href="KeyPgThreadSelf.html">ThreadSelf</a></tt><br \>
+<li> <tt><a href="KeyPgThreadWait.html">ThreadWait</a></tt>, <tt><a href="KeyPgThreadDetach.html">ThreadDetach</a></tt><br \>
+<li> <a href="ProPgMultiThreading.html">Multi-Threading Overview</a><br \>
+<li> <a href="ProPgMtMutualExclusion.html">Mutual Exclusion</a><br \>
+<li> <a href="ProPgMtConditionalVariables.html">Conditional Variables</a><br \>
+<li> <a href="ProPgMtCriticalSections.html">Critical Sections</a><br \>
+<li> <a href="ProPgMtCriticalSectionsFAQ.html">Critical Sections FAQ</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

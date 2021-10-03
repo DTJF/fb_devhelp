@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>Coercion and Conversion</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Coercion and Conversion</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Transfer the data of a given type variable to a variable of another type requires conversion.<br \>
+<br \>
+<br \>
+<b>Coercion of Numeric Data Types in Expressions and Arguments</b><br \>
+<br \>
+For the integer types, the rule depends on the following ranking:<br \>
+<div class="fb_indent">in 32bit:<br \>
+<div class="fb_indent">byte &lt; ubyte &lt; short &lt; ushort &lt; long &lt; integer &lt; ulong &lt; uinteger &lt; longint &lt; ulongint<br \>
+</div>in 64bit:<br \>
+<div class="fb_indent">byte &lt; ubyte &lt; short &lt; ushort &lt; long &lt; ulong &lt; longint &lt; integer &lt; ulongint &lt; uinteger<br \>
+</div></div>First,  in accordance to the above ranking, all arguments smaller than Integer are converted to Integer.<br \>
+Then, if arguments have different size, the smaller argument is converted to match the bigger one. Next, if arguments have different signedness, the signed argument is converted to unsigned to match the other one.<br \>
+Finally, the (U)Integer types replace:<br \>
+<div class="fb_indent">in 32bit:<br \>
+<div class="fb_indent">the (U)Long types<br \>
+</div>in 64bit:<br \>
+<div class="fb_indent">the (U)Longint types<br \>
+<br \>
+</div></div>On the other hand, if one of the arguments is a Single or a Double, both arguments are converted and/or promoted to Double.<br \>
+<br \>
+<br \>
+<b>Conversion of Numeric Data Types</b><br \>
+<br \>
+A type conversion will occur implicitly when an expression or variable is assigned, passed as a parameter to a procedure, or returned as a result from a procedure. Conversions may also be explicit when using CAST or one of the built-in conversion functions (among standard functions).<br \>
+<br \>
+<u>Integer To Integer, any combination of Signed and Unsigned</u><br \>
+<ul><li> Any integer type to a smaller integer type: least significant bits are retained<br \>
+<li> Any integer type to a larger integer type: sign extended to fill most significant bits<br \>
+<br \>
+</ul><u>Integer to Single or Double</u><br \>
+<ul><li> Possible loss of precision<br \>
+<br \>
+</ul><u>Double to Single</u><br \>
+<ul><li> Possible loss of precision<br \>
+<li> If the value of the Double exceeds the range of a Single result is +/- INF<br \>
+<br \>
+</ul><u>Double or Single to Integer</u><br \>
+<ul><li> Possible loss of precision<br \>
+<li> If the value of the floating point number exceeds the range of the target type are results are undefined.  A run-time error is not raised.<br \>
+<br \>
+<br \>
+</ul><b>Conversions using User Data Type constructors and operators</b><br \>
+<br \>
+For conversion between built-in types (among standard types like between numeric types as above or between string types), the compiler knows what to do without the need for instructions from user.<br \>
+This is called the implicit internal conversion (or coercion).<br \>
+<br \>
+When one of the two types is at least a UDT (User Defined Type), the user has to code some UDT procedures to define how do the conversion.<br \>
+Then, the conversion execution can be explicit if the user specifies what UDT procedure must be used, or implicit if the user leaves the choice to compiler.<br \>
+<br \>
+In the world of UDTs, conversions can be controlled by means of three member procedures:<br \>
+<ul><li> Single-argument constructor: allow conversion from a particular type to initialize an object.<br \>
+<li> Assignment operator: allow conversion from a particular type on assignment.<br \>
+<li> Type-cast operator: allow conversion to a particular type.<br \>
+<br \>
+</ul>For a construction with implicit initialization ('Dim As UDT u = v'), the compiler searches:<br \>
+<ul><li> Firstly a matched constructor (for u type).<br \>
+<li> Then otherwise a matched cast operator (for v type).<br \>
+</ul>(a matched let operator (for u type) is not searched by compiler on a construction with implicit initialization)<br \>
+<br \>
+For an implicit assignment ('u = v'), or an implicit return from function by assigning ('Function = v'), the compiler searches:<br \>
+<ul><li> Firstly a matched let operator (for u type, or for return type).<br \>
+<li> Then otherwise a matched cast operator (for v type).<br \>
+</ul>(a matched constructor (for u type, or for return type) is not searched by compiler on an implicit assignment)<br \>
+<br \>
+For an implicit return from function by exiting immediately ('Return v'), the compiler searches:<br \>
+<ul><li> Firstly a matched constructor (for return type).<br \>
+<li> Secondly a matched let operator (for return type).<br \>
+<li> Then otherwise a matched cast operator (for v type).<br \>
+<br \>
+</ul><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Very simple syntaxic example highlighting the conversion capabilities by using Cast operator (explicit and implicit), Constructor (explicit and implicit) and Let operator (implicit):<br \>
+<tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT</span><br />
+&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">I0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">I0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDT.Cast</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">This.I</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">I0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="wrd">This.I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDT.Let</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">I0</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;<span class="wrd">This.I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">I0</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">12</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">UDT</span><span class="oth">(</span><span class="wrd">J</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;construction&nbsp;with&nbsp;explicit&nbsp;initialization&nbsp;using&nbsp;the&nbsp;defined&nbsp;&quot;Constructor(Byval&nbsp;As&nbsp;Integer)&quot;&nbsp;operator</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u1.I</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT</span>&nbsp;<span class="wrd">u2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">J</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;construction&nbsp;with&nbsp;implicit&nbsp;initialization&nbsp;by&nbsp;compiler&nbsp;using&nbsp;the&nbsp;defined&nbsp;&quot;Constructor(Byval&nbsp;As&nbsp;Integer)&quot;&nbsp;operator</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u2.I</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="wrd">u1.I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">34</span><br />
+<span class="wrd">J</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Cast</span><span class="oth">(</span><span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="wrd">u1</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;explicit&nbsp;assignment&nbsp;using&nbsp;the&nbsp;defined&nbsp;&quot;Cast()&nbsp;As&nbsp;Integer&quot;&nbsp;operator</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">J</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">K</span><br />
+<span class="wrd">K</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;implicit&nbsp;assignment&nbsp;by&nbsp;compiler&nbsp;using&nbsp;the&nbsp;defined&nbsp;&quot;Cast()&nbsp;As&nbsp;Integer&quot;&nbsp;operator</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">K</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="wrd">J</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">56</span><br />
+<span class="wrd">u1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">J</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;implicit&nbsp;assignment&nbsp;by&nbsp;compiler&nbsp;using&nbsp;the&nbsp;defined&nbsp;&quot;Let(Byval&nbsp;As&nbsp;Integer)&quot;&nbsp;operator</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">u1.I</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+</div></tt><br />
+</div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="CatPgStdDataTypes.html">Standard Data Types</a><br \>
+<li> <a href="TblVarTypes.html">Variable Types</a><br \>
+<li> <a href="CatPgCasting.html">Casting and Conversion Functions</a><br \>
+<li> <a href="CatPgUserDefTypes.html">User Defined Types</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

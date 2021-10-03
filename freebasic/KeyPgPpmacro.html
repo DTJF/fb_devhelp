@@ -1,0 +1,156 @@
+<html>
+<head>
+<title>#Macro...#Endmacro</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">#Macro...#Endmacro</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Preprocessor directive to define a multiline macro<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<b>#macro</b> <i>identifier</i> [?] ( [ <i>parameters</i> ] )<br \>
+<div class="fb_indent"><i>body</i><br \>
+</div><b>#endmacro</b><br \>
+<br \>
+<b>#macro</b> <i>identifier</i> [?] ( [ <i>parameters</i>, ] <i><a href="KeyPgDots.html">Variadic_Parameter...</a></i> )<br \>
+<div class="fb_indent"><i>body</i><br \>
+</div><b>#endmacro</b><br \>
+</tt><br \>
+</div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>#macro</b></tt> is the multi-line version of <tt><a href="KeyPgPpdefine.html">#define</a></tt>.<br \>
+<br \>
+If using the optional question mark (?) after the <tt><i>identifier</i></tt> in the definition syntax, macros with parameters can be invoked without using parentheses around the arguments.<br \>
+<b>Note:</b> Beware of the possibility of triggering so a conflict with expressions containing the name of the macro as one of their terms.<br \>
+<br \>
+Note: Unlike the function-like <tt><a href="KeyPgPpdefine.html">#define</a></tt> declaration, spaces can be put between the macro name and the opening parenthesis for any declaration syntax of macro.<br \>
+<br \>
+WARNING: In the macro body, it may be mandatory to have to surround by parentheses any used parameter if it is inside an expression with one operator at least, in order to not undergo an unwanted precedence change of operators (if passing as argument an expression with also operators).<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="com">'&nbsp;macro&nbsp;as&nbsp;an&nbsp;expression&nbsp;value</span><br />
+<br />
+<span class="def">#macro&nbsp;Print1(&nbsp;a,&nbsp;b&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">a</span>&nbsp;<span class="oth">+</span>&nbsp;<span class="wrd">b</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">Print1</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;Hello&nbsp;&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;World!&quot;</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="com">/'&nbsp;Output&nbsp;:</span><br />
+<span class="com">Hello&nbsp;World!</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;macro&nbsp;as&nbsp;multiple&nbsp;statements</span><br />
+<br />
+<span class="def">#macro&nbsp;Print2(&nbsp;a,&nbsp;b&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">a</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&quot;</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">b</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;!&quot;</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="wrd">Print2</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;Hello&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;World&quot;</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="com">/'&nbsp;Output&nbsp;:</span><br />
+<span class="com">Hello&nbsp;World!</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;macro&nbsp;with&nbsp;a&nbsp;variadic&nbsp;parameter</span><br />
+<br />
+<span class="def">#macro&nbsp;test1(&nbsp;arg1,&nbsp;arg2...&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">arg1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#if&nbsp;#arg2&nbsp;=&nbsp;&quot;&quot;<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;2nd&nbsp;argument&nbsp;not&nbsp;passed&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#else<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">arg2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+#endmacro<br />
+</span><br />
+<span class="wrd">test1</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;1&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;2&quot;</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;-----------------------&quot;</span><br />
+<span class="wrd">test1</span><span class="oth">(</span>&nbsp;<span class="quo">&quot;3&quot;</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;-----------------------&quot;</span><br />
+<span class="wrd">test1</span><span class="oth">(</span>&nbsp;<span class="num">5</span><span class="oth">,</span>&nbsp;<span class="num">6</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;-----------------------&quot;</span><br />
+<span class="wrd">test1</span><span class="oth">(</span>&nbsp;<span class="num">7</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="com">/'&nbsp;Output&nbsp;:</span><br />
+<span class="com">1</span><br />
+<span class="com">2</span><br />
+<span class="com">-----------------------</span><br />
+<span class="com">3</span><br />
+<span class="com">2nd&nbsp;argument&nbsp;not&nbsp;passed</span><br />
+<span class="com">-----------------------</span><br />
+<span class="com">&nbsp;5</span><br />
+<span class="com">&nbsp;6</span><br />
+<span class="com">-----------------------</span><br />
+<span class="com">&nbsp;7</span><br />
+<span class="com">2nd&nbsp;argument&nbsp;not&nbsp;passed</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;macro&nbsp;with&nbsp;a&nbsp;variadic&nbsp;parameter&nbsp;which&nbsp;can&nbsp;contain&nbsp;several&nbsp;sub-parameters:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;To&nbsp;distinguish&nbsp;between&nbsp;the&nbsp;different&nbsp;arguments&nbsp;passed&nbsp;by&nbsp;variadic_parameter,</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;you&nbsp;can&nbsp;first&nbsp;convert&nbsp;variadic_parameter&nbsp;to&nbsp;a&nbsp;string&nbsp;using&nbsp;the&nbsp;Operator&nbsp;#&nbsp;(Preprocessor&nbsp;Stringize),</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;then&nbsp;differentiate&nbsp;in&nbsp;this&nbsp;string&nbsp;(#variadic_parameter)&nbsp;each&nbsp;passed&nbsp;argument&nbsp;by&nbsp;locating&nbsp;the&nbsp;separators&nbsp;(usually&nbsp;a&nbsp;comma).</span><br />
+<br />
+<span class="def">#macro&nbsp;test2(&nbsp;arg1,&nbsp;arg2...&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Trim</span><span class="oth">(#</span><span class="wrd">arg1</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Trim</span><span class="oth">(#</span><span class="wrd">arg2</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">InStr</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;,&quot;</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Left</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="wrd">k</span>&nbsp;<span class="oth">-</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Trim</span><span class="oth">(</span><span class="key">Mid</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">,</span>&nbsp;<span class="wrd">k</span><span class="oth">+</span><span class="num">1</span><span class="oth">))</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<span class="def">#endmacro<br />
+</span><br />
+<span class="wrd">test2</span><span class="oth">(</span>&nbsp;<span class="num">5</span>&nbsp;<span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;----&quot;</span><br />
+<span class="wrd">test2</span><span class="oth">(</span>&nbsp;<span class="num">5</span><span class="oth">,</span><span class="num">6</span><span class="oth">,</span>&nbsp;<span class="num">7</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="num">9</span><span class="oth">,</span>&nbsp;<span class="num">10</span><span class="oth">,</span>&nbsp;<span class="oth">,,</span><span class="num">13</span><span class="oth">,</span>&nbsp;<span class="num">14</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="com">/'&nbsp;Output&nbsp;:</span><br />
+<span class="com">'5'</span><br />
+<span class="com">----</span><br />
+<span class="com">'5'</span><br />
+<span class="com">'6'</span><br />
+<span class="com">'7'</span><br />
+<span class="com">''</span><br />
+<span class="com">'9'</span><br />
+<span class="com">'10'</span><br />
+<span class="com">''</span><br />
+<span class="com">''</span><br />
+<span class="com">'13'</span><br />
+<span class="com">'14'</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgPpdefine.html">#define</a></tt><br \>
+<li> <tt><a href="KeyPgPpifdef.html">#ifdef</a></tt><br \>
+<li> <tt><a href="KeyPgPpundef.html">#undef</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

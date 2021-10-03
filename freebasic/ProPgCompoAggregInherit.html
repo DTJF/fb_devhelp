@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>Composition, Aggregation, Inheritance</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Composition, Aggregation, Inheritance</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Properly choice between <b>Composition</b>, <b>Aggregation</b>, and <b>Inheritance</b>, for User Defined Types.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+Complex type structures can be built through composition, aggregation, and inheritance.<br \>
+Composition or aggregation (specialized form of association) is the process of creating more complex types from simple ones, while inheritance is the process of creating more complex type by acquiring the attributes and behaviors of existing ones.<br \>
+<br \>
+There is a very famous design principle which says “Favor composition over inheritance“, or also "Don’t use inheritance just to get code reuse".<br \>
+One other reason to favor composition with FreeBASIC (as with many other languages) is it does not support multiple inheritance.<br \>
+<br \>
+<div class="fb_sect_title">Definition of composition, aggregation, inheritance</div><div class="fb_sect_cont"><br \>
+The right question to ask himself for choosing the type of relationship to use is to determine if this relationship is rather <i>"HAS-A"</i> or <i>"USES-A"</i> or <i>"IS-A"</i> throughout the lifetime of the application (see example below).<br \>
+<br \>
+When user needs to use property and behavior of a type without modifying it inside its type, then association is a better option.<br \>
+Whereas if needed to use and modify property and behavior of a type inside the user type, it is best to use inheritance.<br \>
+<br \>
+<u>Definition of each relationship</u><br \>
+<div class="fb_indent">Composition (strong association) establishes a <i>"HAS-A"</i> relationship between objects:<br \>
+<div class="fb_indent"><b>-</b> In composition, the component object exists solely for the use of its composite object.<br \>
+<b>-</b> If the composite object is destroyed, the component object is destroyed as well:<br \>
+<div class="fb_indent"><div class="fb_indent">&gt; because the type contains the object itself.<br \>
+</div></div><b>-</b> Syntax of the member field to add in the <i>type</i> for <i>object'</i>s composition (or similar syntax):<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><i>objectname</i> <a href="KeyPgAs.html">As</a> <i>objecttypename</i> [= <i>initializer</i>]</tt><br \>
+<br \>
+</div></div></div>Aggregation (weak association) establishes a <i>“USES-A”</i> relationship between objects:<br \>
+<div class="fb_indent"><b>-</b> In aggregation, the component object can have an existence independent of its use in the aggregate object.<br \>
+<b>-</b> Destroying the aggregate does not destroy the component:<br \>
+<div class="fb_indent"><div class="fb_indent">&gt; because the type contains only a pointer to the object.<br \>
+</div></div><b>-</b> Syntax of the member field to add in the <i>type</i> for <i>object'</i>s aggregation (or similar syntax):<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><i>objectptrname</i> <a href="KeyPgAs.html">As</a> <i>objecttypename</i> <a href="KeyPgPtr.html">Ptr</a> [= <i>initializer</i>]</tt><br \>
+<br \>
+</div></div></div>Inheritance establishes an <i>“IS-A”</i> relationship between instantiable types:<br \>
+<div class="fb_indent"><b>-</b> The derived-type has the same features and functionality as its base-type, with some extensions.<br \>
+<b>-</b> Syntax of the <i>type'</i>s declaration header for <i>object'</i>s inheritance:<br \>
+<div class="fb_indent"><div class="fb_indent"><tt><a href="KeyPgType.html">Type</a> <i>typename</i> [<a href="KeyPgAlias.html">Alias</a> <i>alternatename</i>] <a href="KeyPgExtends.html">Extends</a> <i>objecttypename</i> [<a href="KeyPgField.html">Field</a> = alignment]</tt><br \>
+<br \>
+</div></div></div></div></div><div class="fb_sect_title">Advantages of object association (composition/aggregation) over inheritance</div><div class="fb_sect_cont"><br \>
+In most cases <i>"HAS-A"</i> or <i>"USES-A"</i> relationship is more semantically correct than <i>"IS-A"</i> relationship.<br \>
+<br \>
+Aggregation is more flexible than inheritance.<br \>
+Implementation of type can be changed at run-time by changing the component object, but this cannot be do with inheritance (behavior of base type cannot be changed at run-time).<br \>
+<br \>
+A design based on object association usually will have less types.<br \>
+<br \>
+It is possible to implement a pseudo "multiple inheritance" (in languages which do not support it) by composing multiple objects into one.<br \>
+There is no conflict between procedures/properties names, which might occur with inheritance.<br \>
+<br \>
+</div><div class="fb_sect_title">Downsides of object association (composition/aggregation) compared to inheritance</div><div class="fb_sect_cont"><br \>
+When using aggregation, the behavior of the system may be harder to understand just by looking at the source code, since it's more dynamic and more interaction between types happens in run-time, rather than compile time.<br \>
+<br \>
+Association approach might require more code and time effort.<br \>
+A design based on object association usually will have more objects.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Simple illustrative example that mixes composition, aggregation, and inheritance:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;Between&nbsp;the&nbsp;different&nbsp;types&nbsp;&quot;Driver&quot;,&nbsp;&quot;Person&quot;,&nbsp;&quot;Driver_license&quot;&nbsp;and&nbsp;&quot;Vehicle&quot;,&nbsp;the&nbsp;respective&nbsp;relationships&nbsp;are:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;driver&nbsp;“IS-A”&nbsp;person&nbsp;(driver&nbsp;is&nbsp;a&nbsp;person):&nbsp;=&gt;&nbsp;&quot;INHERITANCE&quot;.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;driver&nbsp;“HAS-A”&nbsp;driver's&nbsp;license&nbsp;(driver&nbsp;license&nbsp;only&nbsp;existing&nbsp;for&nbsp;the&nbsp;driver):&nbsp;=&gt;&nbsp;&quot;COMPOSITION&quot;.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;driver&nbsp;“USES-A”&nbsp;vehicle&nbsp;(vehicle&nbsp;lifetime&nbsp;independent&nbsp;of&nbsp;the&nbsp;driver&nbsp;life):&nbsp;=&gt;&nbsp;&quot;AGGREGATION&quot;.</span><br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">Person</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">full_name</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_full_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Protected</span><span class="oth">:</span>&nbsp;&nbsp;<span class="com">''&nbsp;to&nbsp;forbid&nbsp;at&nbsp;compile&nbsp;time&nbsp;the&nbsp;default-construction&nbsp;attempt&nbsp;of&nbsp;a&nbsp;Person&nbsp;instance</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">Person</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_full_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.full_name</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_full_name</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">Driver_license</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">number</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">Vehicle</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">registration</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_registration</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">Vehicle</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_registration</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.registration</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_registration</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">Driver</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">Person</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;inheritance</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Driver_license</span>&nbsp;<span class="wrd">dl</span>&nbsp;&nbsp;<span class="com">''&nbsp;composition</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Vehicle</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pv</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;aggregation</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_full_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">_dl</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Driver_license</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">Driver</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">_full_name</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">_dl</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Driver_license</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Base</span><span class="oth">(</span><span class="wrd">_full_name</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.dl</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_dl</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Driver</span>&nbsp;<span class="wrd">d1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">Driver</span><span class="oth">(</span><span class="quo">&quot;User&nbsp;fxm&quot;</span><span class="oth">,</span>&nbsp;<span class="key">Type</span><span class="oth">&lt;</span><span class="wrd">Driver_license</span><span class="oth">&gt;(</span><span class="num">123456789</span><span class="oth">))</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Vehicle</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pv1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">Vehicle</span><span class="oth">(</span><span class="quo">&quot;ABCDEFGHI&quot;</span><span class="oth">)</span><br />
+<span class="wrd">d1.pv</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">pv1</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Person&nbsp;full&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">d1.full_name</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Driver&nbsp;license&nbsp;number&nbsp;:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">d1.dl.number</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;Vehicle&nbsp;registration&nbsp;&nbsp;:&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">d1.pv</span><span class="oth">-&gt;</span><span class="wrd">registration</span><br />
+<br />
+<span class="key">Delete</span>&nbsp;<span class="wrd">pv1</span><br />
+<span class="wrd">d1.pv</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+Person full name      : User fxm
+Driver license number : 123456789
+Vehicle registration  : ABCDEFGHI
+</pre></div></div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgType.html">Type (Udt)</a></tt><br \>
+<li> <tt><a href="KeyPgExtends.html">Extends</a></tt><br \>
+<li> <a href="ProPgPolymorphism.html">Inheritance Polymorphism</a><br \>
+<li> <a href="ProPgObjectRtti.html">OBJECT built-in and RTTI info</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

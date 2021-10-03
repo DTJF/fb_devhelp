@@ -1,0 +1,427 @@
+<html>
+<head>
+<title>Variable Initializers</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Variable Initializers</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Variable initializers are supported for initializing pre-built type variables, UDT objects and arrays.<br \>
+<a name="ProPgInitializationTop"></a><br \>
+<b>Preamble:</b><br \>
+<br \>
+Pre-built type variables, user defined type (UDT) objects and arrays are initialized to zero (or <tt>'<a href="KeyPgFalse.html">False</a>'</tt> for <tt>'<a href="KeyPgBoolean.html">Boolean</a>'</tt>) or null strings by default when they are created.<br \>
+<br \>
+To avoid the overhead of default variable initialization, the <tt>'<a href="KeyPgAny.html">Any</a>'</tt> initializer can be used with <tt>'<a href="KeyPgDim.html">Dim</a>'</tt> to tell the compiler to only reserve the place for the variable in memory but not initialize it, so the variable will contain garbage. In this case the programmer should not make assumptions about the initial values.<br \>
+<br \>
+Pre-built type variables, UDT objects and arrays may be given a value at the time of their declaration using <tt>'<a href="KeyPgDim.html">Dim</a> ...'</tt>, with the syntaxes shown below.<br \>
+Pre-built type variables, UDT objects and arrays are initialized as they would in a normal assignment, using an <tt>'='</tt> sign. The <tt>'=&gt;'</tt> sign can also be used, allowing to avoid the declaration resembling an expression for example when declaring fixed length strings.<br \>
+<br \>
+<u>Table of Contents</u><br \>
+<div class="fb_indent"><b><a href="#ProPgInitialization1">1. Initializer syntax and validity for pre-built type variable declaration</a></b><br \>
+<b><a href="#ProPgInitialization2">2. Initializer syntax and validity for UDT object declaration</a></b><br \>
+<b><a href="#ProPgInitialization3">3. Initializer syntax and validity for array declaration</a></b><br \>
+<b><a href="#ProPgInitialization4">4. Nested Initializer syntax with another</a></b><br \>
+<br \>
+</div><a name="ProPgInitialization1"></a><br \>
+<div class="fb_sect_title">1. Initializer syntax and validity for pre-built type variable declaration</div><div class="fb_sect_cont"><br \>
+The main pre-built types are:<br \>
+<div class="fb_indent"><b>-</b> Integer types<br \>
+<b>-</b> Floating-point types<br \>
+<b>-</b> Boolean types<br \>
+<b>-</b> String types<br \>
+<br \>
+</div><u>Initializer syntaxes</u><br \>
+<div class="fb_indent">4 basic syntaxes are described below.<br \>
+<br \>
+Static allocations with initializer:<br \>
+<div class="fb_indent"><tt>(1) <a href="KeyPgDim.html">Dim</a> <i>variable_symbol</i> [<a href="KeyPgAs.html">As</a> PreBuiltType] = <i>expression</i></tt><br \>
+<tt>or:</tt><br \>
+<tt>(2) <a href="KeyPgDim.html">Dim</a> <a href="KeyPgByrefVariables.html">ByRef</a> <i>ref_variable_symbol</i> [<a href="KeyPgAs.html">As</a> PreBuiltType] = <i>variable</i></tt><br \>
+<br \>
+</div>Dynamic allocations with initializer:<br \>
+<div class="fb_indent"><tt>(3) <a href="KeyPgDim.html">Dim</a> <i>ptr_variable_symbol</i> <a href="KeyPgAs.html">As</a> PreBuiltType <a href="KeyPgPtr.html">Ptr</a> = <a href="KeyPgOpNew.html">New</a> PreBuiltType( <i>expression</i> )</tt><br \>
+<tt>or:</tt><br \>
+<tt>(4) <a href="KeyPgDim.html">Dim</a> <a href="KeyPgByrefVariables.html">ByRef</a> <i>ref_variable_symbol</i> <a href="KeyPgAs.html">As</a> PreBuiltType = <a href="KeyPgOpValueOf.html">*</a><a href="KeyPgOpNew.html">New</a> PreBuiltType( <i>expression</i> )</tt><br \>
+<br \>
+</div></div><u>Initializer validity</u><br \>
+<div class="fb_indent"><b>-</b> <tt><i>expression</i></tt>:<br \>
+<div class="fb_indent">Must produce an evaluated value of <tt>'PreBuiltType'</tt> type or compatible.<br \>
+</div><b>-</b> <tt><i>variable</i></tt>:<br \>
+<div class="fb_indent"><tt>'PreBuiltType'</tt> variable or compatible, when <tt>'<a href="KeyPgAs.html">As</a> PreBuiltType'</tt> is specified.<br \>
+<br \>
+</div></div><u>Declaration syntax for global symbol</u><br \>
+<div class="fb_indent">If using global symbols when declaring pre-built type variable with initializer (<tt>'<a href="KeyPgDim.html">Dim</a> <a href="KeyPgShared.html">Shared</a>'</tt> or <tt>'<a href="KeyPgStatic.html">Static</a> [<a href="KeyPgShared.html">Shared</a>]'</tt> or <tt>'<a href="KeyPgStatic.html">Static</a> <a href="KeyPgVar.html">Var</a> [<a href="KeyPgShared.html">Shared</a>]'</tt>, instead of <tt>'<a href="KeyPgDim.html">Dim</a>'</tt>), the initializer argument must at least be able to be evaluated at the start of the program so that it can be placed in the .data section:<br \>
+<div class="fb_indent"><b>-</b> The initializer syntaxe for variable-length string becomes no longer valid because the <tt>'<i>variable_symbol</i>'</tt> must refer to a dynamic memory block in the heap.<br \>
+<b>-</b> For the other pre-built type variables, the initializer syntaxe remains valid if the provided argument can be evaluated at compile time.<br \>
+<br \>
+</div></div><u>Example</u><br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="wrd">d</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1234.56789</span><br />
+<br />
+<span class="key">Print</span>&nbsp;<span class="wrd">d</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><b>Note:</b><br \>
+<div class="fb_indent">In the <tt><a href="CompilerOptlang.html">-lang fb</a></tt> only, <tt>'<a href="KeyPgVar.html">Var</a>'</tt> can be used instead of <tt>'<a href="KeyPgDim.html">Dim</a>'</tt> (removing the explicit type declaration), except for an initializer value of <tt>'<a href="KeyPgWstring.html">WString</a>'</tt> type.<br \>
+<br \>
+</div><div style="text-align: center;"><a href="#ProPgInitializationTop">Back to top</a></div><br \>
+<a name="ProPgInitialization2"></a><br \>
+</div><div class="fb_sect_title">2. Initializer syntax and validity for UDT object declaration</div><div class="fb_sect_cont"><br \>
+The UDT (User Defined Type) is a type structure defined by the user, in addition to the already existing pre-built types.<br \>
+<br \>
+All the following assumes that any statement below (1 to 7) has the access rights to any constructor explicitly defined in the UDT, if any exists.<br \>
+<br \>
+<u>Initializer syntaxes</u><br \>
+<div class="fb_indent">7 basic syntaxes are described below.<br \>
+<br \>
+Static allocations with initializer:<br \>
+<div class="fb_indent"><tt>(1) <a href="KeyPgDim.html">Dim</a> <i>udt_symbol</i> <a href="KeyPgAs.html">As</a> UdtName = ( <i>argument_list</i> )</tt><br \>
+<tt>or:</tt><br \>
+<tt>(2) <a href="KeyPgDim.html">Dim</a> <i>udt_symbol</i> <a href="KeyPgAs.html">As</a> UdtName = <i>udt_instance</i></tt><br \>
+<tt>or:</tt><br \>
+<tt>(3) <a href="KeyPgDim.html">Dim</a> <a href="KeyPgByrefVariables.html">ByRef</a> <i>ref_udt_symbol</i> <a href="KeyPgAs.html">As</a> UdtName = <i>udt_instance</i></tt><br \>
+<tt>or:</tt><br \>
+<tt>(4) <a href="KeyPgDim.html">Dim</a> <i>udt_symbol</i> <a href="KeyPgAs.html">As</a> UdtName = UdtName( <i>argument_list</i> )</tt><br \>
+<tt>or:</tt><br \>
+<tt>(5) <a href="KeyPgDim.html">Dim</a> <i>udt_symbol</i> <a href="KeyPgAs.html">As</a> UdtName = <a href="KeyPgTypeTemp.html">Type</a>[&lt;UdtName&gt;]( <i>argument_list</i> )</tt><br \>
+<br \>
+</div>Dynamic allocations with initializer:<br \>
+<div class="fb_indent"><tt>(6) <a href="KeyPgDim.html">Dim</a> <i>ptr_udt_symbol</i> <a href="KeyPgAs.html">As</a> UdtName <a href="KeyPgPtr.html">Ptr</a> = <a href="KeyPgOpNew.html">New</a> UdtName( <i>argument_list</i> )</tt><br \>
+<tt>or:</tt><br \>
+<tt>(7) <a href="KeyPgDim.html">Dim</a> <a href="KeyPgByrefVariables.html">ByRef</a> <i>ref_udt_symbol</i> <a href="KeyPgAs.html">As</a> UdtName = <a href="KeyPgOpValueOf.html">*</a><a href="KeyPgOpNew.html">New</a> UdtName( <i>argument_list</i> )</tt><br \>
+<br \>
+</div></div><u>Parameters</u><br \>
+<div class="fb_indent"><b>-</b> <tt><i>argument_list</i></tt>:<br \>
+<div class="fb_indent">List of any argument type (with comma delimited items).<br \>
+If there is only one argument, the <tt>'= <a href="KeyPgTypeTemp.html">Type</a>[&lt;UdtName&gt;]( <i>argument</i> )'</tt> initializer (if valid) can be shortened into <tt>'= ( <i>argument</i> )'</tt> or even <tt>'= <i>argument</i>'</tt> (case of the conversion-constructor).<br \>
+</div><b>-</b> <tt><i>udt_instance</i></tt>:<br \>
+<div class="fb_indent">Instance of <tt>'UdtName'</tt> or compatible (derived type).<br \>
+<br \>
+</div></div><u>Initializer validity</u><br \>
+<div class="fb_indent"><b>- <tt>Initializer syntax line (1)</tt></b>:<br \>
+<div class="fb_indent">Valid only if exists none constructor (neither implicit nor explicit).<br \>
+</div><b>- <tt>Initializer syntax line (2 or 3)</tt></b>:<br \>
+<div class="fb_indent">Always valid.<br \>
+Case of the copy-construction (2) and reference declaration (3).<br \>
+</div><b>- <tt>Initializer syntax line (4)</tt></b>:<br \>
+<div class="fb_indent">Valid only if exists an implicit or explicit constructor matching the <tt>'<i>argument_list</i>'</tt>.<br \>
+</div><b>- <tt>Initializer syntax line (5)</tt></b>:<br \>
+<div class="fb_indent">Valid only if exists none constructor (neither implicit nor explicit), or otherwise if exists at least a constructor (implicit or explicit) matching the <tt>'<i>argument_list</i>'</tt>.<br \>
+</div><b>- <tt>Initializer syntax line (6 or 7)</tt></b>:<br \>
+<div class="fb_indent">Its validity follows the same rules as that of the <b><tt>initializer syntax line (5)</tt></b> above.<br \>
+<br \>
+</div>But the most complex are the rules determining the existence of an implicit constructor depending on the type structure:<br \>
+<div class="fb_indent"><b>-</b> Apart from the default-constructor and the default copy-constructor, any other type of constructor exists only if it is explicitly defined.<br \>
+<b>-</b> For the implicit default-constructor and the implicit copy-constructor, it depends on the type structure, for example they both exist for (main cases):<br \>
+<div class="fb_indent"><b>-</b> type having or inheriting a member field with a implicit/explicit default-constructor (including member string),<br \>
+<b>-</b> or type having a base with an implicit/explicit default-constructor (including type derived from <a href="KeyPgObject.html">Object)</a>,<br \>
+<b>-</b> .....,<br \>
+<b>-</b> otherwise for example, only a variable member with an initializer itself induces only an implicit default-constructor. but no implicit copy-constructor.<br \>
+<br \>
+</div></div></div><u>Description</u><br \>
+<div class="fb_indent">When a UDT has an implicit constructor (due to a string member, or a variable member with an initializer itself, or a data member with constructor, or UDT derived from <a href="KeyPgObject.html">Object</a>) or an explicit constructor, then a simple initializer as <tt>'= ( <i>argument_list</i> )'</tt>, the first initializer syntax in the list (1), becomes not valid.<br \>
+In that case, an advanced initialization can be applied by using a constructor matching the initialization expression of the last four syntaxes in the list (4 to 7).<br \>
+<br \>
+The simpler initializer syntax, the first in the list (1), can always be replaced by one of the last four initializer syntaxes in the list (4 to 7), but the contrary does not work.<br \>
+<br \>
+The second initializer syntax in the list (2) is the special case of copy-construction. This initializer syntax always works, either by default copy-construction or by the way of a copy-constructor (implicit or explicit).<br \>
+<br \>
+The third initializer syntax in the list (3) is the special case of reference declaration which must always have an initializer. This initializer syntax always works if <tt>'<i>udt_instance</i>'</tt> is a reference (or a dereferenced pointer).<br \>
+<br \>
+</div><u>Declaration syntax for global symbol</u><br \>
+<div class="fb_indent">If using global symbols when declaring UDT object with initializer (<tt>'<a href="KeyPgDim.html">Dim</a> <a href="KeyPgShared.html">Shared</a>'</tt> or <tt>'<a href="KeyPgStatic.html">Static</a> [<a href="KeyPgShared.html">Shared</a>]'</tt> or <tt>'<a href="KeyPgStatic.html">Static</a> <a href="KeyPgVar.html">Var</a> [<a href="KeyPgShared.html">Shared</a>]'</tt>, instead of <tt>'<a href="KeyPgDim.html">Dim</a>'</tt>), the initializer argument(s) must at least be able to be evaluated at the start of the program so that it can be placed in the .data section:<br \>
+<div class="fb_indent"><b>-</b> The initializer syntaxes (6) and (7) in the list become no longer valid because the symbol must refer to a dynamic memory block in the heap.<br \>
+<b>-</b> The other initializer syntaxes remain valid if the provided argument(s) can be evaluated at compile time. If the initializer must call an existing constructor (implicit or explicit), it is the constructor code, called when the program starts, which writes the "initial" values into the .data section.<br \>
+<br \>
+</div></div><u>Commented example</u><br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">J</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT1</span>&nbsp;<span class="wrd">u11</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default-construction&nbsp;+&nbsp;initialization</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT1&nbsp;u12&nbsp;=&nbsp;UDT1(1,&nbsp;2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;Integer)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT1</span>&nbsp;<span class="wrd">u13</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">&lt;</span><span class="wrd">UDT1</span><span class="oth">&gt;(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default-construction&nbsp;+&nbsp;initialization</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT1</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu14</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT1</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default-construction&nbsp;+&nbsp;initialization</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">pu14</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT1</span>&nbsp;<span class="wrd">ru15</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">UDT1</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;default-construction&nbsp;+&nbsp;initialization</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru15</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT1</span>&nbsp;<span class="wrd">u16</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u13</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default&nbsp;copy-construction</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT1&nbsp;u17&nbsp;=&nbsp;UDT1(u13)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT1)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT1</span>&nbsp;<span class="wrd">u18</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">&lt;</span><span class="wrd">UDT1</span><span class="oth">&gt;(</span><span class="wrd">u13</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default-construction&nbsp;+&nbsp;initialization</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT1</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu19</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT1</span><span class="oth">(</span><span class="wrd">u13</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default-construction&nbsp;+&nbsp;initialization</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">pu19</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT1</span>&nbsp;<span class="wrd">ru110</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">UDT1</span><span class="oth">(</span><span class="wrd">u13</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;default-construction&nbsp;+&nbsp;initialization</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru110</span><br />
+<span class="key">Print</span><br />
+<br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Any</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">_I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">_J</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT2</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT2.Constructor()&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT2</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">_I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">_J</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT2.Constructor(Byval&nbsp;As&nbsp;Integer,&nbsp;Byval&nbsp;As&nbsp;Integer)&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.J</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_J</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT2&nbsp;u21&nbsp;=&nbsp;(1,&nbsp;2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;exist&nbsp;constructor&nbsp;(due&nbsp;at&nbsp;least&nbsp;to&nbsp;'=&nbsp;Any'&nbsp;initialiser)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT2</span>&nbsp;<span class="wrd">u22</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">UDT2</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;Integer)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT2</span>&nbsp;<span class="wrd">u23</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">&lt;</span><span class="wrd">UDT2</span><span class="oth">&gt;(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;Integer)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT2</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu24</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT2</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;Integer)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">pu24</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT2</span>&nbsp;<span class="wrd">ru25</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">UDT2</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;Integer)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru25</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT2</span>&nbsp;<span class="wrd">u26</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u23</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default&nbsp;copy-construction</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT2&nbsp;u27&nbsp;=&nbsp;UDT2(u23)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT2)</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT2&nbsp;u28&nbsp;=&nbsp;Type&lt;UDT2&gt;(u23)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT2)</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT2&nbsp;Ptr&nbsp;pu29&nbsp;=&nbsp;New&nbsp;UDT2(u23)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT2)</span><br />
+<span class="com">'Dim&nbsp;Byref&nbsp;As&nbsp;UDT2&nbsp;ru210&nbsp;=&nbsp;*New&nbsp;UDT2(u23)&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT2)</span><br />
+<span class="key">Print</span><br />
+<br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">S</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">_I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">_S</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT3.Constructor()&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">_I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">_S</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="key">String</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT3.Constructor(Byval&nbsp;As&nbsp;Integer,&nbsp;Byref&nbsp;As&nbsp;Const&nbsp;String)&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.S</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_S</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT3&nbsp;u31&nbsp;=&nbsp;(1,&nbsp;&quot;2&quot;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;exist&nbsp;constructor&nbsp;(due&nbsp;at&nbsp;least&nbsp;to&nbsp;string&nbsp;member)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="wrd">u32</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">UDT3</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;2&quot;</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;String)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="wrd">u33</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">&lt;</span><span class="wrd">UDT3</span><span class="oth">&gt;(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;2&quot;</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;String)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu34</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT3</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;2&quot;</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;String)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">pu34</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="wrd">ru35</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">UDT3</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;2&quot;</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;String)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru35</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="wrd">u36</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u33</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default&nbsp;copy-construction</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="wrd">u37</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">UDT3</span><span class="oth">(</span><span class="wrd">u33</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT3)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="wrd">u38</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">&lt;</span><span class="wrd">UDT3</span><span class="oth">&gt;(</span><span class="wrd">u33</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT3)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu39</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT3</span><span class="oth">(</span><span class="wrd">u33</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT3)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">pu39</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT3</span>&nbsp;<span class="wrd">ru310</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">UDT3</span><span class="oth">(</span><span class="wrd">u33</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT3)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru310</span><br />
+<span class="key">Print</span><br />
+<br />
+<br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="key">Object</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">_I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">_J</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT4.Constructor()&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">_I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">_J</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT4.Constructor(Byval&nbsp;As&nbsp;Integer,&nbsp;Byval&nbsp;As&nbsp;Integer)&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.J</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_J</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT4&nbsp;u41&nbsp;=&nbsp;(1,&nbsp;2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;exist&nbsp;constructor&nbsp;(due&nbsp;at&nbsp;least&nbsp;to&nbsp;Object&nbsp;as&nbsp;base)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="wrd">u42</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">UDT4</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;Integer)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="wrd">u43</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">&lt;</span><span class="wrd">UDT4</span><span class="oth">&gt;(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;Integer)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu44</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT4</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;Integer)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">pu44</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="wrd">ru45</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">UDT4</span><span class="oth">(</span><span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer,&nbsp;As&nbsp;Integer)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru45</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="wrd">u46</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u43</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default&nbsp;copy-construction</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="wrd">u47</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">UDT4</span><span class="oth">(</span><span class="wrd">u43</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT4)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="wrd">u48</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">&lt;</span><span class="wrd">UDT4</span><span class="oth">&gt;(</span><span class="wrd">u43</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT4)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu49</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT4</span><span class="oth">(</span><span class="wrd">u43</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT4)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">pu49</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT4</span>&nbsp;<span class="wrd">ru410</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">UDT4</span><span class="oth">(</span><span class="wrd">u43</span><span class="oth">)</span>&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT4)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru410</span><br />
+<span class="key">Print</span><br />
+<br />
+<br />
+<br />
+<span class="com">'&nbsp;Note&nbsp;for&nbsp;static&nbsp;UDT&nbsp;declaration&nbsp;+&nbsp;initializer:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;the&nbsp;initializer&nbsp;expression&nbsp;calling&nbsp;the&nbsp;constructor&nbsp;has&nbsp;only&nbsp;one&nbsp;parameter&nbsp;'x',&nbsp;example:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;'Dim&nbsp;As&nbsp;UDT&nbsp;u&nbsp;=&nbsp;UDT(x)',&nbsp;in&nbsp;this&nbsp;case,&nbsp;'UDT(x)'&nbsp;can&nbsp;be&nbsp;shortened&nbsp;into&nbsp;'(x)'&nbsp;or&nbsp;even&nbsp;'x',&nbsp;like:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;'Dim&nbsp;As&nbsp;UDT&nbsp;u&nbsp;=&nbsp;(x)'&nbsp;or&nbsp;even&nbsp;'Dim&nbsp;As&nbsp;UDT&nbsp;u&nbsp;=&nbsp;x',&nbsp;but&nbsp;all&nbsp;these&nbsp;statements&nbsp;call&nbsp;the&nbsp;constructor.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;(a&nbsp;constructor&nbsp;with&nbsp;one&nbsp;parameter&nbsp;is&nbsp;called&nbsp;a&nbsp;conversion-constructor)</span><br />
+<br />
+<span class="com">'&nbsp;The&nbsp;six&nbsp;below&nbsp;declarations&nbsp;+&nbsp;initialisers&nbsp;all&nbsp;call&nbsp;only&nbsp;the&nbsp;conversion-constructor</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDT5</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">_I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT5</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT5.Constructor()&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDT5</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">_I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;UDT5.Constructor(Byval&nbsp;As&nbsp;Integer)&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.I</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_I</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT5</span>&nbsp;<span class="wrd">u51</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">UDT5</span><span class="oth">(</span><span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT5</span>&nbsp;<span class="wrd">u52</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Type</span><span class="oth">&lt;</span><span class="wrd">UDT5</span><span class="oth">&gt;(</span><span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT5</span>&nbsp;<span class="wrd">u53</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">(</span><span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT5</span>&nbsp;<span class="wrd">u54</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer)</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT5</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pu55</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">UDT5</span><span class="oth">(</span><span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">pu55</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT5</span>&nbsp;<span class="wrd">ru56</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="key">New</span>&nbsp;<span class="wrd">UDT5</span><span class="oth">(</span><span class="num">1</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;call&nbsp;Constructor(As&nbsp;Integer)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="oth">@</span><span class="wrd">ru56</span><br />
+&nbsp;&nbsp;&nbsp;<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDT5</span>&nbsp;<span class="wrd">u57</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u54</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;default&nbsp;copy-construction</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT5&nbsp;u58&nbsp;=&nbsp;UDT5(u54)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT5)</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT5&nbsp;u59&nbsp;=&nbsp;Type&lt;UDT5&gt;(u54)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT5)</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;UDT5&nbsp;Ptr&nbsp;pu510&nbsp;=&nbsp;New&nbsp;UDT5(u54)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT5)</span><br />
+<span class="com">'Dim&nbsp;Byref&nbsp;As&nbsp;UDT5&nbsp;ru511&nbsp;=&nbsp;*New&nbsp;UDT5(u54)&nbsp;&nbsp;''&nbsp;not&nbsp;valid:&nbsp;no&nbsp;implicit&nbsp;Constructor(As&nbsp;UDT5)</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><b>Note:</b><br \>
+<div class="fb_indent">In the <tt><a href="CompilerOptlang.html">-lang fb</a></tt> only, <tt>'<a href="KeyPgVar.html">Var</a>'</tt> can be used instead of <tt>'<a href="KeyPgDim.html">Dim</a>'</tt> (removing the explicit type declaration), but it must not have ambiguity on the type of the initializer value.<br \>
+In the previous example, only <tt>'Var u11 = (1, 2)'</tt> does not work, but <tt>'Var u13 = Type&lt;UDT1&gt;(1, 2)'</tt> works.<br \>
+<br \>
+</div><div style="text-align: center;"><a href="#ProPgInitializationTop">Back to top</a></div><br \>
+<a name="ProPgInitialization3"></a><br \>
+</div><div class="fb_sect_title">3. Initializer syntax and validity for array declaration</div><div class="fb_sect_cont"><br \>
+The array can be of any <tt><a href="DataType.html">DataType</a></tt>.<br \>
+<br \>
+<u>Initializer syntax</u><br \>
+<div class="fb_indent">1 basic syntax is described below.<br \>
+(arrays of references is not supported presently)<br \>
+<br \>
+<tt><a href="KeyPgDim.html">Dim</a> <i>array_symbol</i> ([<i>lbound</i> To] <i>ubound</i>) [AS <a href="DataType.html">DataType</a>] = { <i>expression</i> [, ...] }</tt><br \>
+<br \>
+</div><u>Parameter</u><br \>
+<div class="fb_indent"><b>-</b> <tt>'<i>lbound</i>'</tt>, <tt>'<i>ubound</i>'</tt>:<br \>
+<div class="fb_indent">Constant numeric values.<br \>
+</div><b>-</b> <tt>'<i>expression(s)</i>'</tt>:<br \>
+<div class="fb_indent">List given in comma delimited items, then enclosed by curly brackets.<br \>
+Initialization list ordered from <tt>'<i>lbound</i>'</tt> to <tt>'<i>ubound</i>'</tt>.<br \>
+Must produce evaluated values of <tt>'<a href="DataType.html">DataType</a>'</tt> type or compatible.<br \>
+<br \>
+</div></div><u>Initializer validity</u><br \>
+<div class="fb_indent"><tt>'<i>lbound</i>'</tt> and <tt>'<i>ubound</i>'</tt> must be constant numeric values because variable-length (dynamic) array declaration does not support any initializer.<br \>
+Only fixed-length (static) array declaration supports an initializer.<br \>
+<br \>
+</div><u>Declaration syntax for global symbol</u><br \>
+<div class="fb_indent">If using global symbols when declaring array variable with initializer (<tt>'<a href="KeyPgDim.html">Dim</a> <a href="KeyPgShared.html">Shared</a>'</tt> or <tt>'<a href="KeyPgStatic.html">Static</a> [<a href="KeyPgShared.html">Shared</a>]'</tt>, instead of <tt>'<a href="KeyPgDim.html">Dim</a>'</tt>), the initializer argument(s) must at least be able to be evaluated at the start of the program so that it can be placed in the .data section:<br \>
+<div class="fb_indent"><b>-</b> The initializer syntaxe for fixed-length (static) array of variable-length string become no longer valid because the symbol must refer to a dynamic memory block in the heap.<br \>
+<b>-</b> For the fixed-length (static) arrays of other pre-built type variables, the initializer syntaxe remains valid if the provided expression(s) can be evaluated at compile time.<br \>
+<br \>
+</div></div><u>Example</u><br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">4</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">{</span><span class="quo">&quot;array(0)&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;array(1)&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;array(2)&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;array(3)&quot;</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;array(4)&quot;</span><span class="oth">}</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">4</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">),</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<span class="key">Print</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><b>Note:</b><br \>
+<div class="fb_indent">Even in the <tt><a href="CompilerOptlang.html">-lang fb</a></tt>, <tt>'<a href="KeyPgVar.html">Var</a>'</tt> can not be used instead of <tt>'<a href="KeyPgDim.html">Dim</a>'</tt>, because <tt>'<a href="KeyPgVar.html">Var</a>'</tt> does not support the array declaration.<br \>
+<br \>
+</div><div style="text-align: center;"><a href="#ProPgInitializationTop">Back to top</a></div><br \>
+<a name="ProPgInitialization4"></a><br \>
+</div><div class="fb_sect_title">4. Nested Initializer syntax with another</div><div class="fb_sect_cont"><br \>
+These methods of initializing variables can be nested within one another for complex assignments.<br \>
+For instance, to initialize a multidimensional array:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Dim</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><span class="oth">,</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">5</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">{</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">{</span><span class="num">11</span><span class="oth">,</span>&nbsp;<span class="num">12</span><span class="oth">,</span>&nbsp;<span class="num">13</span><span class="oth">,</span>&nbsp;<span class="num">14</span><span class="oth">,</span>&nbsp;<span class="num">15</span><span class="oth">},</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">{</span><span class="num">21</span><span class="oth">,</span>&nbsp;<span class="num">22</span><span class="oth">,</span>&nbsp;<span class="num">23</span><span class="oth">,</span>&nbsp;<span class="num">24</span><span class="oth">,</span>&nbsp;<span class="num">25</span><span class="oth">},</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">{</span><span class="num">31</span><span class="oth">,</span>&nbsp;<span class="num">32</span><span class="oth">,</span>&nbsp;<span class="num">33</span><span class="oth">,</span>&nbsp;<span class="num">34</span><span class="oth">,</span>&nbsp;<span class="num">35</span><span class="oth">}</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">}</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">3</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">For</span>&nbsp;<span class="wrd">J</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">5</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">array</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">,</span>&nbsp;<span class="wrd">J</span><span class="oth">),</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Next</span>&nbsp;<span class="wrd">J</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+In this declaration, the values for the left-most dimension are given as 5-index arrays.<br \>
+Nesting allows for arrays of any dimension to be initialized.<br \>
+<br \>
+</div>UDTs and arrays can be nested within each other as well.<br \>
+For instance, the following code declares and initializes an array of UDTs:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">mytype</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">var1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">var2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">var3</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">ZString</span>&nbsp;<span class="key">Ptr</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">MyVar</span><span class="oth">(</span><span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">1</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">mytype</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">{</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">(</span><span class="num">1.1</span><span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="quo">&quot;Hello&quot;</span><span class="oth">),</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">(</span><span class="num">2.2</span><span class="oth">,</span>&nbsp;<span class="num">2</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="quo">&quot;GoodBye&quot;</span><span class="oth">)</span>&nbsp;<span class="wrd">_</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="oth">}</span><br />
+<br />
+<span class="key">For</span>&nbsp;<span class="wrd">I</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">To</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">MyVar</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">var1</span><span class="oth">,</span>&nbsp;<span class="wrd">MyVar</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">var2</span><span class="oth">,</span>&nbsp;<span class="oth">*</span><span class="wrd">MyVar</span><span class="oth">(</span><span class="wrd">I</span><span class="oth">).</span><span class="wrd">var3</span><br />
+<span class="key">Next</span>&nbsp;<span class="wrd">I</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><b>Note:</b><br \>
+<div class="fb_indent">Even in the <tt><a href="CompilerOptlang.html">-lang fb</a></tt>, <tt>'<a href="KeyPgVar.html">Var</a>'</tt> can not be used instead of <tt>'<a href="KeyPgDim.html">Dim</a>'</tt>, because <tt>'<a href="KeyPgVar.html">Var</a>'</tt> does not support the array declaration.<br \>
+<br \>
+</div><div style="text-align: center;"><a href="#ProPgInitializationTop">Back to top</a></div><br \>
+<br \>
+</div><div class="fb_sect_title">Dialect Differences</div><div class="fb_sect_cont"><br \>
+<ul><li> In the <i><a href="CompilerOptlang.html">-lang qb</a></i> dialect, variables cannot be initialised.<br \>
+<li> In the <i><a href="CompilerOptlang.html">-lang fblite</a></i> dialect, the explicit type declaration can be omitted in <tt>'<a href="KeyPgDim.html">Dim</a> ... = ...'</tt>, but only for the <tt><a href="KeyPgInteger.html">Integer</a></tt> type (initializer value must match the <tt><a href="KeyPgInteger.html">Integer</a></tt> type).<br \>
+<br \>
+</ul></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> Variable Initializers are new to FreeBASIC.<br \>
+<li> The alternate syntax <tt>'Dim [Byref] As DataType <i>symbolname</i> = ...'</tt> is new to FreeBASIC.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgImplicitdeclarations.html">Implicit declarations</a><br \>
+<li> <a href="ProPgConstantExpressions.html">Constant Expressions</a><br \>
+<li> <tt><a href="KeyPgDim.html">Dim</a></tt><br \>
+<li> <tt><a href="KeyPgShared.html">Shared</a></tt><br \>
+<li> <tt><a href="KeyPgStatic.html">Static</a></tt><br \>
+<li> <tt><a href="KeyPgVar.html">Var</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

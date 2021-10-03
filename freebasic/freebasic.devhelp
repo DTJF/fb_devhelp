@@ -1,0 +1,1043 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book link="00index.html" name="FB-manual-1.09.0rc1" title="FreeBASIC Manual" language="fbc">
+ <functions>
+  <function link="TutPortingFromQB.html" name="Compiling a Big QB program in FB"/>
+  <function link="CompilerAbout.html" name="About"/>
+  <function link="KeyPgRset.html" name="RSet"/>
+  <function link="KeyPgDdfbmt.html" name="__FB_MT__"/>
+  <function link="KeyPgVisPublic.html" name="Public: (Access Control)"/>
+  <function link="KeyPgFlip.html" name="Flip"/>
+  <function link="KeyPgDefuint.html" name="DefUInt"/>
+  <function link="ExtLibgsl.html" name="gsl, The GNU Scientific Library"/>
+  <function link="DevFbcMem.html" name="Memory management"/>
+  <function link="KeyPgOpPtrIndex.html" name="Operator [] (Pointer Index)"/>
+  <function link="KeyPgCulng.html" name="CULng"/>
+  <function link="KeyPgMidstatement.html" name="Mid (Statement)"/>
+  <function link="ProPgCompoAggregInherit.html" name="Composition, Aggregation, Inheritance"/>
+  <function link="KeyPgFormat.html" name="Format"/>
+  <function link="CompilerFAQ.html" name="Frequently Asked Questions"/>
+  <function link="CatPgOpArithmetic.html" name="Arithmetic Operators"/>
+  <function link="TutOOPInNonOOPLanguages.html" name="OOP In Non-OOP Languages"/>
+  <function link="KeyPgPmap.html" name="PMap"/>
+  <function link="KeyPgExtends.html" name="Extends"/>
+  <function link="ProPgProcedureScopes.html" name="Procedure Scopes"/>
+  <function link="KeyPgUbyte.html" name="UByte"/>
+  <function link="KeyPgDateSerial.html" name="DateSerial"/>
+  <function link="compileroptfpmode.html" name="Compiler Option: -fpmode"/>
+  <function link="KeyPgInputfilemode.html" name="Input (File Mode)"/>
+  <function link="KeyPgClear.html" name="Clear"/>
+  <function link="ExtLibspidermonkey.html" name="SpiderMonkey"/>
+  <function link="CompilerHelp.html" name="Getting help with FreeBASIC"/>
+  <function link="KeyPgDefined.html" name="defined"/>
+  <function link="KeyPgCase.html" name="Case"/>
+  <function link="ExtLibfreeimage.html" name="FreeImage"/>
+  <function link="KeyPgWriteFile.html" name="Write (File Access)"/>
+  <function link="KeyPgInp.html" name="Inp"/>
+  <function link="KeyPgRmdir.html" name="RmDir"/>
+  <function link="KeyPgDeflng.html" name="DefLng"/>
+  <function link="KeyPgEnviron.html" name="Environ"/>
+  <function link="KeyPgBinary.html" name="Binary"/>
+  <function link="KeyPgExtendsZstring.html" name="Extends Zstring"/>
+  <function link="KeyPgDdfbnetbsd.html" name="__FB_NETBSD__"/>
+  <function link="DevFbcTypes.html" name="Representation of data types"/>
+  <function link="ExtLibsndfile.html" name="libsndfile"/>
+  <function link="KeyPgDeflongint.html" name="DefLongInt"/>
+  <function link="ExtLiblibxslt.html" name="libxslt"/>
+  <function link="ProPgReferences.html" name="Using References"/>
+  <function link="KeyPgCubyte.html" name="CUByte"/>
+  <function link="DevFbcParserSymbols.html" name="Symbols"/>
+  <function link="KeyPgDdfbppc.html" name="__FB_PPC__"/>
+  <function link="KeyPgCvlongint.html" name="CVLongInt"/>
+  <function link="KeyPgExternBlock.html" name="Extern...End Extern"/>
+  <function link="DrV.html" name="DrV"/>
+  <function link="KeyPgDdFBVerMajor.html" name="__FB_VER_MAJOR__"/>
+  <function link="KeyPgFilelen.html" name="FileLen"/>
+  <function link="CompilerQB.html" name="FreeBASIC and QBasic"/>
+  <function link="CompilerOpttarget.html" name="Compiler Option: -target"/>
+  <function link="CatPgOpTypeclass.html" name="Type or Class Operators"/>
+  <function link="KeyPgRun.html" name="Run"/>
+  <function link="KeyPgDdfbargv.html" name="__FB_ARGV__"/>
+  <function link="GnuLicenses.html" name="Licenses"/>
+  <function link="KeyPgThreadWait.html" name="ThreadWait"/>
+  <function link="KeyPgOpLessThan.html" name="Operator &lt; (Less Than)"/>
+  <function link="DevFbcLexerMacros.html" name="Macros"/>
+  <function link="TblComparisonCTypes.html" name="Comparison of integer data types: FreeBASIC vs. C/C++ (using GCC)"/>
+  <function link="KeyPgUnion.html" name="Union"/>
+  <function link="KeyPgDefubyte.html" name="DefUByte"/>
+  <function link="CatPgError.html" name="Error Handling Functions"/>
+  <function link="TutMathIntroTrig.html" name="A Brief Introduction To Trigonometry"/>
+  <function link="KeyPgOpNew.html" name="Operator New Expression"/>
+  <function link="ExtLibDUGL.html" name="DUGL"/>
+  <function link="KeyPgMklongint.html" name="MKLongInt"/>
+  <function link="CompilerOptr.html" name="Compiler Option: -r"/>
+  <function link="KeyPgCptr.html" name="CPtr"/>
+  <function link="KeyPgFiledatetime.html" name="FileDateTime"/>
+  <function link="FreeBASIC.html" name="FreeBASIC"/>
+  <function link="CompilerOptforcelang.html" name="Compiler Option: -forcelang"/>
+  <function link="KeyPgIs.html" name="Is"/>
+  <function link="CompilerOptoptfile.html" name="Compiler Option: @file"/>
+  <function link="CompilerOptWl.html" name="Compiler Option: -Wl"/>
+  <function link="KeyPgErfn.html" name="Erfn"/>
+  <function link="ProPgVariableScope.html" name="Variable Scope"/>
+  <function link="KeyPgGoto.html" name="Goto"/>
+  <function link="KeyPgError.html" name="Error"/>
+  <function link="KeyPgDdpath.html" name="__PATH__"/>
+  <function link="KeyPgInstrrev.html" name="InStrRev"/>
+  <function link="CatPgProcedures.html" name="Procedures"/>
+  <function link="x86.html" name="x86 Microprocessor Architecture"/>
+  <function link="ExtLiballegro.html" name="Allegro"/>
+  <function link="KeyPgData.html" name="Data"/>
+  <function link="KeyPgNamespace.html" name="Namespace"/>
+  <function link="KeyPgDdfbversion.html" name="__FB_VERSION__"/>
+  <function link="ExtLibMediaInfo.html" name="MediaInfo"/>
+  <function link="CompilerOptp.html" name="Compiler Option: -p"/>
+  <function link="CompilerOptdylib.html" name="Compiler Option: -dylib"/>
+  <function link="TblComparisonC.html" name="Comparison of C/C++ and FreeBASIC"/>
+  <function link="KeyPgOpAdd.html" name="Operator + (Addition)"/>
+  <function link="ProPgErrorHandling.html" name="Error Handling"/>
+  <function link="TutSimPolymorphism.html" name="Simulating Polymorphism"/>
+  <function link="ProPgStringsTypes.html" name="Strings (string, zstring, and wstring)"/>
+  <function link="ExtLibzlib.html" name="zlib"/>
+  <function link="CatPgBits.html" name="Bit Manipulation"/>
+  <function link="ExtLibpostgresql.html" name="PostgreSQL"/>
+  <function link="KeyPgUlong.html" name="ULong"/>
+  <function link="KeyPgOpAndAlso.html" name="Operator Andalso (Short Circuit Conjunction)"/>
+  <function link="KeyPgDdFBBigEndian.html" name="__FB_BIGENDIAN__"/>
+  <function link="CompilerOptnoerrline.html" name="Compiler Option: -noerrline"/>
+  <function link="CatPgControlFlow.html" name="Control Flow Statements"/>
+  <function link="ProPgConstantExpressions.html" name="Constant Expressions"/>
+  <function link="CompilerOptex.html" name="Compiler Option: -ex"/>
+  <function link="KeyPgVallng.html" name="ValLng"/>
+  <function link="ProPgLiterals.html" name="Literals"/>
+  <function link="ProPgMacros.html" name="Macros"/>
+  <function link="KeyPgRandomize.html" name="Randomize"/>
+  <function link="ExtLibdislin.html" name="DisLin"/>
+  <function link="KeyPgSub.html" name="Sub"/>
+  <function link="TutFunctionOverloading.html" name="Function Overloading"/>
+  <function link="ExtLibjsonc.html" name="json-c"/>
+  <function link="ProPgMtThreads.html" name="Threads"/>
+  <function link="KeyPgDdfunctionnq.html" name="__FUNCTION_NQ__"/>
+  <function link="CompilerTools.html" name="Tools used by fbc"/>
+  <function link="KeyPgHiword.html" name="HiWord"/>
+  <function link="KeyPgFileexists.html" name="FileExists"/>
+  <function link="KeyPgRandom.html" name="Random"/>
+  <function link="ExtLibmpg123.html" name="mpg123"/>
+  <function link="KeyPgAny.html" name="Any"/>
+  <function link="KeyPgDdfbwin32.html" name="__FB_WIN32__"/>
+  <function link="KeyPgFBMemmove.html" name="Fb_Memmove"/>
+  <function link="KeyPgSizeof.html" name="SizeOf"/>
+  <function link="KeyPgLoWord.html" name="LoWord"/>
+  <function link="KeyPgGetgraphics.html" name="Get (Graphics)"/>
+  <function link="KeyPgAbs.html" name="Abs"/>
+  <function link="KeyPgPreserve.html" name="Preserve"/>
+  <function link="KeyPgDraw.html" name="Draw"/>
+  <function link="DevBuildLinux.html" name="Compiling FB on Linux"/>
+  <function link="GfxLib.html" name="GfxLib - FreeBASIC graphics library overview"/>
+  <function link="ExtLibGLFW.html" name="GLFW, an OpenGL library"/>
+  <function link="KeyPgValint.html" name="ValInt"/>
+  <function link="CompilerOpts.html" name="Compiler Option: -s"/>
+  <function link="CompilerOptvec.html" name="Compiler Option: -vec"/>
+  <function link="CatPgOpAssignment.html" name="Assignment Operators"/>
+  <function link="WikiRick.html" name="rdc"/>
+  <function link="KeyPgMidfunction.html" name="Mid (Function)"/>
+  <function link="KeyPgPrint.html" name="(Print | ?)"/>
+  <function link="KeyPgDdfbargcount.html" name="__FB_ARG_COUNT__"/>
+  <function link="DevRebuildAfterUpdates.html" name="Getting source code updates and recompiling FB"/>
+  <function link="ProPgFromPtrToRef.html" name="From Pointers to References"/>
+  <function link="ProPgTypeAliases.html" name="Type Aliases"/>
+  <function link="CatPgModularizing.html" name="Modularizing"/>
+  <function link="TutMathAngles.html" name="Different ways angles are measured"/>
+  <function link="KeyPgDdfbfreebsd.html" name="__FB_FREEBSD__"/>
+  <function link="KeyPgOpProcptr.html" name="Operator Procptr (Procedure Pointer)"/>
+  <function link="KeyPgLeft.html" name="Left"/>
+  <function link="ProPgNewDelete.html" name="New and Delete"/>
+  <function link="KeyPgDdfboptionexplicit.html" name="__FB_OPTION_EXPLICIT__"/>
+  <function link="KeyPgLocal.html" name="Local"/>
+  <function link="KeyPgNext.html" name="Next"/>
+  <function link="KeyPgDefbyte.html" name="DefByte"/>
+  <function link="KeyPgEnd.html" name="End (Statement)"/>
+  <function link="CatPgOpShortCircuit.html" name="Short Circuit Operators"/>
+  <function link="KeyPgMkshort.html" name="MKShort"/>
+  <function link="CatPgStdDataTypes.html" name="Standard Data Types"/>
+  <function link="KeyPgOpAt.html" name="Operator @ (Address Of)"/>
+  <function link="KeyPgCondBroadcast.html" name="CondBroadcast"/>
+  <function link="KeyPgLock.html" name="Lock"/>
+  <function link="KeyPgTab.html" name="Tab"/>
+  <function link="ExtLibTOC.html" name="External Libraries Index"/>
+  <function link="KeyPgShared.html" name="Shared"/>
+  <function link="CatPgDate.html" name="Date and Time Functions"/>
+  <function link="CompilerOptasm.html" name="Compiler Option: -asm"/>
+  <function link="KeyPgLoByte.html" name="LoByte"/>
+  <function link="KeyPgSpace.html" name="Space"/>
+  <function link="KeyPgWhile.html" name="While"/>
+  <function link="KeyPgPpifndef.html" name="#ifndef"/>
+  <function link="KeyPgIsDate.html" name="IsDate"/>
+  <function link="KeyPgDddateiso.html" name="__DATE_ISO__"/>
+  <function link="KeyPgVal.html" name="Val"/>
+  <function link="CatPgFile.html" name="File I/O Functions"/>
+  <function link="KeyPgCvaList.html" name="Cva_List"/>
+  <function link="KeyPgRnd.html" name="Rnd"/>
+  <function link="KeyPgOpSubtract.html" name="Operator - (Subtract)"/>
+  <function link="KeyPgOpCombineShiftLeft.html" name="Operator Shl= (Shift Left And Assign)"/>
+  <function link="KeyPgDeclare.html" name="Declare"/>
+  <function link="ProPgAntiFlickering.html" name="Graphics Mode Refresh and Anti-Flickering"/>
+  <function link="KeyPgSpc.html" name="Spc"/>
+  <function link="KeyPgOpIntegerDivide.html" name="Operator \ (Integer Divide)"/>
+  <function link="KeyPgZstring.html" name="ZString"/>
+  <function link="KeyPgBase.html" name="Base (Member Access)"/>
+  <function link="KeyPgSeekset.html" name="Seek (Statement)"/>
+  <function link="CatPgMath.html" name="Mathematical Functions"/>
+  <function link="KeyPgWbin.html" name="WBin"/>
+  <function link="KeyPgCushort.html" name="CUShort"/>
+  <function link="KeyPgOptionexplicit.html" name="Option Explicit"/>
+  <function link="KeyPgDylibsymbol.html" name="DyLibSymbol"/>
+  <function link="KeyPgDdfbuniqueid.html" name="__FB_UNIQUEID__"/>
+  <function link="KeyPgHex.html" name="Hex"/>
+  <function link="KeyPgFileflush.html" name="FileFlush"/>
+  <function link="KeyPgEnum.html" name="Enum"/>
+  <function link="KeyPgOpenCons.html" name="Open Cons"/>
+  <function link="KeyPgReturnGosub.html" name="Return (From Gosub)"/>
+  <function link="KeyPgPoke.html" name="Poke"/>
+  <function link="KeyPgLinegraphics.html" name="Line (Graphics)"/>
+  <function link="KeyPgCdbl.html" name="CDbl"/>
+  <function link="KeyPgScreenglproc.html" name="ScreenGLProc"/>
+  <function link="ProPgInitialization.html" name="Variable Initializers"/>
+  <function link="KeyPgAliasModifier.html" name="Alias (Modifier)"/>
+  <function link="KeyPgEof.html" name="EOF"/>
+  <function link="KeyPgWstring.html" name="WString"/>
+  <function link="KeyPgDdFBBackend.html" name="__FB_BACKEND__"/>
+  <function link="ProPgTypeObjects.html" name="Types as Objects"/>
+  <function link="KeyPgSecond.html" name="Second"/>
+  <function link="KeyPgLen.html" name="Len"/>
+  <function link="ExtLibZip.html" name="libzip"/>
+  <function link="KeyPgEndblock.html" name="End (Block)"/>
+  <function link="KeyPgDdfbvectorize.html" name="__FB_VECTORIZE__"/>
+  <function link="DevFbcLexerDirectives.html" name="Directive parsing"/>
+  <function link="KeyPgString.html" name="String"/>
+  <function link="ProPgSharedLibraries.html" name="Shared Libraries"/>
+  <function link="KeyPgPpline.html" name="#line"/>
+  <function link="ProPgComments.html" name="Comments"/>
+  <function link="FaqPgLinux.html" name="Linux Related FAQ"/>
+  <function link="KeyPgBitreset.html" name="BitReset"/>
+  <function link="KeyPgDdfboptimize.html" name="__FB_OPTIMIZE__"/>
+  <function link="KeyPgProperty.html" name="Property"/>
+  <function link="KeyPgOpCast.html" name="Operator Cast"/>
+  <function link="ExtLibogg.html" name="libogg"/>
+  <function link="FMod.html" name="FMod"/>
+  <function link="KeyPgOpMultiply.html" name="Operator * (Multiply)"/>
+  <function link="KeyPgRgba.html" name="RGBA"/>
+  <function link="ProPgCtorsAssignDtors2.html" name="Constructors, '=' Assignment-Operators, and Destructors (advanced, part #2)"/>
+  <function link="KeyPgRedim.html" name="ReDim"/>
+  <function link="KeyPgPaint.html" name="Paint"/>
+  <function link="KeyPgDdfunction.html" name="__FUNCTION__"/>
+  <function link="KeyPgOpenCom.html" name="Open Com"/>
+  <function link="ProPgEnumerations.html" name="Constants and Enumerations"/>
+  <function link="KeyPgDdfblinux.html" name="__FB_LINUX__"/>
+  <function link="ExtLibcurses.html" name="Curses"/>
+  <function link="ProPgProcCtorsDtors.html" name="Constructors and Destructors"/>
+  <function link="KeyPgReadWriteFile.html" name="Read Write (File Access)"/>
+  <function link="ExtLibpdflib.html" name="PDFlib"/>
+  <function link="KeyPgDdfbjoin.html" name="__FB_JOIN__"/>
+  <function link="KeyPgOpenErr.html" name="Open Err"/>
+  <function link="ExtLibJit.html" name="libjit"/>
+  <function link="KeyPgNow.html" name="Now"/>
+  <function link="ProPgExternalFormats.html" name="External Graphics File Formats (page to fill in)"/>
+  <function link="KeyPgFalse.html" name="False"/>
+  <function link="DevBuildDos.html" name="Compiling FB for DOS"/>
+  <function link="KeyPgConstructor.html" name="Constructor"/>
+  <function link="ExtLibmysql.html" name="MySQL"/>
+  <function link="KeyPgType.html" name="Type"/>
+  <function link="DevArrays.html" name="Arrays"/>
+  <function link="KeyPgMutexCreate.html" name="MutexCreate"/>
+  <function link="DevNormalVsStandalone.html" name="Normal vs. Standalone FreeBASIC"/>
+  <function link="ProPgControlFlow.html" name="Control Flow Statements"/>
+  <function link="CatPgOpIndexing.html" name="Indexing Operators"/>
+  <function link="KeyPgIfthen.html" name="If...Then"/>
+  <function link="CompilerOptg.html" name="Compiler Option: -g"/>
+  <function link="DevMakingReleases.html" name="Notes on making FB releases"/>
+  <function link="GlossaryIndex.html" name="Glossary"/>
+  <function link="CompilerOptedebug.html" name="Compiler Option: -edebug"/>
+  <function link="KeyPgEndif.html" name="End If"/>
+  <function link="KeyPgIif.html" name="IIf"/>
+  <function link="CompilerOptnostrip.html" name="Compiler Option: -nostrip"/>
+  <function link="FaqPggfxlib2.html" name="Frequently Asked FreeBASIC Graphics Library Questions"/>
+  <function link="KeyPgDdFBBuildDate.html" name="__FB_BUILD_DATE__"/>
+  <function link="KeyPgTo.html" name="To"/>
+  <function link="KeyPgCircle.html" name="Circle"/>
+  <function link="KeyPgThis.html" name="This"/>
+  <function link="FaqPgbloadworkaround.html" name="BLOAD/BSAVE text mode work-around"/>
+  <function link="KeyPgSelectcase.html" name="Select Case"/>
+  <function link="KeyPgLset.html" name="LSet"/>
+  <function link="KeyPgInkey.html" name="Inkey"/>
+  <function link="KeyPgDdfbdos.html" name="__FB_DOS__"/>
+  <function link="CompilerOptedebuginfo.html" name="Compiler Option: -edebuginfo"/>
+  <function link="KeyPgCurdir.html" name="CurDir"/>
+  <function link="ProPgImplicitdeclarations.html" name="Implicit Declarations"/>
+  <function link="KeyPgSystem.html" name="System"/>
+  <function link="KeyPgFix.html" name="Fix"/>
+  <function link="KeyPgLoop.html" name="Loop"/>
+  <function link="ExtLibLzo.html" name="LZO"/>
+  <function link="ProPgPreprocessor.html" name="Preprocessor"/>
+  <function link="TutBeginnersGuideToTypesAsObjects2.html" name="Beginners Guide to Types as Objects (Part 2)"/>
+  <function link="ProPgArrays.html" name="Arrays"/>
+  <function link="KeyPgDdfboptionbyval.html" name="__FB_OPTION_BYVAL__"/>
+  <function link="KeyPgWhex.html" name="WHex"/>
+  <function link="ProPgCallback.html" name="Callback"/>
+  <function link="KeyPgDdfblang.html" name="__FB_LANG__"/>
+  <function link="GfxDefPalettes.html" name="Default Palettes"/>
+  <function link="ProPgConstants.html" name="Constants"/>
+  <function link="KeyPgOptionnogosub.html" name="Option Nogosub"/>
+  <function link="KeyPgStdcall.html" name="stdcall"/>
+  <function link="KeyPgOptionbyval.html" name="Option ByVal"/>
+  <function link="KeyPgWeekdayname.html" name="WeekdayName"/>
+  <function link="CompilerOptmt.html" name="Compiler Option: -mt"/>
+  <function link="TutInterfacingWithC.html" name="Interfacing with C"/>
+  <function link="ExtLibZeroMQ.html" name="ZeroMQ"/>
+  <function link="KeyPgChain.html" name="Chain"/>
+  <function link="ExtLibfreeglut.html" name="Free alternative to the OpenGL Utility Toolkit"/>
+  <function link="ProPgReturnValue.html" name="Returning Values"/>
+  <function link="KeyPgErl.html" name="Erl"/>
+  <function link="ExtLibcurl.html" name="curl"/>
+  <function link="DevGettingTheSourceCode.html" name="Getting the source code"/>
+  <function link="KeyPgOpLetlist.html" name="Operator Let() (Assignment)"/>
+  <function link="KeyPgExtendsWstring.html" name="Extends Wstring"/>
+  <function link="TutDynamicArrays.html" name="Dynamic Arrays"/>
+  <function link="CompilerOptpic.html" name="Compiler Option: -pic"/>
+  <function link="CatPgConsole.html" name="Console Functions"/>
+  <function link="JasonFirth.html" name="SJ Zero"/>
+  <function link="KeyPgStop.html" name="Stop"/>
+  <function link="KeyPgOngoto.html" name="On...Goto"/>
+  <function link="KeyPgAcos.html" name="Acos"/>
+  <function link="KeyPgRead.html" name="Read"/>
+  <function link="KeyPgVar.html" name="Var"/>
+  <function link="CatPgMisc.html" name="Miscellaneous Keywords"/>
+  <function link="KeyPgSleep.html" name="Sleep"/>
+  <function link="DevObjinfo.html" name="objinfo"/>
+  <function link="KeyPgSadd.html" name="SAdd"/>
+  <function link="KeyPgByref.html" name="Byref (Parameters)"/>
+  <function link="KeyPgLcase.html" name="LCase"/>
+  <function link="KeyPgOpGreaterThanOrEqual.html" name="Operator &gt;= (Greater Than Or Equal)"/>
+  <function link="KeyPgTypeTemp.html" name="Temporary Types"/>
+  <function link="CatPgInput.html" name="User Input (Runtime Library)"/>
+  <function link="KeyPgCunsg.html" name="CUnsg"/>
+  <function link="DevBootstrap.html" name="Bootstrapping fbc on a new system"/>
+  <function link="TutSelectStatement.html" name="The Select Case Statement"/>
+  <function link="CompilerOptfpu.html" name="Compiler Option: -fpu"/>
+  <function link="KeyPgCvaCopy.html" name="Cva_Copy"/>
+  <function link="ExtLibOpenGL.html" name="OpenGL, The Open Graphics Language"/>
+  <function link="KeyPgTimer.html" name="Timer"/>
+  <function link="KeyPgThreadDetach.html" name="ThreadDetach"/>
+  <function link="ExtLibgrx.html" name="GRX"/>
+  <function link="KeyPgCvshort.html" name="CVShort"/>
+  <function link="KeyPgPperror.html" name="#error"/>
+  <function link="KeyPgDdfboptiondynamic.html" name="__FB_OPTION_DYNAMIC__"/>
+  <function link="ProPgDynamicMemory.html" name="Dynamic memory management with FreeBASIC"/>
+  <function link="KeyPgClngint.html" name="CLngInt"/>
+  <function link="CompilerOptentry.html" name="Compiler Option: -entry"/>
+  <function link="KeyPgClose.html" name="Close"/>
+  <function link="KeyPgOpNewOverload.html" name="Operator New Overload"/>
+  <function link="CompilerOpti.html" name="Compiler Option: -i"/>
+  <function link="KeyPgByval.html" name="ByVal"/>
+  <function link="CompilerOptstrip.html" name="Compiler Option: -strip"/>
+  <function link="OpenGL.html" name="OpenGL"/>
+  <function link="TutGettingStartedQB.html" name="Getting Started"/>
+  <function link="DevBindingCreation.html" name="Creating FB bindings for C libraries"/>
+  <function link="FaqPggetputstructure.html" name="GET/PUT image header example"/>
+  <function link="KeyPgMonth.html" name="Month"/>
+  <function link="ExtLibVLC.html" name="libVLC"/>
+  <function link="KeyPgShort.html" name="Short"/>
+  <function link="KeyPgUsing.html" name="Using (Namespaces)"/>
+  <function link="ExtLibbassmod.html" name="BASSMOD"/>
+  <function link="OpPrecedence.html" name="Operator Precedence"/>
+  <function link="KeyPgVisPrivate.html" name="Private: (Access Control)"/>
+  <function link="KeyPgOpXor.html" name="Operator Xor (Exclusive Disjunction)"/>
+  <function link="KeyPgOption.html" name="Option()"/>
+  <function link="KeyPgInt.html" name="Int"/>
+  <function link="ExtLibcgui.html" name="CGUI"/>
+  <function link="KeyPgMemberSub.html" name="Sub (Member)"/>
+  <function link="KeyPgScreenptr.html" name="ScreenPtr"/>
+  <function link="LangQB.html" name="Differences from QB"/>
+  <function link="KeyPgMetaDynamic.html" name="$Dynamic"/>
+  <function link="KeyPgOpCombineModulus.html" name="Operator Mod= (Modulus And Assign)"/>
+  <function link="KeyPgAsc.html" name="Asc"/>
+  <function link="KeyPgCvaStart.html" name="Cva_Start"/>
+  <function link="KeyPgConstQualifier.html" name="Const (Qualifier)"/>
+  <function link="KeyPgMutexLock.html" name="MutexLock"/>
+  <function link="KeyPgTimeserial.html" name="TimeSerial"/>
+  <function link="KeyPgPascal.html" name="pascal"/>
+  <function link="ExtLibFlite.html" name="Flite"/>
+  <function link="KeyPgOpConcatConvert.html" name="Operator &amp; (String Concatenation With Conversion)"/>
+  <function link="TutPointers.html" name="Introduction to Pointers"/>
+  <function link="TutMngAHiScrTbl.html" name="So Biff wants to have a high score table in his game"/>
+  <function link="CompilerOptgen.html" name="Compiler Option: -gen"/>
+  <function link="KeyPgDdfboutobj.html" name="__FB_OUT_OBJ__"/>
+  <function link="KeyPgBit.html" name="Bit"/>
+  <function link="CatPgGfx2D.html" name="2D Drawing Functions"/>
+  <function link="ProPgArrayIndex.html" name="Array Index"/>
+  <function link="KeyPgPointCoord.html" name="PointCoord"/>
+  <function link="KeyPgCbyte.html" name="CByte"/>
+  <function link="CompilerOpte.html" name="Compiler Option: -e"/>
+  <function link="ProPgCtorsAssignDtors.html" name="Constructors, '=' Assignment-Operators, and Destructors (advanced, part #1)"/>
+  <function link="ExtLibexpat.html" name="Expat"/>
+  <function link="TblEscapeSequences.html" name="Escape Sequences"/>
+  <function link="KeyPgFunction.html" name="Function"/>
+  <function link="KeyPgColor.html" name="Color"/>
+  <function link="KeyPgLongint.html" name="LongInt"/>
+  <function link="ProPgOperatorOverloading.html" name="Operator Overloading"/>
+  <function link="KeyPgSetmouse.html" name="SetMouse"/>
+  <function link="ExtLibfmod.html" name="FMOD"/>
+  <function link="KeyPgWeekday.html" name="Weekday"/>
+  <function link="KeyPgLib.html" name="Lib"/>
+  <function link="KeyPgOptionstatic.html" name="Option Static"/>
+  <function link="KeyPgDdfbfpmode.html" name="__FB_FPMODE__"/>
+  <function link="KeyPgStaticMember.html" name="Static (Member)"/>
+  <function link="CompilerDialects.html" name="FreeBASIC Dialects"/>
+  <function link="KeyPgSeekreturn.html" name="Seek (Function)"/>
+  <function link="CompilerOptrr.html" name="Compiler Option: -rr"/>
+  <function link="ProPgRecursion.html" name="Recursion"/>
+  <function link="KeyPgTime.html" name="Time"/>
+  <function link="KeyPgFre.html" name="Fre"/>
+  <function link="CompilerOptrupp.html" name="Compiler Option: -R"/>
+  <function link="ExtLibvorbis.html" name="libvorbis"/>
+  <function link="KeyPgWindowtitle.html" name="WindowTitle"/>
+  <function link="GfxInternalFormats.html" name="Internal graphics formats"/>
+  <function link="ExtLibChipmunk.html" name="Chipmunk Physics"/>
+  <function link="CompilerOptrrupp.html" name="Compiler Option: -RR"/>
+  <function link="ExtLibjpgalleg.html" name="JPGAlleg"/>
+  <function link="KeyPgDdfbargrightof.html" name="__FB_ARG_RIGHTOF__"/>
+  <function link="CompilerOptm.html" name="Compiler Option: -m"/>
+  <function link="ProPgPassingArguments.html" name="Passing Arguments to Procedures"/>
+  <function link="KeyPgImageInfo.html" name="ImageInfo"/>
+  <function link="TutUsingLibrariesWithGCC.html" name="Using FreeBASIC Built Libraries with GCC"/>
+  <function link="LicenseLGPL.html" name="GNU LESSER GENERAL PUBLIC LICENSE"/>
+  <function link="DevBuildWindows.html" name="Compiling FB on Windows"/>
+  <function link="KeyPgScreencopy.html" name="ScreenCopy"/>
+  <function link="KeyPgWinput.html" name="Winput()"/>
+  <function link="KeyPgRtrim.html" name="RTrim"/>
+  <function link="KeyPgUbound.html" name="UBound"/>
+  <function link="KeyPgDdfbeval.html" name="__FB_EVAL__"/>
+  <function link="CompilerOptstatic.html" name="Compiler Option: -static"/>
+  <function link="DevFbcParserToplevel.html" name="Top level parsing process"/>
+  <function link="CatPgOpIterating.html" name="Iterating Operators"/>
+  <function link="KeyPgDdfboptionprivate.html" name="__FB_OPTION_PRIVATE__"/>
+  <function link="KeyPgPutgraphics.html" name="Put (Graphics)"/>
+  <function link="KeyPgMutexUnlock.html" name="MutexUnlock"/>
+  <function link="KeyPgMutexDestroy.html" name="MutexDestroy"/>
+  <function link="KeyPgOct.html" name="Oct"/>
+  <function link="KeyPgAsin.html" name="Asin"/>
+  <function link="KeyPgPpassert.html" name="#assert"/>
+  <function link="KeyPgScreenevent.html" name="ScreenEvent"/>
+  <function link="CompilerOptcupp.html" name="Compiler Option: -C"/>
+  <function link="KeyPgDeallocate.html" name="Deallocate"/>
+  <function link="ProPgCtorsDtors.html" name="Constructors and Destructors (basics)"/>
+  <function link="KeyPgLet.html" name="Let"/>
+  <function link="KeyPgDdfbargextract.html" name="__FB_ARG_EXTRACT__"/>
+  <function link="ProPgProcedurePointers.html" name="Pointers to Procedures"/>
+  <function link="KeyPgMkd.html" name="MKD"/>
+  <function link="TutIntroExtType.html" name="Introduction to the Extended Type"/>
+  <function link="KeyPgSqr.html" name="Sqr"/>
+  <function link="DevStructLayout.html" name="Structure packing/field alignment"/>
+  <function link="KeyPgDdfbcygwin.html" name="__FB_CYGWIN__"/>
+  <function link="CompilerOptexport.html" name="Compiler Option: -export"/>
+  <function link="KeyPgRgb.html" name="RGB"/>
+  <function link="KeyPgDefsng.html" name="DefSng"/>
+  <function link="KeyPgValulng.html" name="ValULng"/>
+  <function link="KeyPgWoct.html" name="WOct"/>
+  <function link="KeyPgOpCombineImp.html" name="Operator Imp= (Implication And Assign)"/>
+  <function link="DevRtlInkey.html" name="Keyboard Input"/>
+  <function link="KeyPgThen.html" name="Then"/>
+  <function link="KeyPgOngosub.html" name="On...Gosub"/>
+  <function link="KeyPgDateValue.html" name="DateValue"/>
+  <function link="CompilerOptnoobjinfo.html" name="Compiler Option: -noobjinfo"/>
+  <function link="GfxScancodes.html" name="DOS Keyboard Scancodes"/>
+  <function link="KeyPgOnerror.html" name="On Error"/>
+  <function link="KeyPgLbound.html" name="LBound"/>
+  <function link="KeyPgCvi.html" name="CVI"/>
+  <function link="ProPgMultiThreading.html" name="Multi-Threading"/>
+  <function link="KeyPgWritePp.html" name="Write #"/>
+  <function link="ProPgStaticLibraries.html" name="Static Libraries"/>
+  <function link="KeyPgSgn.html" name="Sgn"/>
+  <function link="KeyPgSin.html" name="Sin"/>
+  <function link="KeyPgLprint.html" name="LPrint"/>
+  <function link="KeyPgDrawString.html" name="Draw String"/>
+  <function link="CatPgOpString.html" name="String Operators"/>
+  <function link="KeyPgCall.html" name="Call"/>
+  <function link="KeyPgOpImp.html" name="Operator Imp (Implication)"/>
+  <function link="CatPgOpPrepro.html" name="Preprocessor Operators"/>
+  <function link="CatPgFullIndex.html" name="Alphabetical Keywords List"/>
+  <function link="KeyPgOpCombineXor.html" name="Operator Xor= (Exclusive Disjunction And Assign)"/>
+  <function link="KeyPgOpCombineAdd.html" name="Operator += (Add And Assign)"/>
+  <function link="KeyPgSingle.html" name="Single"/>
+  <function link="KeyPgOverride.html" name="Override"/>
+  <function link="KeyPgMinute.html" name="Minute"/>
+  <function link="KeyPgReadFile.html" name="Read (File Access)"/>
+  <function link="ProPgFileIO.html" name="File I/O with FreeBASIC"/>
+  <function link="KeyPgCvd.html" name="CVD"/>
+  <function link="KeyPgShell.html" name="Shell"/>
+  <function link="ExtLibGLUT.html" name="GLUT, the OpenGL Utility Toolkit"/>
+  <function link="CompilerOptearray.html" name="Compiler Option: -earray"/>
+  <function link="ExtLibaspell.html" name="GNU Aspell"/>
+  <function link="CompilerOptlib.html" name="Compiler Option: -lib"/>
+  <function link="KeyPgDateDiff.html" name="DateDiff"/>
+  <function link="ProPgPtrArithmetic.html" name="Pointer Arithmetic"/>
+  <function link="KeyPgGetfileio.html" name="Get (File I/O)"/>
+  <function link="KeyPgCsng.html" name="CSng"/>
+  <function link="KeyPgDdfbxbox.html" name="__FB_XBOX__"/>
+  <function link="KeyPgLocate.html" name="Locate"/>
+  <function link="KeyPgOpCombineSub.html" name="Operator -= (Subtract And Assign)"/>
+  <function link="CptAscii.html" name="Table of ASCII Characters"/>
+  <function link="DevFbcModules.html" name="Quick overview of all modules"/>
+  <function link="KeyPgPset.html" name="PSet"/>
+  <function link="KeyPgWstr.html" name="WStr"/>
+  <function link="CompilerOptoptimization.html" name="Compiler Option: -O"/>
+  <function link="CatPgOpLogical.html" name="Logical Operators"/>
+  <function link="KeyPgSwap.html" name="Swap"/>
+  <function link="KeyPgConst.html" name="Const"/>
+  <function link="KeyPgCvaArg.html" name="Cva_Arg"/>
+  <function link="KeyPgOpCombineExponentiate.html" name="Operator ^= (Exponentiate And Assign)"/>
+  <function link="KeyPgUinteger.html" name="UInteger"/>
+  <function link="CatPgArray.html" name="Array Functions"/>
+  <function link="Unicode.html" name="Unicode"/>
+  <function link="KeyPgDdfile.html" name="__FILE__"/>
+  <function link="ExtLibwxc.html" name="wx-c, C Interface for WxWidgets"/>
+  <function link="KeyPgCdecl.html" name="cdecl"/>
+  <function link="KeyPgDdfbbuildsha1.html" name="__FB_BUILD_SHA1__"/>
+  <function link="KeyPgCvl.html" name="CVL"/>
+  <function link="KeyPgAsm.html" name="Asm"/>
+  <function link="KeyPgFornext.html" name="For...Next"/>
+  <function link="KeyPgTrim.html" name="Trim"/>
+  <function link="KeyPgXorGfx.html" name="Xor"/>
+  <function link="KeyPgStep.html" name="Step"/>
+  <function link="KeyPgAndGfx.html" name="And"/>
+  <function link="KeyPgOpArrayIndex.html" name="Operator () (Array Index)"/>
+  <function link="KeyPgStrig.html" name="Strig"/>
+  <function link="KeyPgDefstr.html" name="DefStr"/>
+  <function link="TutUsingMouse.html" name="Using the Mouse in FreeBASIC"/>
+  <function link="KeyPgWstringFunction.html" name="Wstring (Function)"/>
+  <function link="KeyPgClng.html" name="CLng"/>
+  <function link="KeyPgAssertwarn.html" name="AssertWarn"/>
+  <function link="KeyPgLineinputPp.html" name="Line Input #"/>
+  <function link="ProPgProperties.html" name="Properties"/>
+  <function link="ProPgConditionalCompilation.html" name="Conditional Compilation"/>
+  <function link="KeyPgDefushort.html" name="DefUShort"/>
+  <function link="FaqDOS.html" name="DOS related FAQ"/>
+  <function link="ExtLiblibpng.html" name="libPNG"/>
+  <function link="KeyPgMemberFunction.html" name="Function (Member)"/>
+  <function link="KeyPgDdline.html" name="__LINE__"/>
+  <function link="TblVarTypes.html" name="Standard Data Type Limits"/>
+  <function link="CompilerOptpp.html" name="Compiler Option: -pp"/>
+  <function link="KeyPgThiscall.html" name="__Thiscall"/>
+  <function link="ExtLibCUnit.html" name="CUnit"/>
+  <function link="ProPgMemberProcedures.html" name="Member Procedures"/>
+  <function link="KeyPgTrue.html" name="True"/>
+  <function link="CompilerWelcome.html" name="Welcome to FreeBASIC"/>
+  <function link="KeyPgCls.html" name="Cls"/>
+  <function link="KeyPgGetkey.html" name="GetKey"/>
+  <function link="KeyPgDate.html" name="Date"/>
+  <function link="ObsoletedKwds.html" name="Obsolete Keywords"/>
+  <function link="CatPgUserDefTypes.html" name="User Defined Types"/>
+  <function link="KeyPgChdir.html" name="ChDir"/>
+  <function link="DevFbcLexerCallGraph.html" name="Quick overview of the call graph"/>
+  <function link="KeyPgGetjoystick.html" name="GetJoystick"/>
+  <function link="KeyPgOpPpEscape.html" name="Operator ! (Escaped String Literal)"/>
+  <function link="KeyPgByte.html" name="Byte"/>
+  <function link="KeyPgOpShiftLeft.html" name="Operator Shl (Shift Left)"/>
+  <function link="DevFbcParser.html" name="Purpose"/>
+  <function link="KeyPgOpCombineDivide.html" name="Operator /= (Divide And Assign)"/>
+  <function link="ProPgPolymorphism.html" name="Inheritance Polymorphism"/>
+  <function link="KeyPgOptiondynamic.html" name="Option Dynamic"/>
+  <function link="KeyPgScreenres.html" name="ScreenRes"/>
+  <function link="KeyPgIsredirected.html" name="IsRedirected"/>
+  <function link="ProPgProfiling.html" name="Profiling"/>
+  <function link="KeyPgFBArray.html" name="Fbarray (Array Descriptor Structure And Access)"/>
+  <function link="ProPgHeaderFiles.html" name="Header Files (.bi)"/>
+  <function link="CompilerOptw.html" name="Compiler Option: -w"/>
+  <function link="CatPgString.html" name="String Functions"/>
+  <function link="KeyPgCallocate.html" name="CAllocate"/>
+  <function link="KeyPgStick.html" name="Stick"/>
+  <function link="ExtLibjapi.html" name="Java Application Programming Interface"/>
+  <function link="KeyPgErase.html" name="Erase"/>
+  <function link="ExtLiblibxml.html" name="libxml2"/>
+  <function link="KeyPgInclib.html" name="#inclib"/>
+  <function link="TutUsingLibs.html" name="Using Libraries"/>
+  <function link="KeyPgMkdir.html" name="MkDir"/>
+  <function link="LicenseGPL.html" name="GNU GENERAL PUBLIC LICENSE"/>
+  <function link="KeyPgOpDelete.html" name="Operator Delete Statement"/>
+  <function link="ExtLibode.html" name="ODE, the Open Dynamics Engine"/>
+  <function link="CatPgOpMemory.html" name="Memory Operators"/>
+  <function link="KeyPgOpGreaterThan.html" name="Operator &gt; (Greater Than)"/>
+  <function link="KeyPgOpenPipe.html" name="Open Pipe"/>
+  <function link="KeyPgImagecreate.html" name="ImageCreate"/>
+  <function link="KeyPgCvs.html" name="CVS"/>
+  <function link="ProPgAssignments.html" name="Assignments"/>
+  <function link="KeyPgOpValueOf.html" name="Operator * (Value Of)"/>
+  <function link="ExtLibjpeglib.html" name="jpeglib"/>
+  <function link="KeyPgErmn.html" name="Ermn"/>
+  <function link="DevBuildConfig.html" name="FB build configuration options"/>
+  <function link="KeyPgOptionprivate.html" name="Option Private"/>
+  <function link="KeyPgPublic.html" name="Public"/>
+  <function link="KeyPgAlphaGfx.html" name="Alpha"/>
+  <function link="ProPgExpressionsStatements.html" name="Differences between Expressions and Statements"/>
+  <function link="ProPgTypeIterators.html" name="Iterators"/>
+  <function link="KeyPgInteger.html" name="Integer"/>
+  <function link="KeyPgOpVarptr.html" name="Operator Varptr (Variable Pointer)"/>
+  <function link="KeyPgPpmacro.html" name="#Macro...#Endmacro"/>
+  <function link="ProPgCallingConventions.html" name="Calling Conventions"/>
+  <function link="KeyPgScreensync.html" name="ScreenSync"/>
+  <function link="ProPgLineContinuation.html" name="Line continuation"/>
+  <function link="KeyPgMultikey.html" name="MultiKey"/>
+  <function link="ExtLibLua.html" name="Lua"/>
+  <function link="CompilerFeatures.html" name="Most Important Features"/>
+  <function link="KeyPgFBMemcopyclear.html" name="fb_MemCopyClear"/>
+  <function link="KeyPgNaked.html" name="Naked"/>
+  <function link="ExtLibnewton.html" name="Newton"/>
+  <function link="KeyPgDo.html" name="Do"/>
+  <function link="TutIntroScope.html" name="Introduction to Variable Scope"/>
+  <function link="ProPgMtCriticalSectionsFAQ.html" name="Critical Sections FAQ"/>
+  <function link="KeyPgKill.html" name="Kill"/>
+  <function link="DevSelectCase.html" name="Select Case"/>
+  <function link="KeyPgDefshort.html" name="DefShort"/>
+  <function link="KeyPgBload.html" name="BLoad"/>
+  <function link="KeyPgDdfboptiongosub.html" name="__FB_OPTION_GOSUB__"/>
+  <function link="KeyPgPoint.html" name="Point"/>
+  <function link="KeyPgWindow.html" name="Window"/>
+  <function link="KeyPgWspace.html" name="WSpace"/>
+  <function link="LicenseGFDL.html" name="GNU Free Documentation License"/>
+  <function link="TblTruth.html" name="Bitwise Operators Truth Tables"/>
+  <function link="KeyPgOpCombineConcat.html" name="Operator &amp;= (Concatenate And Assign)"/>
+  <function link="KeyPgExec.html" name="Exec"/>
+  <function link="KeyPgScreenlist.html" name="ScreenList"/>
+  <function link="DevFbcLexer.html" name="Lexer &amp; preprocessor"/>
+  <function link="FaqPgxbox.html" name="Frequently Asked Questions"/>
+  <function link="KeyPgDdfboutlib.html" name="__FB_OUT_LIB__"/>
+  <function link="KeyPgOpStringIndex.html" name="Operator [] (String Index)"/>
+  <function link="KeyPgInput.html" name="Input"/>
+  <function link="ProPgSourceFiles.html" name="Source Files (.bas)"/>
+  <function link="KeyPgMki.html" name="MKI"/>
+  <function link="CompilerOptl.html" name="Compiler Option: -l"/>
+  <function link="DevCrossCompiling.html" name="FB and cross-compiling"/>
+  <function link="ProPgMtConditionalVariables.html" name="Conditional Variables"/>
+  <function link="KeyPgOpPpStringize.html" name="Operator # (Preprocessor Stringize)"/>
+  <function link="KeyPgHibyte.html" name="HiByte"/>
+  <function link="CatPgPreProcess.html" name="Preprocessor"/>
+  <function link="CompilerRunning.html" name="Running"/>
+  <function link="KeyPgDefint.html" name="DefInt"/>
+  <function link="CompilerOptelocation.html" name="Compiler Option: -elocation"/>
+  <function link="KeyPgExepath.html" name="ExePath"/>
+  <function link="KeyPgOpConcat.html" name="Operator + (String Concatenation)"/>
+  <function link="KeyPgCsrlin.html" name="CsrLin"/>
+  <function link="ProPgVariableLifetime.html" name="Simple Variable Lifetime vs Scope"/>
+  <function link="KeyPgDdfbarm.html" name="__FB_ARM__"/>
+  <function link="KeyPgPrintPp.html" name="(Print | ?) #"/>
+  <function link="KeyPgScreenlock.html" name="ScreenLock"/>
+  <function link="ExtLibIL.html" name="DevIL"/>
+  <function link="KeyPgPutfileio.html" name="Put (File I/O)"/>
+  <function link="DevFbcLexerTokens.html" name="Tokens"/>
+  <function link="KeyPgPpcmdline.html" name="#Cmdline"/>
+  <function link="KeyPgCondCreate.html" name="CondCreate"/>
+  <function link="KeyPgDdfbsignature.html" name="__FB_SIGNATURE__"/>
+  <function link="KeyPgLof.html" name="LOF"/>
+  <function link="TutPterDataType.html" name="The Pointer Data Type"/>
+  <function link="KeyPgViewtext.html" name="View Print"/>
+  <function link="ProPgFixLenArrays.html" name="Fixed-length Arrays"/>
+  <function link="KeyPgInputnum.html" name="Input()"/>
+  <function link="CompilerOptdll.html" name="Compiler Option: -dll"/>
+  <function link="KeyPgAccess.html" name="Access"/>
+  <function link="KeyPgDouble.html" name="Double"/>
+  <function link="KeyPgExit.html" name="Exit"/>
+  <function link="KeyPgOptiongosub.html" name="Option Gosub"/>
+  <function link="KeyPgVisProtected.html" name="Protected: (Access Control)"/>
+  <function link="KeyPgOffsetof.html" name="OffsetOf"/>
+  <function link="CatPgFunctIndex.html" name="Functional Keyword List"/>
+  <function link="CatPgOpsys.html" name="Operating System Functions"/>
+  <function link="TutConditionalCompilation.html" name="Conditional Compilation And You"/>
+  <function link="KeyPgPplibpath.html" name="#libpath"/>
+  <function link="KeyPgChr.html" name="Chr"/>
+  <function link="DevGlossary.html" name="Glossary - common terms used in fbc development"/>
+  <function link="KeyPgDdfbgui.html" name="__FB_GUI__"/>
+  <function link="TutLinkedLists.html" name="Linked Lists"/>
+  <function link="CompilerOptprint.html" name="Compiler Option: -print"/>
+  <function link="KeyPgPalette.html" name="Palette"/>
+  <function link="TblRuntimeErrors.html" name="Runtime Error Codes"/>
+  <function link="FaqPgWin32.html" name="Windows Related FAQ"/>
+  <function link="KeyPgLong.html" name="Long"/>
+  <function link="DevGccToolchainChoice.html" name="GCC toolchain choice"/>
+  <function link="KeyPgStatic.html" name="Static"/>
+  <function link="KeyPgScreenunlock.html" name="ScreenUnlock"/>
+  <function link="KeyPgOpCombineAnd.html" name="Operator And= (Conjunction And Assign)"/>
+  <function link="KeyPgDdfbdebug.html" name="__FB_DEBUG__"/>
+  <function link="ExtLibcaca.html" name="caca"/>
+  <function link="KeyPgDdtime.html" name="__TIME__"/>
+  <function link="ExtLibbass.html" name="BASS"/>
+  <function link="KeyPgAlias.html" name="Alias (Name)"/>
+  <function link="KeyPgSetdate.html" name="SetDate"/>
+  <function link="CatPgCompOpt.html" name="Compiler Options"/>
+  <function link="KeyPgLog.html" name="Log"/>
+  <function link="KeyPgAppend.html" name="Append"/>
+  <function link="KeyPgUntil.html" name="Until"/>
+  <function link="ExtLibsqlite.html" name="SQLite"/>
+  <function link="KeyPgOpen.html" name="Open"/>
+  <function link="KeyPgReallocate.html" name="Reallocate"/>
+  <function link="KeyPgCondSignal.html" name="CondSignal"/>
+  <function link="TutBeginnersGuideToTypesAsObjects.html" name="Beginners Guide to Types as Objects (Part 1)"/>
+  <function link="KeyPgReturn.html" name="Return (From Procedure)"/>
+  <function link="KeyPgExport.html" name="Export"/>
+  <function link="CompilerOptt.html" name="Compiler Option: -t"/>
+  <function link="KeyPgDdfberr.html" name="__FB_ERR__"/>
+  <function link="CompilerInstalling.html" name="Installing"/>
+  <function link="ExtLibpcre.html" name="PCRE, Perl Compatible Regular Expressions"/>
+  <function link="KeyPgOpAssignment.html" name="Operator =[&gt;] (Assign)"/>
+  <function link="KeyPgCommand.html" name="Command"/>
+  <function link="KeyPgOpDivide.html" name="Operator / (Divide)"/>
+  <function link="KeyPgPrivate.html" name="Private"/>
+  <function link="ExtLibsfx.html" name="sfx"/>
+  <function link="KeyPgThreadSelf.html" name="ThreadSelf"/>
+  <function link="FaqPgrtlib.html" name="Frequently Asked FB Runtime Library Questions"/>
+  <function link="CatPgMemory.html" name="Memory Functions"/>
+  <function link="KeyPgFilecopy.html" name="FileCopy"/>
+  <function link="KeyPgMkl.html" name="MKL"/>
+  <function link="KeyPgClass.html" name="Class"/>
+  <function link="ExtLibGDBM.html" name="GDBM, the GNU Database manager"/>
+  <function link="ExtLibwindows.html" name="Windows API"/>
+  <function link="KeyPgMetaStatic.html" name="$Static"/>
+  <function link="KeyPgWrite.html" name="Write"/>
+  <function link="KeyPgThreadCreate.html" name="ThreadCreate"/>
+  <function link="KeyPgAllocate.html" name="Allocate"/>
+  <function link="KeyPgDylibload.html" name="DyLibLoad"/>
+  <function link="KeyPgCulngint.html" name="CULngInt"/>
+  <function link="KeyPgAbstract.html" name="Abstract"/>
+  <function link="ExtLibcgiutil.html" name="cgi-util"/>
+  <function link="KeyPgCshort.html" name="CShort"/>
+  <function link="KeyPgDdfbsse.html" name="__FB_SSE__"/>
+  <function link="KeyPgUlongint.html" name="ULongInt"/>
+  <function link="KeyPgEncoding.html" name="Encoding"/>
+  <function link="CompilerOptexx.html" name="Compiler Option: -exx"/>
+  <function link="KeyPgFor.html" name="For"/>
+  <function link="KeyPgUnlock.html" name="Unlock"/>
+  <function link="ExtLibGLib.html" name="GLib"/>
+  <function link="CompilerOptprofile.html" name="Compiler Option: -profile"/>
+  <function link="KeyPgDdfbunquote.html" name="__FB_UNQUOTE__"/>
+  <function link="ProPgNamespaces.html" name="Namespaces"/>
+  <function link="ExtLibbzip2.html" name="libbzip2"/>
+  <function link="KeyPgDdfboptionescape.html" name="__FB_OPTION_ESCAPE__"/>
+  <function link="KeyPgPpdefine.html" name="#define"/>
+  <function link="ExtLibgd.html" name="GD"/>
+  <function link="KeyPgOpStrptr.html" name="Operator Strptr (String Pointer)"/>
+  <function link="ExtLibfreetype2.html" name="Freetype2"/>
+  <function link="CompilerCredits.html" name="Credits (in alphabetical order)"/>
+  <function link="KeyPgWchr.html" name="WChr"/>
+  <function link="KeyPgOpEqv.html" name="Operator Eqv (Equivalence)"/>
+  <function link="CatPgCasting.html" name="Converting Data Types"/>
+  <function link="KeyPgPcopy.html" name="PCopy"/>
+  <function link="KeyPgExtern.html" name="Extern"/>
+  <function link="QuickBASIC.html" name="Microsoft QuickBASIC"/>
+  <function link="CompilerOptz.html" name="Compiler Option: -z"/>
+  <function link="KeyPgBsave.html" name="BSave"/>
+  <function link="KeyPgRem.html" name="Rem"/>
+  <function link="KeyPgResume.html" name="Resume"/>
+  <function link="KeyPgSettime.html" name="SetTime"/>
+  <function link="KeyPgOpNegate.html" name="Operator - (Negate)"/>
+  <function link="KeyPgDestructor.html" name="Destructor"/>
+  <function link="ExtLibIUP.html" name="IUP"/>
+  <function link="ProPgVariableLengthData.html" name="Variable-length member data"/>
+  <function link="CatPgOpPoint.html" name="Pointer Operators"/>
+  <function link="KeyPgThreadCall.html" name="ThreadCall"/>
+  <function link="TutPointersData.html" name="Pointers, Data Types and Memory"/>
+  <function link="ProPgObjectLifetime.html" name="Dynamic Object and Data Lifetime"/>
+  <function link="KeyPgVaFirst.html" name="va_first"/>
+  <function link="ProPgVariables.html" name="Variables"/>
+  <function link="KeyPgDdFBMain.html" name="__FB_MAIN__"/>
+  <function link="KeyPgFBMemcopy.html" name="Fb_Memcopy"/>
+  <function link="CompilerOptv.html" name="Compiler Option: -v"/>
+  <function link="SrcPgGfxNull.html" name="GFX_NULL"/>
+  <function link="KeyPgOpLessThanOrEqual.html" name="Operator &lt;= (Less Than Or Equal)"/>
+  <function link="SephKnows.html" name="SephKnows"/>
+  <function link="KeyPgOpFor.html" name="Operator For (Iteration)"/>
+  <function link="KeyPgOpExponentiate.html" name="Operator ^ (Exponentiate)"/>
+  <function link="KeyPgOpenLpt.html" name="Open Lpt"/>
+  <function link="KeyPgGosub.html" name="GoSub"/>
+  <function link="ExtLibmxml.html" name="mxml, Mini-XML"/>
+  <function link="AntoniGual.html" name="Antoni"/>
+  <function link="DevBuildKnownProblems.html" name="Known problems when compiling FB"/>
+  <function link="KeyPgCbool.html" name="CBool"/>
+  <function link="ProPgProcedures.html" name="Procedures Overview"/>
+  <function link="CompilerOptWc.html" name="Compiler Option: -Wc"/>
+  <function link="KeyPgDddate.html" name="__DATE__"/>
+  <function link="CatPgDddefines.html" name="Intrinsic Defines"/>
+  <function link="KeyPgBin.html" name="Bin"/>
+  <function link="TutFBgfxImgAndFontBuf.html" name="FBgfx Image and Font Buffers"/>
+  <function link="KeyPgPpelse.html" name="#else"/>
+  <function link="KeyPgOpIs.html" name="Operator Is (Run-Time Type Information)"/>
+  <function link="ExtLibX11.html" name="X11"/>
+  <function link="ProPgHelloWorld.html" name="Hello World"/>
+  <function link="LaananFisher.html" name="Laanan Fisher"/>
+  <function link="ExtLibdisphelper.html" name="disphelper"/>
+  <function link="KeyPgLpos.html" name="LPos"/>
+  <function link="KeyPgBeep.html" name="Beep"/>
+  <function link="KeyPgDdFBVerPatch.html" name="__FB_VER_PATCH__"/>
+  <function link="ExtLibquicklz.html" name="QuickLZ"/>
+  <function link="KeyPgPpundef.html" name="#undef"/>
+  <function link="CatPgOpConditional.html" name="Relational Operators"/>
+  <function link="KeyPgHour.html" name="Hour"/>
+  <function link="ExtLibgettext.html" name="gettext"/>
+  <function link="ExtLibPortAudio.html" name="PortAudio"/>
+  <function link="KeyPgObject.html" name="Object"/>
+  <function link="CompilerOptshowincludes.html" name="Compiler Option: -showincludes"/>
+  <function link="TutIntroArrays.html" name="Introduction To Arrays"/>
+  <function link="KeyPgCvaEnd.html" name="Cva_End"/>
+  <function link="TekRat.html" name="TekRat"/>
+  <function link="TutMessageIntro.html" name="Introduction to Message-Based Programming"/>
+  <function link="CatPgOperators.html" name="Operators"/>
+  <function link="KeyPgImplements.html" name="Implements"/>
+  <function link="KeyPgScope.html" name="Scope...End Scope"/>
+  <function link="ProPgExecutables.html" name="Executables"/>
+  <function link="CompilerOptversion.html" name="Compiler Option: -version"/>
+  <function link="KeyPgGetmouse.html" name="GetMouse"/>
+  <function link="KeyPgPtr.html" name="(Pointer | Ptr)"/>
+  <function link="KeyPgDdfbx86.html" name="__FB_X86__"/>
+  <function link="CatPgCompilerSwitches.html" name="Compiler Switches"/>
+  <function link="KeyPgFunctionPtr.html" name="Function Pointer"/>
+  <function link="KeyPgMks.html" name="MKS"/>
+  <function link="ProPgObjectRtti.html" name="OBJECT built-in and RTTI info"/>
+  <function link="KeyPgConstMember.html" name="Const (Member)"/>
+  <function link="ExtLibcryptlib.html" name="cryptlib"/>
+  <function link="KeyPgSetenviron.html" name="SetEnviron"/>
+  <function link="CompilerOptb.html" name="Compiler Option: -b"/>
+  <function link="ExtLibgiflib.html" name="GIFLIB"/>
+  <function link="CompilerOpteassert.html" name="Compiler Option: -eassert"/>
+  <function link="KeyPgOpenScrn.html" name="Open Scrn"/>
+  <function link="KeyPgElseif.html" name="ElseIf"/>
+  <function link="KeyPgStr.html" name="Str"/>
+  <function link="KeyPgUshort.html" name="UShort"/>
+  <function link="KeyPgErr.html" name="Err"/>
+  <function link="KeyPgDdfbargc.html" name="__FB_ARGC__"/>
+  <function link="KeyPgRestore.html" name="Restore"/>
+  <function link="KeyPgCuint.html" name="CUInt"/>
+  <function link="KeyPgCsign.html" name="CSign"/>
+  <function link="KeyPgTypeAlias.html" name="Type (Alias)"/>
+  <function link="ProPgPassingArrays.html" name="Passing Arrays to Procedures"/>
+  <function link="KeyPgWith.html" name="With"/>
+  <function link="KeyPgPpendif.html" name="#endif"/>
+  <function link="KeyPgPpprint.html" name="#print"/>
+  <function link="KeyPgLoc.html" name="LOC"/>
+  <function link="ProPgVarLenArrays.html" name="Variable-length Arrays"/>
+  <function link="CommunityTutorials.html" name="Community Tutorials"/>
+  <function link="KeyPgYear.html" name="Year"/>
+  <function link="TutIntroTypeDef.html" name="Introduction to the Type Def"/>
+  <function link="KeyPgInclude.html" name="#include"/>
+  <function link="ExtLibUUID.html" name="UUID library"/>
+  <function link="KeyPgScreengraphics.html" name="Screen (Graphics)"/>
+  <function link="KeyPgImport.html" name="Import"/>
+  <function link="ProPgMtCriticalSections.html" name="Critical Sections"/>
+  <function link="KeyPgCos.html" name="Cos"/>
+  <function link="KeyPgDdfbgcc.html" name="__FB_GCC__"/>
+  <function link="KeyPgOpCombineEqv.html" name="Operator Eqv= (Equivalence And Assign)"/>
+  <function link="KeyPgCint.html" name="CInt"/>
+  <function link="ExtLibCRT.html" name="CRT, the C Runtime Library"/>
+  <function link="KeyPgVirtual.html" name="Virtual"/>
+  <function link="KeyPgPpPragma.html" name="#pragma"/>
+  <function link="KeyPgOperator.html" name="Operator"/>
+  <function link="KeyPgWend.html" name="Wend"/>
+  <function link="KeyPgScreeninfo.html" name="ScreenInfo"/>
+  <function link="KeyPgDim.html" name="Dim"/>
+  <function link="KeyPgOpCombineIntegerDivide.html" name="Operator \= (Integer Divide And Assign)"/>
+  <function link="ProPgDates.html" name="Date Serials"/>
+  <function link="KeyPgOpPpNoescape.html" name="Operator $ (Non-Escaped String Literal)"/>
+  <function link="KeyPgOpLet.html" name="Operator Let (Assign)"/>
+  <function link="KeyPgOpPtrMemberAccess.html" name="Operator -&gt; (Pointer To Member Access)"/>
+  <function link="KeyPgOptionnokeyword.html" name="Option NoKeyword"/>
+  <function link="KeyPgDefulongint.html" name="Defulongint"/>
+  <function link="KeyPgStringFunction.html" name="String (Function)"/>
+  <function link="KeyPgUcase.html" name="UCase"/>
+  <function link="KeyPgTan.html" name="Tan"/>
+  <function link="KeyPgOpNot.html" name="Operator Not (Complement)"/>
+  <function link="KeyPgInputPp.html" name="Input #"/>
+  <function link="KeyPgBitset.html" name="BitSet"/>
+  <function link="CompilerOptprefix.html" name="Compiler Option: -prefix"/>
+  <function link="CompilerOptc.html" name="Compiler Option: -c"/>
+  <function link="CompilerOpto.html" name="Compiler Option: -o"/>
+  <function link="KeyPgValuint.html" name="ValUInt"/>
+  <function link="CompilerOptarch.html" name="Compiler Option: -arch"/>
+  <function link="KeyPgDdfbunix.html" name="__FB_UNIX__"/>
+  <function link="CompilerOptmaxerr.html" name="Compiler Option: -maxerr"/>
+  <function link="TutIndexSDLNet.html" name="SDL_Net: Getting Started"/>
+  <function link="CompilerOptd.html" name="Compiler Option: -d"/>
+  <function link="ExtLibFfi.html" name="libffi"/>
+  <function link="ExtLibgtk.html" name="GTK+, The GIMP ToolKit"/>
+  <function link="ExtLibbigint.html" name="big_int"/>
+  <function link="CompilerOptlang.html" name="Compiler Option: -lang"/>
+  <function link="00index.html" name="FreeBASIC Manual"/>
+  <function link="DevTranslateHeader.html" name="C Header Translation Tutorial"/>
+  <function link="KeyPgOpOrElse.html" name="Operator Orelse (Short Circuit Inclusive Disjunction)"/>
+  <function link="KeyPgOpPpConcat.html" name="Operator ## (Preprocessor Concatenate)"/>
+  <function link="TutIfStatement.html" name="The IF Statement"/>
+  <function link="KeyPgOpNext.html" name="Operator Next (Iteration)"/>
+  <function link="CatPgThreading.html" name="Threading Support Functions"/>
+  <function link="KeyPgOut.html" name="Out"/>
+  <function link="ExtLibtre.html" name="TRE (regex matching library)"/>
+  <function link="KeyPgOpOr.html" name="Operator Or (Inclusive Disjunction)"/>
+  <function link="KeyPgPos.html" name="Pos"/>
+  <function link="KeyPgDdfilenq.html" name="__FILE_NQ__"/>
+  <function link="KeyPgDay.html" name="Day"/>
+  <function link="KeyPgOpPlacementNew.html" name="Operator Placement New"/>
+  <function link="CompilerOptenullptr.html" name="Compiler Option: -enullptr"/>
+  <function link="TutConstQualifiers.html" name="Const Qualifiers and You"/>
+  <function link="KeyPgOpModulus.html" name="Operator Mod (Modulus)"/>
+  <function link="KeyPgWidth.html" name="Width"/>
+  <function link="KeyPgPsetGfx.html" name="PSet"/>
+  <function link="KeyPgPpifdef.html" name="#ifdef"/>
+  <function link="KeyPgPpPragmaReserve.html" name="#Pragma Reserve"/>
+  <function link="KeyPgPpelseif.html" name="#elseif"/>
+  <function link="DevBuild.html" name="Compiling a Development Version of FreeBASIC"/>
+  <function link="CompilerOptx.html" name="Compiler Option: -x"/>
+  <function link="KeyPgUnsigned.html" name="Unsigned"/>
+  <function link="KeyPgSubPtr.html" name="Sub Pointer"/>
+  <function link="KeyPgCustomgfx.html" name="Custom"/>
+  <function link="KeyPgDdfbbuilddateiso.html" name="__FB_BUILD_DATE_ISO__"/>
+  <function link="CatPgVariables.html" name="Variable Declarations"/>
+  <function link="KeyPgPeek.html" name="Peek"/>
+  <function link="KeyPgByrefVariables.html" name="Byref (Variables)"/>
+  <function link="ProPgPrimer1.html" name="FreeBASIC Primer #1"/>
+  <function link="CompilerOptnodeflibs.html" name="Compiler Option: -nodeflibs"/>
+  <function link="KeyPgOpCombineMultiply.html" name="Operator *= (Multiply And Assign)"/>
+  <function link="KeyPgOpCombineOr.html" name="Operator Or= (Inclusive Disjunction And Assign)"/>
+  <function link="ExtLibgmp.html" name="gmp, The GNU Multiple Precision Arithmetic Library"/>
+  <function link="KeyPgDdfboutdll.html" name="__FB_OUT_DLL__"/>
+  <function link="KeyPgDylibfree.html" name="DyLibFree"/>
+  <function link="KeyPgAtan2.html" name="Atan2"/>
+  <function link="KeyPgScreenset.html" name="ScreenSet"/>
+  <function link="KeyPgBaseInit.html" name="Base (Initializer)"/>
+  <function link="KeyPgPrintusing.html" name="(Print | ?) Using"/>
+  <function link="KeyPgOptionbase.html" name="Option Base"/>
+  <function link="KeyPgFrac.html" name="Frac"/>
+  <function link="CompilerRequirements.html" name="Requirements"/>
+  <function link="DocToc.html" name="FreeBASIC Manual"/>
+  <function link="ProPgIdentifierRules.html" name="Identifier Rules"/>
+  <function link="KeyPgDdFBVerMinor.html" name="__FB_VER_MINOR__"/>
+  <function link="DevFbcLexerFiles.html" name="File contexts"/>
+  <function link="ProPgMtMutualExclusion.html" name="Mutual Exclusion"/>
+  <function link="DebuggerRunning.html" name="Debugging"/>
+  <function link="KeyPgModuleConstructor.html" name="Constructor (Module)"/>
+  <function link="ProPgDataConversion.html" name="Coercion and Conversion"/>
+  <function link="ProPgVarProcLinkage.html" name="Variable and Procedure Linkage"/>
+  <function link="DevFbcTestSuite.html" name="Compiling the test suite"/>
+  <function link="ProPgPrebuiltLibraries.html" name="Using Prebuilt Libraries"/>
+  <function link="CompilerOptmap.html" name="Compiler Option: -map"/>
+  <function link="KeyPgOrGfx.html" name="Or"/>
+  <function link="KeyPgOpShiftRight.html" name="Operator Shr (Shift Right)"/>
+  <function link="KeyPgField.html" name="Field"/>
+  <function link="ExtLibdos.html" name="DOS API"/>
+  <function link="KeyPgAssert.html" name="Assert"/>
+  <function link="KeyPgDdfbargleftof.html" name="__FB_ARG_LEFTOF__"/>
+  <function link="KeyPgTransGfx.html" name="Trans"/>
+  <function link="KeyPgDdfbopenbsd.html" name="__FB_OPENBSD__"/>
+  <function link="KeyPgElse.html" name="Else"/>
+  <function link="ExtLibtinyptc.html" name="TinyPTC"/>
+  <function link="KeyPgCondWait.html" name="CondWait"/>
+  <function link="KeyPgOverload.html" name="Overload"/>
+  <function link="ExtLibjni.html" name="JNI, The Java Native Interface"/>
+  <function link="KeyPgCommon.html" name="Common"/>
+  <function link="ProPgSourceCompiledModule.html" name="Manage Reusable Procedures by Including Source vs Compiled Modules"/>
+  <function link="KeyPgDdfbasm.html" name="__FB_ASM__"/>
+  <function link="KeyPgWait.html" name="Wait"/>
+  <function link="KeyPgOpAnd.html" name="Operator And (Conjunction)"/>
+  <function link="KeyPgOptionescape.html" name="Option Escape"/>
+  <function link="TutHowToProgGame1.html" name="How to Program a Game: Lesson 1"/>
+  <function link="CompilerErrMsg.html" name="Compiler Error Messages"/>
+  <function link="KeyPgDdfb64bit.html" name="__FB_64BIT__"/>
+  <function link="KeyPgDdfbuniqueidpush.html" name="__FB_UNIQUEID_PUSH__"/>
+  <function link="DataType.html" name="Data Types"/>
+  <function link="KeyPgDefdbl.html" name="DefDbl"/>
+  <function link="KeyPgOpMemberAccess.html" name="Operator . (Member Access)"/>
+  <function link="KeyPgAtn.html" name="Atn"/>
+  <function link="KeyPgDoloop.html" name="Do...Loop"/>
+  <function link="KeyPgTimeValue.html" name="TimeValue"/>
+  <function link="KeyPgDir.html" name="Dir"/>
+  <function link="KeyPgDdFBMinVersion.html" name="__FB_MIN_VERSION__"/>
+  <function link="KeyPgContinue.html" name="Continue"/>
+  <function link="ProPgCruntime.html" name="C Standard Library Functions"/>
+  <function link="CompilerOptinclude.html" name="Compiler Option: -include"/>
+  <function link="TutDynaArrayType.html" name="Dynamic Arrays in Types"/>
+  <function link="KeyPgBoolean.html" name="Boolean"/>
+  <function link="KeyPgViewgraphics.html" name="View (Graphics)"/>
+  <function link="KeyPgDdfboutexe.html" name="__FB_OUT_EXE__"/>
+  <function link="ProPgVariadicArguments.html" name="Variadic Arguments"/>
+  <function link="KeyPgPreset.html" name="PReset"/>
+  <function link="KeyPgDateAdd.html" name="DateAdd"/>
+  <function link="KeyPgExp.html" name="Exp"/>
+  <function link="ExtLibcairo.html" name="Cairo"/>
+  <function link="KeyPgTypeof.html" name="TypeOf"/>
+  <function link="CompilerOpta.html" name="Compiler Option: -a"/>
+  <function link="KeyPgCast.html" name="Cast"/>
+  <function link="ExtLibbfd.html" name="BFD, the Binary File Descriptor Library"/>
+  <function link="KeyPgFreefile.html" name="FreeFile"/>
+  <function link="KeyPgOpDeleteOverload.html" name="Operator Delete Overload"/>
+  <function link="KeyPgModuleDestructor.html" name="Destructor (Module)"/>
+  <function link="ProPgUDTs.html" name="User Defined Types"/>
+  <function link="CatPgGfx.html" name="Graphics Keyword List"/>
+  <function link="KeyPgFileseteof.html" name="FileSetEof"/>
+  <function link="KeyPgMonthname.html" name="MonthName"/>
+  <function link="KeyPgMetaLang.html" name="$Lang"/>
+  <function link="KeyPgDdfbuniqueidpop.html" name="__FB_UNIQUEID_POP__"/>
+  <function link="KeyPgEvent.html" name="Event (Message Data From Screenevent)"/>
+  <function link="KeyPgOpEqual.html" name="Operator = (Equal)"/>
+  <function link="ExtLibSDL.html" name="SDL, the Simple DirectMedia Layer"/>
+  <function link="KeyPgLineinput.html" name="Line Input"/>
+  <function link="CatPgGfxInput.html" name="User Input Functions (Graphics Library)"/>
+  <function link="CatPgOpIndex.html" name="Operator List"/>
+  <function link="KeyPgResumenext.html" name="Resume Next"/>
+  <function link="ExtLibgdsl.html" name="GDSL, The Generic Data Structures Library"/>
+  <function link="CompilerInstallingGcc.html" name="Installing gcc for -gen gcc"/>
+  <function link="CatPgProgrammer.html" name="Programmer's Guide"/>
+  <function link="ProPgLabels.html" name="Labels"/>
+  <function link="KeyPgAddGfx.html" name="Add"/>
+  <function link="ProPgRadians.html" name="Radian system of measuring angles"/>
+  <function link="ProPgNumericTypes.html" name="Numeric Types"/>
+  <function link="ExtLibal.html" name="OpenAL"/>
+  <function link="KeyPgDdfbfpu.html" name="__FB_FPU__"/>
+  <function link="KeyPgAs.html" name="As"/>
+  <function link="KeyPgVaArg.html" name="va_arg"/>
+  <function link="DevHeaderStyleGuide.html" name="C Header Style Guide"/>
+  <function link="KeyPgName.html" name="Name"/>
+  <function link="KeyPgDdfbpcos.html" name="__FB_PCOS__"/>
+  <function link="KeyPgPpif.html" name="#if"/>
+  <function link="KeyPgRight.html" name="Right"/>
+  <function link="KeyPgScreencontrol.html" name="ScreenControl"/>
+  <function link="KeyPgInstr.html" name="InStr"/>
+  <function link="KeyPgFileattr.html" name="FileAttr"/>
+  <function link="ProPgMemberAccessRights.html" name="Member Access Rights and Encapsulation"/>
+  <function link="KeyPgVaNext.html" name="va_next"/>
+  <function link="TutBasicInput.html" name="Basic Input"/>
+  <function link="KeyPgReset.html" name="Reset"/>
+  <function link="KeyPgOpNotEqual.html" name="Operator &lt;&gt; (Not Equal)"/>
+  <function link="CatPgGfxScreen.html" name="Screen Functions"/>
+  <function link="KeyPgMetaInclude.html" name="$Include"/>
+  <function link="ProPgRecursionIteration.html" name="Replace Recursion with Iteration"/>
+  <function link="DevDebuggingFb.html" name="Debugging FB"/>
+  <function link="KeyPgDdfbdarwin.html" name="__FB_DARWIN__"/>
+  <function link="KeyPgByrefFunction.html" name="Byref (Function Results)"/>
+  <function link="ExtLibFastCGI.html" name="FastCGI"/>
+  <function link="CompilerCmdLine.html" name="fbc command-line"/>
+  <function link="KeyPgImageDestroy.html" name="ImageDestroy"/>
+  <function link="KeyPgOpStep.html" name="Operator Step (Iteration)"/>
+  <function link="KeyPgLtrim.html" name="LTrim"/>
+  <function link="KeyPgCondDestroy.html" name="CondDestroy"/>
+  <function link="KeyPgOpCombineShiftRight.html" name="Operator Shr= (Shift Right And Assign)"/>
+  <function link="ProPgStorageClasses.html" name="Storage Classes"/>
+  <function link="KeyPgImageConvertRow.html" name="ImageConvertRow"/>
+  <function link="KeyPgDots.html" name="... (Ellipsis)"/>
+  <function link="ExtLibLzma.html" name="liblzma"/>
+  <function link="KeyPgDatePart.html" name="DatePart"/>
+  <function link="KeyPgPplang.html" name="#lang"/>
+  <function link="KeyPgWhilewend.html" name="While...Wend"/>
+  <function link="ProPgEventHandling.html" name="Event Handling"/>
+  <function link="KeyPgScreenCons.html" name="Screen (Console)"/>
+  <function link="DevToc.html" name="Information for hacking on FreeBASIC"/>
+  <function link="CompilerOptWa.html" name="Compiler Option: -Wa"/>
+  <function link="TutNewToProg.html" name="New to Programming?"/>
+  <function link="KeyPgOutput.html" name="Output"/>
+  <function link="ProPgPointers.html" name="Pointers"/>
+  <function link="KeyPgDdfbquote.html" name="__FB_QUOTE__"/>
+  <function link="CodeLibrary.html" name="Community Code Library"/>
+ </functions>
+</book>

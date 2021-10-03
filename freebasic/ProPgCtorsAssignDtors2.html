@@ -1,0 +1,444 @@
+<html>
+<head>
+<title>Constructors, '=' Assignment-Operators, and Destructors (advanced, part #2)</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Constructors, '=' Assignment-Operators, and Destructors (advanced, part #2)</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Proper use of <b>Constructors</b>, '=' <b>Assignment-Operators</b>, and <b>Destructors</b>, which are the special member procedures for constructing/initializing, assigning, and destroying objects (part #2).<br \>
+<a name="ProPgCtorsAssignDtors2Top"></a><br \>
+<u>Table of Contents</u><br \>
+<div class="fb_indent"><b><a href="#ProPgCtorsAssignDtors21">1. Compiler interaction (with default-constructor, copy-constructor, and copy-assignment operator)</a></b><br \>
+<b><a href="#ProPgCtorsAssignDtors22">2. Rules of good manners (for constructors, copy-constructors, copy-assignment operators, and destructors)</a></b><br \>
+<b><a href="#ProPgCtorsAssignDtors23">3. Member access rights impact (on declaration of constructors, copy-constructors, copy-assignment operators, and destructors)</a></b><br \>
+<br \>
+</div><a name="ProPgCtorsAssignDtors21"></a><br \>
+<div class="fb_sect_title">1. Compiler interaction (with default-constructor, copy-constructor, and copy-assignment operator)</div><div class="fb_sect_cont"><br \>
+During assignments or copy-constructions, the compiler interacts with the different calls of copy-assignment operators, default-constructors and copy-constructors, in order to optimize the copy for resulting objects, making the best use of the member procedures provided by the user (maybe non-exhaustively).<br \>
+<br \>
+<ul><li> For an assignment (<i>'object2 = object1'</i>)<br \>
+</ul><div class="fb_indent">Algorithm:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'   If (Type has a copy-assignment operator) Then
+'   |  => the copy-assignment opertator of Type is called
+'   Else
+'   |  If (Type has a Base with default-constructor) AND (Type has a Base with copy-assignment operator) Then
+'   |  |  => the copy-assignment operator of Base is called (for Base fields)
+'   |  |  => a shallow-copy is done on only Type fields
+'   |  Else
+'   |  |  => a full shallow-copy is done on all fields
+'   |  End If
+'   End If
+			</pre></div></div><ul><li> For a copy-construction (<i>'Dim As typename object2 = object1'</i>)<br \>
+</ul><div class="fb_indent">Algorithm:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+'   If (Type has a Base with default-constructor) Then
+'   |  => the default-constructor of Base is called
+'   End If
+'   If (Type has a copy-constructor) Then
+'   |  => the copy-constructor of Type is called
+'   Else
+'   |  => the Type object is implicitly default-constructed (even if exists an explicit Type default-constructor)
+'   |  If (Type has a copy-assignment operator) Then
+'   |  |  If (Type has an object field with a default-constructor) OR (Type has a Base with default-constructor) Then
+'   |  |  |  => the copy-assignment operator of Type is called
+'   |  |  Else
+'   |  |  |  => a full shallow-copy is done on all fields
+'   |  |  End If
+'   |  Else
+'   |  |  If (Type has a Base with default-constructor) AND (Type has a Base with copy-assignment operator) Then
+'   |  |  |  => the copy-assignment operator of Base is called (for Base fields)
+'   |  |  |  => a shallow-copy is done on only Type fields
+'   |  |  Else
+'   |  |  |  => a full shallow-copy is done on all fields
+'   |  |  End If
+'   |  End If
+'   End If
+			</pre></div></div><b>Notes:</b><br \>
+<div class="fb_indent">A Type has a default-constructor if one among the following propositions is verified:<br \>
+<div class="fb_indent"><b>-</b> It has an explicit default-constructor<br \>
+<b>-</b> One at least of its field has an initializer.<br \>
+<b>-</b> One at least of its members is an object having a default-constructor itself.<br \>
+<b>-</b> Its Base (if exists) has a default-constructor (the built-in 'Object' has a default-constructor).<br \>
+<br \>
+</div>Under certain conditions, the explicit copy-assignment operator may be called for a copy-construction (if there is not an explicit copy-constructor).<br \>
+But inversely, the explicit copy-constructor will never be called for an assignment (if there is not an explicit copy-assignment operator) regardless of the conditions.<br \>
+<br \>
+</div><ul><li> Example to highlight/validate this interaction with default-constructor, copy-constructor, and copy-assignment operator, during assignments or copy-constructions<br \>
+</ul><div class="fb_indent">By commenting or not, as you want, independently each of the first 7 code lines (<i>'#define UDT...'</i>), you can test all conditions of the above algorithms:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#define&nbsp;UDTbase_copy_assignment_operator<br />
+#define&nbsp;UDTbase_default_constructor<br />
+#define&nbsp;UDTbase_copy_constructor<br />
+</span><br />
+<span class="def">#define&nbsp;UDTderived_copy_assignment_operator<br />
+#define&nbsp;UDTderived_default_constructor<br />
+#define&nbsp;UDTderived_copy_constructor<br />
+#define&nbsp;UDTderived_object_field_with_constructor<br />
+</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDTbase</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#ifdef&nbsp;UDTbase_copy_assignment_operator<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTbase</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#ifdef&nbsp;UDTbase_copy_constructor<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTbase</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#ifdef&nbsp;UDTbase_default_constructor<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#ifndef&nbsp;UDTbase_copy_constructor<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i1</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="def">#ifdef&nbsp;UDTbase_copy_assignment_operator<br />
+</span><span class="key">Operator</span>&nbsp;<span class="wrd">UDTbase.Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTbase</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTbase.copy-assignment&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;from&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="oth">@</span><span class="wrd">u1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.i1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1.i1</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<span class="def">#endif<br />
+#ifdef&nbsp;UDTbase_copy_constructor<br />
+</span><span class="key">Constructor</span>&nbsp;<span class="wrd">UDTbase</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTbase.default-constructor&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDTbase</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u1</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTbase</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTbase.copy-constructor&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;from&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="oth">@</span><span class="wrd">u1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.i1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u1.i1</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="def">#endif<br />
+#ifdef&nbsp;UDTbase_default_constructor<br />
+#ifndef&nbsp;UDTbase_copy_constructor<br />
+</span><span class="key">Constructor</span>&nbsp;<span class="wrd">UDTbase</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTbase.default-constructor&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="def">#endif<br />
+#endif<br />
+</span><span class="key">Destructor</span>&nbsp;<span class="wrd">UDTbase</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTbase.destructor&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDTderived</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">UDTbase</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#ifdef&nbsp;UDTderived_copy_assignment_operator<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTderived</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#ifdef&nbsp;UDTderived_copy_constructor<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTderived</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#ifdef&nbsp;UDTderived_default_constructor<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#ifndef&nbsp;UDTderived_copy_constructor<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">i2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#ifdef&nbsp;UDTderived_object_field_with_constructor<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span><span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="def">#ifdef&nbsp;UDTderived_copy_assignment_operator<br />
+</span><span class="key">Operator</span>&nbsp;<span class="wrd">UDTderived.Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTderived</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTderived.copy-assignment&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;from&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="oth">@</span><span class="wrd">u2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.i2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u2.i2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.i1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u2.i1</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<span class="def">#endif<br />
+#ifdef&nbsp;UDTderived_copy_constructor<br />
+</span><span class="key">Constructor</span>&nbsp;<span class="wrd">UDTderived</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTderived.default-constructor&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDTderived</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">u2</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTderived</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTderived.copy-constructor&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;&nbsp;from&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="oth">@</span><span class="wrd">u2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.i2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u2.i2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.i1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">u2.i1</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="def">#endif<br />
+#ifdef&nbsp;UDTderived_default_constructor<br />
+#ifndef&nbsp;UDTderived_copy_constructor<br />
+</span><span class="key">Constructor</span>&nbsp;<span class="wrd">UDTderived</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTderived.default-constructor&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<span class="def">#endif<br />
+#endif<br />
+</span><span class="key">Destructor</span>&nbsp;<span class="wrd">UDTderived</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;UDTderived.destructor&quot;</span><span class="oth">,</span>&nbsp;<span class="oth">,</span>&nbsp;<span class="oth">@</span><span class="key">This</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Scope</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Construction:&nbsp;'Dim&nbsp;As&nbsp;UDTderived&nbsp;a,&nbsp;b&nbsp;:&nbsp;a.i1&nbsp;=&nbsp;1&nbsp;:&nbsp;a.i2&nbsp;=&nbsp;2'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTderived</span>&nbsp;<span class="wrd">a</span><span class="oth">,</span>&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">a.i1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span>&nbsp;<span class="oth">:</span>&nbsp;<span class="wrd">a.i2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">a.i1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">a.i2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Assignment:&nbsp;'b&nbsp;=&nbsp;a'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">b</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">a</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">b.i1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">b.i2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Copy-construction:&nbsp;'Dim&nbsp;As&nbsp;UDTderived&nbsp;c&nbsp;=&nbsp;a'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTderived</span>&nbsp;<span class="wrd">c</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">a</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">c.i1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">c.i2</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;Going&nbsp;out&nbsp;scope:&nbsp;'End&nbsp;Scope'&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Scope</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+Construction: 'Dim As UDTderived a, b : a.i1 = 1 : a.i2 = 2'
+   => UDTbase.default-constructor         1703576
+   => UDTderived.default-constructor      1703576
+   => UDTbase.default-constructor         1703556
+   => UDTderived.default-constructor      1703556
+	  1
+	  2
+
+Assignment: 'b = a'
+   => UDTderived.copy-assignment          1703556 from 1703576
+	  1
+	  2
+
+Copy-construction: 'Dim As UDTderived c = a'
+   => UDTbase.default-constructor         1703488
+   => UDTderived.copy-constructor         1703488 from 1703576
+	  1
+	  2
+
+Going out scope: 'End Scope'
+   => UDTderived.destructor               1703488
+   => UDTbase.destructor                  1703488
+   => UDTderived.destructor               1703556
+   => UDTbase.destructor                  1703556
+   => UDTderived.destructor               1703576
+   => UDTbase.destructor                  1703576
+				</pre></div></div></div><div style="text-align: center;"><a href="#ProPgCtorsAssignDtors2Top">Back to top</a></div><br \>
+<a name="ProPgCtorsAssignDtors22"></a><br \>
+</div><div class="fb_sect_title">2. Rules of good manners (for constructors, copy-constructors, copy-assignment operators, and destructors)</div><div class="fb_sect_cont"><br \>
+Reminder of behaviors impacting constructors, copy-constructors, copy-assignment operators, and destructors:<br \>
+<div class="fb_indent"><b>-</b> Defining an explicit default-constructor replaces the implicit default-constructor built by the compiler.<br \>
+<b>-</b> Defining an explicit constructor other than the one default suppresses the implicit default-constructor built by the compiler. In this precise case, there is no default-constructor at all!<br \>
+<b>-</b> The implicit copy-constructor (or copy-assignment operator, or destructor) built by the compiler can be replaced by an explicit copy-constructor (or copy-assignment operator, or destructor) defined by the user.<br \>
+<b>-</b> But (as opposed to the default-constructor), there is always a copy-constructor (or a copy-assignment operator or a destructor), either an implicit built by the compiler or an explicit defined by the user.<br \>
+<b>-</b> When there is object composition, the composed object Type must have an implicit or explicit constructor matching with the declaration of the compound object.<br \>
+<b>-</b> When there is Type inheritance, the inherited Type must have a default implicit or explicit constructor (unless the inheriting Type has a constant copy-constructor, explicitly defined by user), and all this even if no object is constructed (compiler test on the only inheritance structure). This behavior appears to be specific to FreeBASIC.<br \>
+<br \>
+</div>From all the above, one can deduce 'golden rules' that avoid most of compilation errors and run-time bugs.<br \>
+<br \>
+<div class="fb_indent"><b>Golden rules</b> for a code safer (at compile-time and run-time):<br \>
+<div class="fb_indent"><b>-</b> If the user explicitly defines any constructor, he is very strongly advised to also define explicitly the default-constructor as well.<br \>
+<b>-</b> If the user needs to explicitly define (with a non empty body) a copy-constructor or a copy-assignment operator or a destructor, it is better to define the 3 simultaneously (the known 'rule of three'), plus the default-constructor (rule above also applied).<br \>
+<br \>
+</div></div>From all the above and more specific cases (with inheritance), one can propose one 'maximizing rule' that allows a very safer operating.<br \>
+<br \>
+<div class="fb_indent"><b>Maximizing rule</b> for a very safer code (at compile-time and run-time), but sometimes maximizing the real constraints:<br \>
+<div class="fb_indent"><b>-</b> If the user needs to explicitly defines any form of constructor procedure (including any form of copy-constructor) or any form of let-operator procedure or a destructor procedure, it is strongly recommended to define together the default-constructor and the standard copy-constructor and the standard let-operator and the destructor.<br \>
+(these 4 explicit procedures are explicitly defined to always overload correctly the corresponding implicit operations from compiler)<br \>
+<br \>
+</div></div><ul><li> Example of applying rules of good manners<br \>
+</ul><div class="fb_indent">UDT with a string member, to compare to UDT with a string pointer member where the 4 explicit procedures above must be defined (otherwise program hangs):<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'===&nbsp;UDT&nbsp;with&nbsp;a&nbsp;string&nbsp;member&nbsp;=====================</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDTstr</span><br />
+&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="com">'--------------------------------------------------</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTstr</span>&nbsp;<span class="wrd">us1</span><br />
+<span class="wrd">us1.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;UDTstr&quot;</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTstr</span>&nbsp;<span class="wrd">us2</span><br />
+<span class="wrd">us2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">us1</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTstr</span>&nbsp;<span class="wrd">us3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">us2</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">us1.s</span><span class="oth">,</span><br />
+<span class="wrd">us1.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">us2.s</span><span class="oth">,</span><br />
+<span class="wrd">us2.s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">us3.s</span><br />
+<br />
+<span class="com">'===&nbsp;UDT&nbsp;with&nbsp;a&nbsp;string&nbsp;ptr&nbsp;member&nbsp;=================</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">UDTptr2str</span><br />
+&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ps</span><br />
+&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Operator</span>&nbsp;<span class="key">Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">ups</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTptr2str</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">ups</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTptr2str</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDTptr2str</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;<span class="wrd">This.ps</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="key">String</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">UDTptr2str</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">This.ps</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<span class="key">Operator</span>&nbsp;<span class="wrd">UDTptr2str.Let</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">ups</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTptr2str</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;<span class="oth">*</span><span class="wrd">This.ps</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="oth">*</span><span class="wrd">ups.ps</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Operator</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">UDTptr2str</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">ups</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTptr2str</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;<span class="key">Constructor</span><span class="oth">()</span>&nbsp;&nbsp;<span class="com">''&nbsp;calling&nbsp;the&nbsp;default&nbsp;constructor</span><br />
+&nbsp;&nbsp;&nbsp;<span class="key">This</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">ups</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;calling&nbsp;the&nbsp;assignment&nbsp;operator</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="com">'--------------------------------------------------</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTptr2str</span>&nbsp;<span class="wrd">up1</span><br />
+<span class="oth">*</span><span class="wrd">up1.ps</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;UDTptr2str&quot;</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTptr2str</span>&nbsp;<span class="wrd">up2</span><br />
+<span class="wrd">up2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">up1</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">UDTptr2str</span>&nbsp;<span class="wrd">up3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">up2</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="wrd">up1.ps</span><span class="oth">,</span><br />
+<span class="oth">*</span><span class="wrd">up1.ps</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="wrd">up2.ps</span><span class="oth">,</span><br />
+<span class="oth">*</span><span class="wrd">up2.ps</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+<span class="key">Print</span>&nbsp;<span class="oth">*</span><span class="wrd">up3.ps</span><br />
+<br />
+<span class="com">'==================================================</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+UDTstr        UDTstr        UDTstr
+UDTptr2str    UDTptr2str    UDTptr2str
+				</pre></div></div></div><div style="text-align: center;"><a href="#ProPgCtorsAssignDtors2Top">Back to top</a></div><br \>
+<a name="ProPgCtorsAssignDtors23"></a><br \>
+</div><div class="fb_sect_title">3. Member access rights impact (on declaration of constructors, copy-constructors, copy-assignment operators, and destructors)</div><div class="fb_sect_cont"><br \>
+Access rights can be applied when declaring such member procedures, to prohibit the user from performing certain specific commands (from the outside of Type).<br \>
+<br \>
+The default constructor, copy-constructor, copy-assignment operator, and destructor are the only member procedures which can have an implicit version built by the compiler.<br \>
+So if one want to forbid their accesses by the user from the outside of the Type, it is necessary to overload these by explicit versions with restricted access rights (not Public) when declaring. In addition, such member procedures may have no implementation (no body defining) if they are never actually called in the program.<br \>
+<br \>
+<ul><li> Example - Inheritance structure where any base object construction must be forbidden:<br \>
+</ul><div class="fb_indent"><b>-</b> In order to forbid any construction of base object from the outside of Types, the default-constructor and the copy-constructor of base Type must be explicitly declared (to overload their implicit versions) with restricted access rights.<br \>
+<b>-</b> The base Type default-constructor cannot be declared as Private, because it must be accessible from the derived Type (to construct a derived object), thus it is declared as Protected. It must have an implementation<br \>
+<b>-</b> The base Type copy-constructor can be declared as Private because it is never called in this example. So it may have no implementation.<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">Parent</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">I</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Protected</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Parent</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">Parent</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">Child</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="wrd">Parent</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span>&nbsp;<span class="wrd">J</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Child</span>&nbsp;<span class="wrd">c1</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Child</span>&nbsp;<span class="wrd">C2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">c1</span><br />
+<span class="wrd">c2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">c1</span><br />
+<br />
+<span class="com">'Dim&nbsp;As&nbsp;Parent&nbsp;p1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;forbidden</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;Parent&nbsp;p2&nbsp;=&nbsp;c1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;forbidden</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;Parent&nbsp;Ptr&nbsp;pp1&nbsp;=&nbsp;New&nbsp;Parent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;forbidden</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;Parent&nbsp;Ptr&nbsp;pp2&nbsp;=&nbsp;New&nbsp;Parent(c1)&nbsp;&nbsp;''&nbsp;forbidden</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><ul><li> Example - Singleton structure (at most one object can exist at any time):<br \>
+</ul><div class="fb_indent"><b>-</b> The singleton construction must only be done by calling the static procedure <i>'Singleton.create()'</i>.<br \>
+<b>-</b> So, the default-constructor and the copy-constructor must be explicitly declared (to overload their implicit versions) with restricted access rights as Private, in order to forbid any object user creation by <i>'Dim'</i> or <i>'New'</i>. Only the copy-constructor may have no implementation because it will never be called (the default-constructor is called from inside the Type by <i>'New'</i>).<br \>
+<b>-</b> The singleton destruction must only be done by calling the static procedure <i>'Singleton.suppress()'</i>.<br \>
+<b>-</b> So, the destructor must be explicitly declared (to overload its implicit version) with restricted access rights as Private, in order to forbid any object user destruction by <i>'Delete'</i> (the destructor must have implementation because it is called from inside the Type by <i>'Delete'</i>).<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">Singleton</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">create</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Singleton</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Static</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">suppress</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">i</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Integer</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Static</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Singleton</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ref</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Constructor</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">rhs</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Singleton</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Destructor</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Singleton</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">Singleton.ref</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+<br />
+<span class="key">Static</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">Singleton.create</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Singleton</span>&nbsp;<span class="key">Ptr</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">Singleton.ref</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Singleton.ref</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">New</span>&nbsp;<span class="wrd">Singleton</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="wrd">Singleton.ref</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Static</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">Singleton.suppress</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">Singleton.ref</span>&nbsp;<span class="oth">&gt;</span>&nbsp;<span class="num">0</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Delete</span>&nbsp;<span class="wrd">Singleton.ref</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Singleton.ref</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Constructor</span>&nbsp;<span class="wrd">Singleton</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Constructor</span><br />
+<br />
+<span class="key">Destructor</span>&nbsp;<span class="wrd">Singleton</span>&nbsp;<span class="oth">()</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Destructor</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Singleton</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ps1</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">Singleton.create</span><span class="oth">()</span><br />
+<span class="wrd">ps1</span><span class="oth">-&gt;</span><span class="wrd">i</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1234</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">ps1</span><span class="oth">,</span>&nbsp;<span class="wrd">ps1</span><span class="oth">-&gt;</span><span class="wrd">i</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Singleton</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ps2</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">Singleton.create</span><span class="oth">()</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">ps2</span><br />
+<br />
+<span class="wrd">Singleton.suppress</span><span class="oth">()</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">Singleton</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">ps3</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">Singleton.create</span><span class="oth">()</span><br />
+<span class="key">Print</span>&nbsp;<span class="wrd">ps3</span><span class="oth">,</span>&nbsp;<span class="wrd">ps3</span><span class="oth">-&gt;</span><span class="wrd">i</span><br />
+<br />
+<span class="wrd">Singleton.suppress</span><span class="oth">()</span><br />
+<br />
+<span class="com">'Delete&nbsp;ps3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;forbidden</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;Singleton&nbsp;s1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;forbidden</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;Singleton&nbsp;s2&nbsp;=&nbsp;*ps3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;forbidden</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;Singleton&nbsp;Ptr&nbsp;ps4&nbsp;=&nbsp;New&nbsp;Singleton&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;''&nbsp;forbiden</span><br />
+<span class="com">'Dim&nbsp;As&nbsp;Singleton&nbsp;Ptr&nbsp;ps5&nbsp;=&nbsp;New&nbsp;Singleton(*ps3)&nbsp;&nbsp;''&nbsp;forbidden</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+Output example:<br \>
+<div class="fb_indent"><pre class="fb_pre">
+5122656        1234
+0
+5122656        0
+				</pre></div></div></div><div style="text-align: center;"><a href="#ProPgCtorsAssignDtors2Top">Back to top</a></div><br \>
+<br \>
+</div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgConstructor.html">Constructor</a></tt>, <tt><a href="KeyPgDestructor.html">Destructor</a></tt><br \>
+<li> <tt><a href="KeyPgOpAssignment.html">Operator =[&gt;] (Assignment)</a></tt>, <tt><a href="KeyPgOpLet.html">Operator Let (Assignment)</a></tt><br \>
+<li> <a href="ProPgCtorsDtors.html">Constructors and Destructors (basics)</a><br \>
+<li> <a href="ProPgCtorsAssignDtors.html">Constructors, '=' Assignment-Operators, and Destructors (advanced, part #1)</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>__FB_ARG_EXTRACT__</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">__FB_ARG_EXTRACT__</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Intrinsic define (macro) performed by the compiler.<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+__FB_ARG_EXTRACT__( index, args... )<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>index</i></tt><br \>
+<div class="fb_indent">zero-based offset from the first argument (zero or positive integer value)<br \>
+</div><tt><i>args...</i></tt><br \>
+<div class="fb_indent">argument list<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+Returns the argument from the argument list (<tt><i>args...</i></tt>) corresponding to the index value (<tt><i>index</i></tt>).<br \>
+<br \>
+If the requested index value refers to an argument that does not exist in the supplied argument list (index value too large), nothing is returned.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+<tt><div class="freebasic">
+<span class="def">#print&nbsp;__FB_ARG_EXTRACT__(&nbsp;1,&nbsp;7,&nbsp;89.78,&nbsp;&quot;Postman&quot;&nbsp;)<br />
+</span><br />
+<span class="com">/'&nbsp;Compiler&nbsp;output:</span><br />
+<span class="com">89.78</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">'&nbsp;&nbsp;&nbsp;In&nbsp;this&nbsp;example,&nbsp;the&nbsp;'__FB_EVAL__'&nbsp;is&nbsp;absolutely&nbsp;mandatory&nbsp;in&nbsp;this&nbsp;'print_last'&nbsp;macro,</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;because&nbsp;the&nbsp;numeric&nbsp;expression&nbsp;'__FB_ARG_COUNT__(&nbsp;args&nbsp;)&nbsp;-&nbsp;1'&nbsp;must&nbsp;be&nbsp;fully&nbsp;evaluated</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;before&nbsp;being&nbsp;used&nbsp;as&nbsp;the&nbsp;index&nbsp;argument&nbsp;of&nbsp;'__FB_ARG_EXTRACT__'</span><br />
+<br />
+<span class="def">#macro&nbsp;print_last(&nbsp;args...&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#define&nbsp;last_arg_num&nbsp;__FB_EVAL__(&nbsp;__FB_ARG_COUNT__(&nbsp;args&nbsp;)&nbsp;-&nbsp;1&nbsp;)<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="def">#print&nbsp;__FB_ARG_EXTRACT__(&nbsp;last_arg_num,&nbsp;args&nbsp;)<br />
+#endmacro<br />
+</span><br />
+<span class="wrd">print_last</span><span class="oth">(</span>&nbsp;<span class="num">7</span><span class="oth">,</span>&nbsp;<span class="num">89.78</span><span class="oth">,</span>&nbsp;<span class="quo">&quot;Postman&quot;</span>&nbsp;<span class="oth">)</span><br />
+<br />
+<span class="com">/'&nbsp;Compiler&nbsp;output:</span><br />
+<span class="com">Postman</span><br />
+<span class="com">'/</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgDdfbargleftof.html">__FB_ARG_LEFTOF__</a></tt><br \>
+<li> <tt><a href="KeyPgDdfbargrightof.html">__FB_ARG_RIGHTOF__</a></tt><br \>
+<li> <tt><a href="KeyPgDdfbargcount.html">__FB_ARG_COUNT__</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

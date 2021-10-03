@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>#Cmdline</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">#Cmdline</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Preprocessor directive<br \>
+<br \>
+<div class="fb_sect_title">Syntax</div><div class="fb_sect_cont"><tt><br \>
+<b>#cmdline</b> "args..."<br \>
+</tt><br \>
+</div><div class="fb_sect_title">Parameters</div><div class="fb_sect_cont"><br \>
+<tt><i>args...</i></tt><br \>
+<div class="fb_indent">argument list (separated by spaces) of valid <tt><a href="CatPgCompOpt.html">Compiler Options</a></tt> except <tt><a href="CompilerOptprint.html">-print</a></tt> and also generic option <tt>-help</tt>.<br \>
+<br \>
+</div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+<tt><b>#cmdline</b></tt> is a pre-processor directive that allows specifying <tt><a href="CatPgCompOpt.html">compiler options</a></tt> from inside the first specified fb source file.  The first source file is the first specified '.bas' file given on the shell or IDE command line invoking the fbc compiler.  <tt><b>#cmdline</b></tt> directives specified in the first source file affect all source files subsequently compiled.  <tt><b>#cmdline</b></tt> directives inside source files other than the first source file are ignored.<br \>
+<br \>
+<tt><b>#cmdline</b></tt> is only allowed at module scope and can be conditionally processed with <tt><a href="KeyPgPpif.html">#if</a></tt> pre-processor statements .<br \>
+<br \>
+<tt><b>#cmdline</b></tt> directives are processed on the first pass of the the first '.bas' source file when they appear in the source file.  If an invalid command line option is given in the <tt><b>#cmdline</b></tt> statment, compilation immediately aborts. <tt><b>#cmdline</b></tt> directives are ignored on the second pass of the source file even if a conditional <tt><a href="KeyPgPpif.html">#if</a></tt> would add something different on the second pass.<br \>
+<br \>
+At first fbc initializes as usual and begins parsing the fb source code using the options given from the shell or IDE's <tt><i>fbc ...</i></tt> command line.  As <tt><b>#cmdline</b></tt> directives are processed, they are merged into the current compiler configuration.  Depending on the command line options encountered, fbc can continue parsing, restart the parser, or restart fbc (for example: no restart after <tt><b>#cmdline "-mt"</b></tt>, restart the parser after <tt><b>#cmdline "-gen gcc"</b></tt>, restart the build after <tt><b>#cmdline "-target win64"</b></tt>).<br \>
+<br \>
+fbc has no clever way to detect when all the <tt><b>#cmdline</b></tt> directives in source have been processed, so there are 2 pseudo command line options to instruct fbc what to next if it is necessary:<br \>
+<div class="fb_indent"><tt><b>#cmdline "-end"</b></tt><br \>
+<div class="fb_indent">option to restart parser or build if needed.<br \>
+</div><tt><b>#cmdline "-restart"</b></tt><br \>
+<div class="fb_indent">option to always restart build.<br \>
+</div></div>If neither <tt><b>#cmdline "-end"</b></tt> nor <tt><b>#cmdline "-restart"</b></tt> were encountered, fbc continues processing to the end of the first source file and restarts only if necessary. <br \>
+<br \>
+Adding <tt><a href="CompilerOptz.html">-z nocmdline</a></tt> in the shell/IDE command line option ignores <tt><b>#cmdline</b></tt> directives completely in source and allows user to override all source directives using the shell/IDE <tt><i>fbc</i></tt> compiler command line only.<br \>
+<br \>
+Adding <tt><a href="CompilerOptw.html">-w all</a></tt> on the shell/IDE command line option allows to get warnings about ignored <tt><b>#cmdline</b></tt> directives.<br \>
+<br \>
+</div><div class="fb_sect_title">Example</div><div class="fb_sect_cont"><br \>
+Add a simple option in source to set the optimization level for GCC:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="def">#cmdline&nbsp;&quot;-O&nbsp;2&quot;<br />
+</span><br />
+<span class="key">Print</span>&nbsp;<span class="key">__FB_OPTIMIZE__</span>&nbsp;&nbsp;<span class="com">''&nbsp;just&nbsp;to&nbsp;check&nbsp;the&nbsp;optimization&nbsp;level</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>When #cmdline is not processed (no 'invalid command-line option' error message is reported):<br \>
+(fbc parser is active when checking for #cmdline, so it's expected that it follows sames rules as any other source code)<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;not&nbsp;processed&nbsp;in&nbsp;single&nbsp;line&nbsp;comments</span><br />
+<span class="com">'#cmdline&nbsp;&quot;asdf&quot;</span><br />
+<br />
+<span class="com">''&nbsp;not&nbsp;processed&nbsp;in&nbsp;multi&nbsp;line&nbsp;comments</span><br />
+<span class="com">/'</span><br />
+<span class="com">#cmdline&nbsp;&quot;-asdf&quot;</span><br />
+<span class="com">'/</span><br />
+<br />
+<span class="com">''&nbsp;not&nbsp;processed&nbsp;in&nbsp;strings</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;#cmdline&nbsp;&quot;&quot;-asdf&quot;&quot;&quot;</span><br />
+<br />
+<span class="com">''&nbsp;not&nbsp;processed&nbsp;if&nbsp;skipping&nbsp;over&nbsp;a&nbsp;conditional</span><br />
+<span class="def">#if&nbsp;0<br />
+</span>&nbsp;&nbsp;&nbsp;<span class="def">#cmdline&nbsp;&quot;-asdf&quot;<br />
+#endif<br />
+</span><br />
+<span class="com">''&nbsp;not&nbsp;processed&nbsp;when&nbsp;defining&nbsp;macros&nbsp;(as&nbsp;long&nbsp;as&nbsp;the&nbsp;macro&nbsp;is&nbsp;not&nbsp;called)</span><br />
+<span class="def">#macro&nbsp;DOARGS<br />
+</span>&nbsp;&nbsp;&nbsp;<span class="def">#cmdline&nbsp;&quot;-asdf&quot;<br />
+#endmacro<br />
+</span><br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Set options in source based on real <tt><i>fbc ...</i></tt> compiler command line option given:<br \>
+(full error checking is activated depending if debug option '-g' was given on the <tt><i>fbc ...</i></tt> compiler command line)<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;'-g'&nbsp;command&nbsp;line&nbsp;option&nbsp;given&nbsp;on&nbsp;the&nbsp;real&nbsp;##//fbc&nbsp;...//##&nbsp;compiler&nbsp;command&nbsp;line?</span><br />
+<br />
+<span class="def">#if&nbsp;__FB_DEBUG__<br />
+</span>&nbsp;&nbsp;&nbsp;<span class="def">#cmdline&nbsp;&quot;-exx&nbsp;-w&nbsp;pedantic&nbsp;-w&nbsp;constness&quot;<br />
+#endif<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Define a global symbol for all modules, starting with two modules: main.bas and tools.bas, and compile both with the single '$ fbc main.bas' compiler command line:<br \>
+(this is different than #include tools.bas in main.bas because the two modules are compiled separately then linked)<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">''&nbsp;main.bas</span><br />
+<span class="com">''</span><br />
+<span class="com">''&nbsp;compile&nbsp;with:</span><br />
+<span class="com">''&nbsp;&nbsp;&nbsp;$&nbsp;fbc&nbsp;main.bas</span><br />
+<span class="com">''</span><br />
+<span class="com">''&nbsp;and&nbsp;will&nbsp;be&nbsp;same&nbsp;as&nbsp;if&nbsp;we&nbsp;did:</span><br />
+<span class="com">''&nbsp;&nbsp;&nbsp;$&nbsp;fbc&nbsp;main.bas&nbsp;tools.bas&nbsp;-d&nbsp;DoTrickyStuff</span><br />
+<br />
+<span class="com">''&nbsp;add&nbsp;the&nbsp;tools&nbsp;module</span><br />
+<span class="def">#cmdline&nbsp;&quot;-b&nbsp;tools.bas&quot;&nbsp;&nbsp;''&nbsp;or:&nbsp;#cmdline&nbsp;&quot;tools.bas&quot;<br />
+</span><br />
+<span class="com">''&nbsp;gobal&nbsp;#define&nbsp;for&nbsp;all&nbsp;modules</span><br />
+<span class="def">#cmdline&nbsp;&quot;-d&nbsp;DoTrickyStuff&quot;<br />
+</span><br />
+<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">IsTrickyTools</span><span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+<br />
+<span class="def">#ifdef&nbsp;DoTrickyStuff<br />
+</span><span class="key">Print</span>&nbsp;<span class="quo">&quot;DoTrickyStuff&nbsp;is&nbsp;defined&nbsp;in&nbsp;the&nbsp;main.bas&nbsp;module&quot;</span><br />
+<span class="def">#endif<br />
+</span><br />
+<span class="key">If</span>&nbsp;<span class="wrd">IsTrickyTools</span><span class="oth">()</span>&nbsp;<span class="key">Then</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;DoTrickyStuff&nbsp;is&nbsp;defined&nbsp;in&nbsp;the&nbsp;tools.bas&nbsp;module&quot;</span><br />
+<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+<tt><div class="freebasic">
+<span class="com">''&nbsp;tools.bas</span><br />
+<span class="com">''</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">IsTrickyTools</span><span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Boolean</span><br />
+&nbsp;&nbsp;&nbsp;<span class="def">#ifdef&nbsp;DoTrickyStuff<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">True</span><br />
+&nbsp;&nbsp;&nbsp;<span class="def">#else<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">False</span><br />
+&nbsp;&nbsp;&nbsp;<span class="def">#endif<br />
+</span><span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">Differences from QB</div><div class="fb_sect_cont"><br \>
+<ul><li> New to FreeBASIC<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="CompilerCmdLine.html">fbc command-line</a><br \>
+<li> <a href="CatPgCompOpt.html">Compiler Options</a><br \>
+<li> <a href="CatPgDddefines.html">Intrinsic Defines</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

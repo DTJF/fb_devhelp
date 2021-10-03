@@ -1,0 +1,167 @@
+<html>
+<head>
+<title>Member Access Rights and Encapsulation</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Member Access Rights and Encapsulation</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	Restricting member access to certain parts of code.<br \>
+<br \>
+<div class="fb_sect_title">Member Access Rights</div><div class="fb_sect_cont"><br \>
+<u>Overview</u><br \>
+<div class="fb_indent">All members of a <tt><a href="KeyPgType.html">Type</a></tt> - including member data, procedures, constants, etc. - belong in one of three different classifications, each with its own rules dictating where in code they may be accessed, or referred to.<br \>
+These rules are called access rights.<br \>
+There are public, protected and private members, and they are declared in a <tt><a href="KeyPgType.html">Type</a></tt> definition following a <tt><a href="KeyPgVisPublic.html">Public</a></tt>, <tt><a href="KeyPgVisProtected.html">Protected</a></tt> or <tt><a href="KeyPgVisPrivate.html">Private</a></tt> label, respectively.<br \>
+<br \>
+By default, that is, without an access classification label, members of a <tt><a href="KeyPgType.html">Type</a></tt> are public.<br \>
+<br \>
+</div><u>Public members</u><br \>
+<div class="fb_indent">Public members can be referred to from anywhere; they are accessible from, for example, member procedures or module-level code or procedures.<br \>
+<br \>
+</div><u>Protected members</u><br \>
+<div class="fb_indent">Protected members can only be accessed from member procedures of the <tt><a href="KeyPgType.html">Type</a></tt> they are declared in, or member procedures of a derived <tt><a href="KeyPgType.html">Type</a></tt>. They are not accessible to outside code.<br \>
+<br \>
+</div><u>Private members</u><br \>
+<div class="fb_indent">Private members can only be accessed from member procedures of the <tt><a href="KeyPgType.html">Type</a></tt> they are declared in. They are not accessible to outside code or member procedures from a derived <tt><a href="KeyPgType.html">Type</a></tt>.<br \>
+<br \>
+</div><u>Constructors and destructors</u><br \>
+<div class="fb_indent">Constructors and destructors follow the same rules as any other member:<br \>
+<div class="fb_indent"><b>-</b> When public, objects can be instantiated and destroyed from anywhere in code.<br \>
+<b>-</b> When protected, objects can be instantiated and destroyed only from member procedures of their <tt><a href="KeyPgType.html">Type</a></tt> or a derived <tt><a href="KeyPgType.html">Type</a></tt>.<br \>
+<b>-</b> Private constructors and destructors restrict object instantiation solely to member procedures of their <tt><a href="KeyPgType.html">Type</a></tt>.<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">Encapsulation</div><div class="fb_sect_cont"><br \>
+<u>Overview</u><br \>
+<div class="fb_indent">Encapsulation is the process of keeping the details about how an object is implemented hidden away from users of the object.<br \>
+Instead, users of the object access the object through a public interface.<br \>
+In this way, users are able to use the object without having to understand how it is implemented.<br \>
+<br \>
+Encapsulation is implemented via access specifiers (Private, Protected or Public).<br \>
+Typically, all member variables of the <tt><a href="KeyPgType.html">Type</a></tt> are made private (hiding the implementation details), and most member procedures are made public (exposing an interface for the user).<br \>
+Although requiring users of the <tt><a href="KeyPgType.html">Type</a></tt> to use the public interface may seem more burdensome than providing public access to the member variables directly, doing so actually provides a large number of useful benefits that help encourage <tt><a href="KeyPgType.html">Type</a></tt> re-usability and maintainability.<br \>
+<br \>
+</div><u>Benefit of encapsulated Types</u><br \>
+<div class="fb_indent"><b>Protection:</b><br \>
+<div class="fb_indent">Global access to variables is dangerous because you don’t have strict control over who has access to the global variable, or how they use it.<br \>
+Only the public members of a <tt><a href="KeyPgType.html">Type</a></tt> suffers from the same problem, but just on a smaller scale.<br \>
+<br \>
+Encapsulation allows the programmer of a <tt><a href="KeyPgType.html">Type</a></tt> to:<br \>
+<div class="fb_indent"><b>-</b> Actively control the access to its internals (pointers, variables, ...), by: none / read only / write only / read & write.<br \>
+<b>-</b> Secure operations, by denying certain destructive user actions (like pointer overwriting, deallocating, ...)<br \>
+<br \>
+</div></div><b>Abstraction:</b><br \>
+<div class="fb_indent">With a fully encapsulated <tt><a href="KeyPgType.html">Type</a></tt>, you only need to know what member procedures are publicly available to use the <tt><a href="KeyPgType.html">Type</a></tt>, what arguments they take, and what values they return. It doesn’t matter how the <tt><a href="KeyPgType.html">Type</a></tt> was implemented internally.<br \>
+<br \>
+For example, a <tt><a href="KeyPgType.html">Type</a></tt> holding a list of names could have been implemented using different data structures.<br \>
+In order to use the <tt><a href="KeyPgType.html">Type</a></tt>, you don’t need to know (or care) which.<br \>
+This dramatically reduces the complexity of your programs, and also reduces mistakes.<br \>
+<br \>
+Hiding the internal implementation details:<br \>
+<div class="fb_indent"><b>-</b> internal members declared as Private/Protected and user interface using methods and properties as getter/setter,<br \>
+<b>-</b> in addition to define constructors, copy-constructor, destructor, assignment operators, ... ,<br \>
+</div>provides some abstraction.<br \>
+More than any other reason, this is the key advantage of encapsulation.<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">Examples</div><div class="fb_sect_cont"><br \>
+<ul><li> In the example below, the data member <tt><i>hour</i></tt>, <tt><i>minute</i></tt>, and <tt><i>second</i></tt> are private while the member procedures <tt><i>set_Time()</i></tt>, <tt><i>get_Time()</i></tt> and <tt><i>increment_Time()</i></tt> are public:<br \>
+</ul><div class="fb_indent"><b>-</b> As all data is declared as private, the data is only accessible through the public procedures provided by the <tt><a href="KeyPgType.html">Type</a></tt>.<br \>
+<b>-</b> This also allows programmers to validate changes to data members before making such a change. In this example, the <tt><i>set_Time()</i></tt> procedure would be written to check to valid values for time (hour between 0 and 23, minute and second between 0 and 59).<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">my_Time</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">set_Time</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">new_Hour</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">new_Minute</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">new_Second</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">get_Time</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">curr_Hour</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">curr_Minute</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">curr_Second</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">get_Time</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">increment_Time</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span>&nbsp;<span class="key">Hour</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span>&nbsp;<span class="key">Minute</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span>&nbsp;<span class="key">Second</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Example of use:<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="wrd">my_Time</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Public</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">set_Time</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">new_Hour</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">new_Minute</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">new_Second</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">get_Time</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">curr_Hour</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">curr_Minute</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">curr_Second</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Function</span>&nbsp;<span class="wrd">get_Time</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Declare</span>&nbsp;<span class="key">Sub</span>&nbsp;<span class="wrd">increment_Time</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Private</span><span class="oth">:</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span>&nbsp;<span class="key">Hour</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span>&nbsp;<span class="key">Minute</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span>&nbsp;<span class="key">Second</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">my_Time.set_Time</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">new_Hour</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">new_Minute</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">new_Second</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">new_Hour</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="num">23</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">new_Minute</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="num">59</span>&nbsp;<span class="key">And</span>&nbsp;<span class="wrd">New_Second</span>&nbsp;<span class="oth">&lt;=</span>&nbsp;<span class="num">59</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.Hour</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">new_Hour</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.Minute</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">new_Minute</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.Second</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">new_Second</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">my_Time.get_Time</span>&nbsp;<span class="oth">(</span><span class="key">ByRef</span>&nbsp;<span class="wrd">curr_Hour</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">curr_Minute</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">,</span>&nbsp;<span class="key">ByRef</span>&nbsp;<span class="wrd">curr_Second</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">curr_Hour</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">This.Hour</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">curr_Minute</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">This.Minute</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">curr_Second</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">This.Second</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">my_Time.get_Time</span>&nbsp;<span class="oth">()</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="key">Right</span><span class="oth">(</span><span class="quo">&quot;0&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">This.Hour</span><span class="oth">),</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;:&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Right</span><span class="oth">(</span><span class="quo">&quot;0&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">This.Minute</span><span class="oth">),</span>&nbsp;<span class="num">2</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;:&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Right</span><span class="oth">(</span><span class="quo">&quot;0&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Str</span><span class="oth">(</span><span class="wrd">This.second</span><span class="oth">),</span>&nbsp;<span class="num">2</span><span class="oth">)</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">my_Time.increment_Time</span>&nbsp;<span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.Second</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.Second</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">60</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.Second</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.Minute</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.Minute</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">60</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.Minute</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.Hour</span>&nbsp;<span class="oth">+=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">This.Hour</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">24</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">This.Hour</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">my_Time</span>&nbsp;<span class="wrd">my_T</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">UByte</span>&nbsp;<span class="wrd">h</span><span class="oth">,</span>&nbsp;<span class="wrd">m</span><span class="oth">,</span>&nbsp;<span class="wrd">s</span><br />
+<span class="key">Input</span>&nbsp;<span class="quo">&quot;Hour?&nbsp;&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">h</span><br />
+<span class="key">Input</span>&nbsp;<span class="quo">&quot;Minute?&nbsp;&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">m</span><br />
+<span class="key">Input</span>&nbsp;<span class="quo">&quot;Second?&nbsp;&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">s</span><br />
+<span class="wrd">my_T.set_Time</span><span class="oth">(</span><span class="wrd">h</span><span class="oth">,</span>&nbsp;<span class="wrd">m</span><span class="oth">,</span>&nbsp;<span class="wrd">s</span><span class="oth">)</span><br />
+<br />
+<span class="key">Print</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Double</span>&nbsp;<span class="wrd">Tr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Int</span><span class="oth">(</span><span class="key">Timer</span><span class="oth">)</span><br />
+<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">Tr</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="key">Int</span><span class="oth">(</span><span class="key">Timer</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">Tr</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Int</span><span class="oth">(</span><span class="key">Timer</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">my_T.increment_Time</span><span class="oth">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Locate</span>&nbsp;&nbsp;<span class="oth">,</span>&nbsp;<span class="num">1</span><span class="oth">,</span>&nbsp;<span class="num">0</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">my_T.get_Time</span><span class="oth">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">100</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="key">Inkey</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span><br />
+<span class="key">Print</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><ul><li> For a more advanced example using OOP (with encapsulation + abstraction + inheritance + polymorphism), see the example (Graph type collection) in <a href="ProPgPolymorphism.html">'Inheritance Polymorphism'</a>.<br \>
+<br \>
+</ul></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <a href="ProPgProperties.html">Properties</a><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

@@ -1,0 +1,330 @@
+<html>
+<head>
+<title>Event Handling</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">Event Handling</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<b>Handling</b> (querying and processing) keyboard, mouse, and window <b>Events</b>.<br \>
+<br \>
+<b>Preamble:</b><br \>
+<br \>
+Events are basically user actions like key press, clicks, mouse movements, etc., or some occurrence like system generated notifications.<br \>
+<br \>
+The <tt><a href="KeyPgEvent.html">Event</a></tt> type plus the <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> function constitute a built-in interface provided by FreeBASIC for accessing events (keyboard, mouse, and window events).<br \>
+<tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> signals the events so the user can write his own event handlers (which require that he keeps track of the data himself).<br \>
+<br \>
+By using <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt>, the user can check the events as they are returned by the function.<br \>
+It is assumed that this function is regularly called to fetch events as they are queued internally by the system.<br \>
+<br \>
+<div class="fb_sect_title">Event type</div><div class="fb_sect_cont"><br \>
+The <tt><a href="KeyPgEvent.html">Event</a></tt> type is a pre-defined structure in "fbgfx.bi" (in the <tt>FB</tt> <tt><a href="KeyPgNamespace.html">Namespace</a></tt> for the <i><a href="CompilerDialects.html">lang fb</a></i> dialect only). <br \>
+When the user calls <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> passing an instance of <tt><a href="KeyPgEvent.html">Event</a></tt> type, <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> fills in it with the event data (if an event flag is returned).<br \>
+<br \>
+<u>Syntax</u><tt><br \>
+<div class="fb_indent">#include once "fbgfx.bi"<br \>
+Using FB<br \>
+Dim variable As <a href="KeyPgEvent.html">Event</a></tt><br \>
+<br \>
+</div><u>"Event" structure</u><br \>
+<div class="fb_indent">This structure is extracted from "fbgfx.bi".<br \>
+<br \>
+<tt><div class="freebasic">
+<span class="key">Type</span>&nbsp;<span class="key">Event</span>&nbsp;<span class="key">Field</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Union</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">scancode</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">ascii</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">x</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">y</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dx</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">dy</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">button</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">z</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">w</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Union</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div><ul><ul><li> <tt>.type</tt> field contains the event type ID value corresponding to one of the following symbols defined in "fbgfx.bi":<br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">- For key events, one among:<tt><br \>
+<div class="fb_indent"><div class="fb_indent">EVENT_KEY_PRESS<br \>
+EVENT_KEY_RELEASE<br \>
+EVENT_KEY_REPEAT</tt><br \>
+</div></div>- For mouse event, one among:<tt><br \>
+<div class="fb_indent"><div class="fb_indent">EVENT_MOUSE_MOVE<br \>
+EVENT_MOUSE_BUTTON_PRESS<br \>
+EVENT_MOUSE_BUTTON_RELEASE<br \>
+EVENT_MOUSE_DOUBLE_CLICK<br \>
+EVENT_MOUSE_WHEEL<br \>
+EVENT_MOUSE_HWHEEL<br \>
+EVENT_MOUSE_ENTER<br \>
+EVENT_MOUSE_EXIT</tt><br \>
+</div></div>- For window event, one among:<tt><br \>
+<div class="fb_indent"><div class="fb_indent">EVENT_WINDOW_GOT_FOCUS<br \>
+EVENT_WINDOW_LOST_FOCUS<br \>
+EVENT_WINDOW_CLOSE</tt><br \>
+</div></div></div></div></div><ul><ul><li> <tt>.scancode</tt> and <tt>.ascii</tt> fields contain respectively the scancode value and the ascii representation (if exists, otherwise 0) of the key impacted by one event among:<tt><br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">EVENT_KEY_PRESS<br \>
+EVENT_KEY_RELEASE<br \>
+EVENT_KEY_REPEAT</tt><br \>
+</div></div></div><ul><ul><li> <tt>.x</tt>, <tt>.y</tt> and <tt>.dx</tt>, <tt>.dy</tt> fields contain respectively the new mouse position (x, y) relative to the upper-left corner of the screen and the motion deltas (dx, dy) induced by the event:<tt><br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">EVENT_MOUSE_MOVE</tt><br \>
+</div></div></div><ul><ul><li> <tt>.button</tt> field contains the identification (bit 0: left button, bit 1: right button, and bit 2: middle button) of the mouse button impacted by one event among:<tt><br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">EVENT_MOUSE_BUTTON_PRESS<br \>
+EVENT_MOUSE_BUTTON_RELEASE<br \>
+EVENT_MOUSE_DOUBLE_CLICK</tt><br \>
+</div></div></div><ul><ul><li> <tt>.z</tt> field contains the new wheel position induces by the event:<tt><br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">EVENT_MOUSE_WHEEL</tt><br \>
+</div></div></div><ul><ul><li> <tt>.w</tt> field contains the new horizontal wheel position induces by the event:<tt><br \>
+</ul></ul><div class="fb_indent"><div class="fb_indent"><div class="fb_indent">EVENT_MOUSE_HWHEEL</tt><br \>
+<br \>
+</div></div><b>Note:</b><br \>
+<div class="fb_indent"><b>-</b> The last five field blocks [<tt>.scancode</tt> and <tt>.ascii</tt>], [<tt>.x</tt>, <tt>.y</tt> and <tt>.dx</tt>, <tt>.dy</tt>], [<tt>.button</tt>], [<tt>.z</tt>] and [<tt>.w</tt>] are aligned on the same memory location (because declared inside a Union type), so that filling in one field block overwrites the other field blocks previously filled in.<br \>
+<b>-</b> Therefore for example if the mouse position (mx, my) must be available when the <tt>MOUSE_BUTTON_PRESS</tt> event is detected, this position must have been previously stored in (mx, my) at each <tt>MOUSE_MOVE</tt> event from its own event data (<tt>.x</tt>, <tt>.y</tt>), because (<tt>.x</tt>, <tt>.y</tt>) is overwritten by any other event returned by <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt>.<br \>
+<br \>
+</div></div></div><div class="fb_sect_title">ScreenEvent function</div><div class="fb_sect_cont"><br \>
+The <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> function allows querying and retrieving system events.<br \>
+<br \>
+<u>Syntax</u><tt><br \>
+<div class="fb_indent">Declare Function <a href="KeyPgScreenevent.html">ScreenEvent</a> ( ByVal event_instance_ptr As Any Ptr = 0 ) As Long</tt><br \>
+<br \>
+</div><u>Usage</u><tt><br \>
+<div class="fb_indent"><i>result</i> = <a href="KeyPgScreenevent.html">ScreenEvent</a>( [ <i>event_instance_ptr</i> ] )</tt><br \>
+<div class="fb_indent">with:<br \>
+<div class="fb_indent"><tt><i>event_instance_ptr</i></tt>: the buffer address where the function should fill in the event data with a structure as the <tt><a href="KeyPgEvent.html">Event</a></tt> type defined above.<br \>
+<tt><i>result</i></tt>: -1 if there are pending events to be retrieved, 0 otherwise.<br \>
+<br \>
+</div></div></div></div><div class="fb_sect_title">Description</div><div class="fb_sect_cont"><br \>
+The <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> function checks if there are any pending system events:<br \>
+<div class="fb_indent"><b>-</b> If there are no events, the function simply returns 0 (false).<br \>
+<b>-</b> If there is any, it returns -1 (true), and if the <tt><i>event_instance_ptr</i></tt> pointer is not NULL, it copies the event data into the user passed structure and removes the event (the latest available) from the internal GfxLib events queue.<br \>
+<b>-</b> So to simply check if there are any pending events without retrieving them (if there are any), nor even dequeue it from the internal events queue, it is enough to call the function without parameters (or with a NULL parameter).<br \>
+<br \>
+</div>The user must first call <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> once to get one event, and then check that one event against each event type he is interested in.<br \>
+Once the user has handled that event, he must quickly call <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> again to handle the next event. Otherwise he will almost certainly miss events (like for example <tt>EVENT_MOUSE_MOVE</tt> at least).<br \>
+This is why the program loop which tests the successive events must have a period compatible with the rate of the events that the user wants to intercept (for example, difference between keyboard input and mouse move).<br \>
+Conversely, having an event test loop with a period significantly less than 10 ms unnecessarily hogs the CPU.<br \>
+<br \>
+<u>Event querying program skeleton</u><br \>
+<div class="fb_indent">As only one event is served by the <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> function at a given time, the event querying program skeleton can be properly structured around a <tt>[Select Case As Const...End Select]</tt> block.<br \>
+The different cases correspond to the different events that the user wishes to handle.<br \>
+<br \>
+<tt><div class="freebasic">
+<span class="def">#include&nbsp;Once&nbsp;&quot;fbgfx.bi&quot;<br />
+</span><span class="key">Using</span>&nbsp;<span class="wrd">FB</span><br />
+<span class="com">'&nbsp;.....</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">e</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Event</span><br />
+<span class="com">'&nbsp;.....</span><br />
+<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="key">ScreenEvent</span><span class="oth">(@</span><span class="wrd">e</span><span class="oth">))</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Select</span>&nbsp;<span class="key">Case</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="wrd">e.type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_xxx</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;handle&nbsp;the&nbsp;event&nbsp;xxx</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_yyy</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;handle&nbsp;the&nbsp;event&nbsp;yyy</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;.....</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;.....</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_zzz</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;handle&nbsp;the&nbsp;event&nbsp;zzz</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">'&nbsp;event&nbsp;not&nbsp;handled</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Select</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">10</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Loop</span><br />
+<span class="com">'&nbsp;.....</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>If for example a key is held down for some seconds, this will induce:<br \>
+<div class="fb_indent"><b>-</b> a first <tt>EVENT_KEY_PRESS</tt>,<br \>
+<b>-</b> followed by several <tt>EVENT_KEY_REPEAT</tt> (for as long as the key is held down),<br \>
+<b>-</b> and <tt>EVENT_KEY_RELEASE</tt> when the key is released.<br \>
+<br \>
+</div>Two successive simple-click actions on a mouse obviously induce four successive mouse events:<tt><br \>
+<div class="fb_indent">EVENT_MOUSE_BUTTON_PRESS<br \>
+EVENT_MOUSE_BUTTON_RELEASE<br \>
+EVENT_MOUSE_BUTTON_PRESS<br \>
+EVENT_MOUSE_BUTTON_RELEASE</tt><br \>
+</div>An only double-click action on a mouse also induces four successive mouse events, but:<tt><br \>
+<div class="fb_indent">EVENT_MOUSE_BUTTON_PRESS<br \>
+EVENT_MOUSE_BUTTON_RELEASE<br \>
+EVENT_MOUSE_DOUBLE_CLICK<br \>
+EVENT_MOUSE_BUTTON_RELEASE</tt><br \>
+<br \>
+</div><b>Note:</b><br \>
+<div class="fb_indent"><b>-</b> If the user program retrieves  a <tt>KEY_...</tt> event, this does not clear the keyboard buffer. If the keyboard buffer needs to be cleared after user retrieves the event, he will need to clear it manually (see <tt><a href="KeyPgInkey.html">Inkey</a></tt>).<br \>
+<b>-</b> Event queuing and InKey buffering are two completely independent ways to test the keyboard state. They can coexist, even in two competing threads without any conflict.<br \>
+<b>-</b> There are currently three ways to test input from the keyboard using gfxlib:<br \>
+<div class="fb_indent"><div class="fb_indent">using <tt><a href="KeyPgInkey.html">Inkey</a></tt> (user can test only keys that have an ascii representation),<br \>
+using <tt><a href="KeyPgMultikey.html">MultiKey</a></tt> (user can query the state pressed/released of any key on keyboard),<br \>
+using <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> (user can check the <tt>KEY_PRESS</tt>, <tt>KEY_RELEASE</tt> and <tt>KEY_REPEAT</tt> events).<br \>
+<br \>
+</div></div></div></div><div class="fb_sect_title">Examples</div><div class="fb_sect_cont"><br \>
+Example of simple <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt> mechanism to implement a key-pressed events handling:<br \>
+(click on the window-close button [X] to exit)<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;&nbsp;&nbsp;The&nbsp;main&nbsp;code&nbsp;tests&nbsp;events&nbsp;in&nbsp;a&nbsp;loop:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;calls&nbsp;a&nbsp;user&nbsp;Sub&nbsp;each&nbsp;time&nbsp;a&nbsp;key-pressed&nbsp;event&nbsp;is&nbsp;retrieved</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;exits&nbsp;the&nbsp;loop&nbsp;if&nbsp;a&nbsp;window-close&nbsp;event&nbsp;is&nbsp;retrieved&nbsp;(by&nbsp;click&nbsp;on&nbsp;window-close&nbsp;button)</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;The&nbsp;user&nbsp;Sub&nbsp;prints&nbsp;the&nbsp;character&nbsp;of&nbsp;the&nbsp;key&nbsp;pressed,&nbsp;the&nbsp;ascci&nbsp;code&nbsp;and&nbsp;the&nbsp;scancode.</span><br />
+<br />
+<span class="def">#include&nbsp;Once&nbsp;&quot;fbgfx.bi&quot;<br />
+</span><span class="key">Using</span>&nbsp;<span class="wrd">FB</span><br />
+<br />
+<span class="com">''&nbsp;user&nbsp;callback&nbsp;Sub&nbsp;definition</span><br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">printInkeyData</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">ascii</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><span class="oth">,</span>&nbsp;<span class="key">ByVal</span>&nbsp;<span class="wrd">scancode</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Chr</span><span class="oth">(</span><span class="wrd">ascii</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&nbsp;(&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="wrd">ascii</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;)&quot;</span><span class="oth">,</span>&nbsp;<span class="wrd">scancode</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="com">''&nbsp;user&nbsp;main&nbsp;code</span><br />
+<span class="key">Screen</span>&nbsp;<span class="num">12</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">e</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Event</span><br />
+<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="key">ScreenEvent</span><span class="oth">(@</span><span class="wrd">e</span><span class="oth">))</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Select</span>&nbsp;<span class="key">Case</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="wrd">e.type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_KEY_PRESS</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;key-pressed&nbsp;event</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">printInkeyData</span><span class="oth">(</span><span class="wrd">e.ascii</span><span class="oth">,</span>&nbsp;<span class="wrd">e.scancode</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_WINDOW_CLOSE</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;window-close&nbsp;event</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Select</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">10</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Simple example highlighting that Event queuing and InKey buffering can coexist, even in two competing threads without any conflict:<br \>
+(ESC to quit)<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;&nbsp;&nbsp;The&nbsp;main&nbsp;code&nbsp;(main&nbsp;thread)&nbsp;tests&nbsp;Inkey&nbsp;in&nbsp;a&nbsp;loop.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;The&nbsp;other&nbsp;thread&nbsp;tests&nbsp;ScreenEvent&nbsp;in&nbsp;a&nbsp;loop.</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;The&nbsp;ESC&nbsp;character&nbsp;allows&nbsp;to&nbsp;exit&nbsp;the&nbsp;two&nbsp;loops.</span><br />
+<br />
+<span class="def">#include&nbsp;&quot;fbgfx.bi&quot;<br />
+</span><span class="key">Using</span>&nbsp;<span class="wrd">FB</span><br />
+<br />
+<span class="key">Function</span>&nbsp;<span class="wrd">getAscii</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">ascii</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><span class="oth">)</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">((</span><span class="wrd">ascii</span><span class="oth">&gt;</span><span class="num">0</span><span class="oth">)</span>&nbsp;<span class="key">And</span>&nbsp;<span class="oth">(</span><span class="wrd">ascii</span><span class="oth">&lt;</span><span class="num">255</span><span class="oth">))</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="quo">&quot;'&quot;</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="key">Chr</span><span class="oth">(</span><span class="wrd">ascii</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span>&nbsp;<span class="quo">&quot;'&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Return</span>&nbsp;<span class="quo">&quot;???&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Function</span><br />
+<br />
+<span class="key">Sub</span>&nbsp;<span class="wrd">Thread</span>&nbsp;<span class="oth">(</span><span class="key">ByVal</span>&nbsp;<span class="wrd">p</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span><span class="oth">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Dim</span>&nbsp;<span class="wrd">e</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Event</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="key">ScreenEvent</span><span class="oth">(@</span><span class="wrd">e</span><span class="oth">))</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Select</span>&nbsp;<span class="key">Case</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="wrd">e.Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_KEY_PRESS</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;key-pressed&nbsp;event</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">getAscii</span><span class="oth">(</span><span class="wrd">e.ascii</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="quo">&quot;&nbsp;is&nbsp;pressed&nbsp;&nbsp;&nbsp;&nbsp;(from&nbsp;ScreenEvent)&nbsp;&nbsp;&nbsp;(other&nbsp;thread)&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="oth">(</span><span class="wrd">e.scancode</span><span class="oth">=</span><span class="wrd">SC_ESCAPE</span><span class="oth">)</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;ESC</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">Sub</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_KEY_RELEASE</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;key-released&nbsp;event</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">getAscii</span><span class="oth">(</span><span class="wrd">e.ascii</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="quo">&quot;&nbsp;is&nbsp;released&nbsp;&nbsp;&nbsp;(from&nbsp;ScreenEvent)&nbsp;&nbsp;&nbsp;(other&nbsp;thread)&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_KEY_REPEAT</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;key-repeated&nbsp;event</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">getAscii</span><span class="oth">(</span><span class="wrd">e.ascii</span><span class="oth">)</span>&nbsp;<span class="oth">&amp;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="quo">&quot;&nbsp;is&nbsp;repeated&nbsp;&nbsp;&nbsp;(from&nbsp;ScreenEvent)&nbsp;&nbsp;&nbsp;(other&nbsp;thread)&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Select</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">10</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Loop</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Sub</span><br />
+<br />
+<span class="key">Screen</span>&nbsp;<span class="num">12</span><br />
+<br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">String</span>&nbsp;<span class="wrd">s</span><br />
+<span class="key">Dim</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Any</span>&nbsp;<span class="key">Ptr</span>&nbsp;<span class="wrd">pt</span><br />
+<span class="wrd">pt</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">ThreadCreate</span><span class="oth">(@</span><span class="wrd">Thread</span><span class="oth">)</span><br />
+<br />
+<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Inkey</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">&lt;&gt;</span>&nbsp;<span class="quo">&quot;&quot;</span>&nbsp;<span class="key">Then</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;inkey&nbsp;return</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="wrd">getAscii</span><span class="oth">(</span><span class="wrd">s</span><span class="oth">[</span><span class="num">0</span><span class="oth">])</span>&nbsp;<span class="oth">&amp;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="quo">&quot;&nbsp;is&nbsp;viewed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(from&nbsp;Inkey)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(main&nbsp;thread)&quot;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">10</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Loop</span>&nbsp;<span class="key">Until</span>&nbsp;<span class="wrd">s</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="key">Chr</span><span class="oth">(</span><span class="num">27</span><span class="oth">)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="com">''&nbsp;test&nbsp;ESC</span><br />
+<br />
+<span class="key">ThreadWait</span><span class="oth">(</span><span class="wrd">pt</span><span class="oth">)</span><br />
+<span class="key">Print</span>&nbsp;<span class="quo">&quot;main&nbsp;and&nbsp;other&nbsp;thread&nbsp;completed&quot;</span><br />
+<br />
+<span class="key">Sleep</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div>Example of mouse event handling where cursor position and buttons state are stored in a Type derived of EVENT to be available at the time of events other than those that normally provide them:<br \>
+(click on the window-close button [X] to exit)<br \>
+<div class="fb_indent"><tt><div class="freebasic">
+<span class="com">'&nbsp;Memorization&nbsp;in&nbsp;(.mx,&nbsp;.my)&nbsp;of&nbsp;the&nbsp;cursor&nbsp;position&nbsp;of&nbsp;the&nbsp;mouse:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;at&nbsp;MOUSE_MOVE&nbsp;event&nbsp;:&nbsp;e.mx&nbsp;=&nbsp;e.x,&nbsp;e.my&nbsp;=&nbsp;e.y</span><br />
+<span class="com">'&nbsp;Memorization&nbsp;in&nbsp;.mbutton&nbsp;of&nbsp;the&nbsp;buttons&nbsp;state&nbsp;of&nbsp;the&nbsp;mouse:</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;at&nbsp;MOUSE_BUTTON_PRESS&nbsp;event&nbsp;and&nbsp;MOUSE_DOUBLE_CLICK&nbsp;event&nbsp;:&nbsp;e.mbutton&nbsp;=&nbsp;e.mbutton&nbsp;Or&nbsp;e.button</span><br />
+<span class="com">'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;at&nbsp;MOUSE_BUTTON_RELEASE&nbsp;event&nbsp;:&nbsp;e.mbutton&nbsp;=&nbsp;e.mbutton&nbsp;Xor&nbsp;e.button</span><br />
+<br />
+<span class="def">#include&nbsp;Once&nbsp;&quot;fbgfx.bi&quot;<br />
+</span><span class="key">Using</span>&nbsp;<span class="wrd">FB</span><br />
+<br />
+<span class="key">Type</span>&nbsp;<span class="wrd">EVENTstore</span>&nbsp;<span class="key">Extends</span>&nbsp;<span class="key">Event</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">mx</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">my</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">mbutton</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Long</span><br />
+<span class="key">End</span>&nbsp;<span class="key">Type</span><br />
+<br />
+<span class="key">Screen</span>&nbsp;<span class="num">19</span><br />
+<span class="key">Dim</span>&nbsp;<span class="wrd">e</span>&nbsp;<span class="key">As</span>&nbsp;<span class="wrd">EVENTstore</span><br />
+<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">If</span>&nbsp;<span class="key">ScreenEvent</span><span class="oth">(@</span><span class="wrd">e</span><span class="oth">)</span>&nbsp;<span class="key">Then</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Select</span>&nbsp;<span class="key">Case</span>&nbsp;<span class="key">As</span>&nbsp;<span class="key">Const</span>&nbsp;<span class="wrd">e.Type</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_MOUSE_MOVE</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.mx</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">e.x</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.my</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">e.y</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;Mouse&nbsp;move:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=####&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;y=####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dx=####&nbsp;&nbsp;/&nbsp;&nbsp;dy=####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;button=##&quot;</span><span class="oth">;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.x</span><span class="oth">;</span>&nbsp;<span class="wrd">e.y</span><span class="oth">;</span>&nbsp;<span class="wrd">e.dx</span><span class="oth">;</span>&nbsp;<span class="wrd">e.dy</span><span class="oth">;</span>&nbsp;<span class="wrd">e.mbutton</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_MOUSE_BUTTON_PRESS</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.mbutton</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">e.mbutton</span>&nbsp;<span class="key">Or</span>&nbsp;<span class="wrd">e.button</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;Mouse&nbsp;button&nbsp;press:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;button&nbsp;=##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=####&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;y=####&quot;</span><span class="oth">;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.button</span><span class="oth">;</span>&nbsp;<span class="wrd">e.mx</span><span class="oth">;</span>&nbsp;<span class="wrd">e.my</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_MOUSE_BUTTON_RELEASE</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.mbutton</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">e.mbutton</span>&nbsp;<span class="key">Xor</span>&nbsp;<span class="wrd">e.button</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;Mouse&nbsp;button&nbsp;release:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;button&nbsp;=##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=####&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;y=####&quot;</span><span class="oth">;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.button</span><span class="oth">;</span>&nbsp;<span class="wrd">e.mx</span><span class="oth">;</span>&nbsp;<span class="wrd">e.my</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_MOUSE_DOUBLE_CLICK</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.mbutton</span>&nbsp;<span class="oth">=</span>&nbsp;<span class="wrd">e.mbutton</span>&nbsp;<span class="key">Or</span>&nbsp;<span class="wrd">e.button</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;Mouse&nbsp;button&nbsp;double&nbsp;click:&nbsp;&nbsp;&nbsp;button&nbsp;=##&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=####&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;y=####&quot;</span><span class="oth">;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.button</span><span class="oth">;</span>&nbsp;<span class="wrd">e.mx</span><span class="oth">;</span>&nbsp;<span class="wrd">e.my</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_MOUSE_WHEEL</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;Mouse&nbsp;wheel:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wheel=&nbsp;&nbsp;###########&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=####&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;y=####&quot;</span><span class="oth">;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.z</span><span class="oth">;</span>&nbsp;<span class="wrd">e.mx</span><span class="oth">;</span>&nbsp;<span class="wrd">e.my</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_MOUSE_HWHEEL</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Print</span>&nbsp;<span class="key">Using</span>&nbsp;<span class="quo">&quot;Mouse&nbsp;hwheel:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hwheel=&nbsp;###########&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=####&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;y=####&quot;</span><span class="oth">;</span><span class="wrd">_</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="wrd">e.z</span><span class="oth">;</span>&nbsp;<span class="wrd">e.mx</span><span class="oth">;</span>&nbsp;<span class="wrd">e.my</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Case</span>&nbsp;<span class="wrd">EVENT_WINDOW_CLOSE</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Exit</span>&nbsp;<span class="key">Do</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">Select</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">End</span>&nbsp;<span class="key">If</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">Sleep</span>&nbsp;<span class="num">10</span><span class="oth">,</span>&nbsp;<span class="num">1</span><br />
+<span class="key">Loop</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></tt><br />
+</div></div><div class="fb_sect_title">See also</div><div class="fb_sect_cont"><br \>
+<ul><li> <tt><a href="KeyPgEvent.html">Event</a></tt><br \>
+<li> <tt><a href="KeyPgScreenevent.html">ScreenEvent</a></tt><br \>
+<li> <tt><a href="KeyPgInkey.html">Inkey</a></tt><br \>
+<li> <tt><a href="KeyPgMultikey.html">MultiKey</a></tt><br \>
+<li> <tt><a href="KeyPgGetmouse.html">GetMouse</a></tt><br \>
+<br \>
+</ul></div>
+</div>
+</div> 
+</div> 
+</body>
+</html>

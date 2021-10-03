@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>User Defined Types</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="fb_body_wrapper">
+<div id="fb_tab">
+<div id="fb_tab_l">User Defined Types</div>
+<div id="fb_tab_r">&nbsp;<a href="00index.html"><img src="images/fblogo_mini.gif" /></a></div> 
+</div> 
+<div id="fb_pg_wrapper">
+<div id="fb_pg_body">
+	<br \>
+<b><a href="#DECLARATION">Declaration</a></b><br \>
+<div class="fb_indent">Declaring and describing user defined types<br \>
+</div><b><a href="#REFERENCING">Referencing</a></b><br \>
+<div class="fb_indent">Accessing data in a user defined type<br \>
+</div><b><a href="#MEMBERPROC">Member Procedures</a></b><br \>
+<div class="fb_indent">Declaring and defining methods related to a user defined type<br \>
+</div><b><a href="#MEMBERACCESS">Member Access Control</a></b><br \>
+<div class="fb_indent">Controlling when data and member procedures are accessed<br \>
+<br \>
+</div><table class="fb_box"><tr><td><a name="DECLARATION"></a><b><u>Declarations</u></b><br \>
+<div class="fb_indent"><b><a href="KeyPgEnum.html">Enum...End Enum</a></b><br \>
+<div class="fb_indent">User defined enumeration of values<br \>
+</div><b><a href="KeyPgType.html">Type...End Type</a></b><br \>
+<div class="fb_indent">User defined structure of non overlapping data and member procedures<br \>
+</div><b><a href="KeyPgClass.html">Class...End Class</a></b><br \>
+<div class="fb_indent">Not implemented.  Keyword reserved.<br \>
+</div><b><a href="KeyPgUnion.html">Union...End Union</a></b><br \>
+<div class="fb_indent">User defined structure of overlapping data<br \>
+</div><b><a href="KeyPgExtends.html">Extends</a></b><br \>
+<div class="fb_indent">Extends an user defined type to derive another<br \>
+</div><b><a href="KeyPgExtendsWstring.html">Extends Wstring</a></b><br \>
+<div class="fb_indent">Extends an user defined type to inherits Wstring behavior<br \>
+</div><b><a href="KeyPgExtendsZstring.html">Extends Zstring</a></b><br \>
+<div class="fb_indent">Extends an user defined type to inherits Zstring behavior<br \>
+</div><b><a href="KeyPgImplements.html">Implements</a></b><br \>
+<div class="fb_indent">Not implemented.  Keyword reserved.<br \>
+</div><b><a href="KeyPgField.html">Field</a></b><br \>
+<div class="fb_indent">Specifies field alignment within a user defined type<br \>
+</div><b><a href="KeyPgObject.html">Object</a></b><br \>
+<div class="fb_indent">Built-in type providing run-time type information<br \>
+<br \>
+</div></div><a name="REFERENCING"></a><b><u>Referencing</u></b><br \>
+<div class="fb_indent"><b><a href="KeyPgTypeTemp.html">Temporary Types</a></b><br \>
+<div class="fb_indent">Creates a temporary copy of a user defined type<br \>
+</div><b><a href="KeyPgThis.html">This</a></b><br \>
+<div class="fb_indent">Built-in, hidden, parameter passed to non-static member procedures to access the user defined type instance<br \>
+</div><b><a href="KeyPgBase.html">Base (Member Access)</a></b><br \>
+<div class="fb_indent">Built-in, hidden, variable to access the base user defined type instance in derived user defined types<br \>
+</div><b><a href="KeyPgTypeAlias.html">Type Alias</a></b><br \>
+<div class="fb_indent">Declares a user defined type from other user defined or standard data types<br \>
+</div><b><a href="KeyPgWith.html">With</a></b><br \>
+<div class="fb_indent">Compound statement to access the data and members of a user defined type<br \>
+<br \>
+</div></div></td><td><a name="MEMBERPROC"></a><b><u>Member Procedures</u></b><br \>
+<div class="fb_indent"><b><a href="KeyPgBaseInit.html">Base (Initialization)</a></b><br \>
+<div class="fb_indent">Specifies an initializer for the base user defined type in derived user defined type constructors<br \>
+</div><b><a href="KeyPgConstructor.html">Constructor</a></b><br \>
+<div class="fb_indent">Declares or defines a member procedure that is automatically called when a user defined type is created<br \>
+</div><b><a href="KeyPgDestructor.html">Destructor</a></b><br \>
+<div class="fb_indent">Declares or defines a member procedure that is automatically called when a user defined type is destroyed or goes out of scope<br \>
+</div><b><a href="KeyPgMemberFunction.html">Function</a></b><br \>
+<div class="fb_indent">Declares or defines a member procedure returning a value<br \>
+</div><b><a href="KeyPgOperator.html">Operator</a></b><br \>
+<div class="fb_indent">Declares or defines an overloaded operator<br \>
+</div><b><a href="KeyPgOverride.html">Override</a></b><br \>
+<div class="fb_indent">Member method attribute that specifies that the method is expected to override a virtual method in the base user defined type<br \>
+</div><b><a href="KeyPgProperty.html">Property</a></b><br \>
+<div class="fb_indent">Declares or defines property member procedures for a user defined type<br \>
+</div><b><a href="KeyPgMemberSub.html">Sub</a></b><br \>
+<div class="fb_indent">Declare or defines a member procedure<br \>
+</div><b><a href="KeyPgStaticMember.html">Static (Member)</a></b><br \>
+<div class="fb_indent">Declares or defines a member procedure or variable is static<br \>
+</div><b><a href="KeyPgVirtual.html">Virtual</a></b><br \>
+<div class="fb_indent">Member method attribute that declares that a member must have an implementation<br \>
+</div><b><a href="KeyPgAbstract.html">Abstract</a></b><br \>
+<div class="fb_indent">Member method attribute that declares that a member must be implemented in a derived user defined type<br \>
+</div><b><a href="KeyPgConstMember.html">Const (Member)</a></b><br \>
+<div class="fb_indent">Member method attribute that declares or defines that the method is readonly and does not modify the user defined types's data<br \>
+<br \>
+</div></div><a name="MEMBERACCESS"></a><b><u>Member Access Control</u></b><br \>
+<div class="fb_indent"><b><a href="KeyPgVisPublic.html">Public: (Access Control)</a></b><br \>
+<div class="fb_indent">Data and members in a user defined type have public visibility<br \>
+</div><b><a href="KeyPgVisPrivate.html">Private: (Access Control)</a></b><br \>
+<div class="fb_indent">Data and members in a user defined type have private visibility<br \>
+</div><b><a href="KeyPgVisProtected.html">Protected: (Access Control)</a></b><br \>
+<div class="fb_indent">Data and members in a user defined type have protected visibility<br \>
+</div></div></td></tr></table><br \>
+<div style="clear:both">&nbsp;</div><br \>
+
+</div>
+</div> 
+</div> 
+</body>
+</html>

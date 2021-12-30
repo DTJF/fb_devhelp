@@ -30,7 +30,7 @@ GitHub](https://github.com/DTJF/fb_devhelp).
 Licence:
 ========
 
-Copyright &copy; 2012-2021 by `Thomas{ doT ]Freiherr[ At ]gmx[ DoT }net`
+Copyright &copy; 2012-2022 by `Thomas{ doT ]Freiherr[ At ]gmx[ DoT }net`
 
 This project is free software; you can redistribute it and/or modify it
 under the terms of the Lesser GNU General Public License version 2 as
